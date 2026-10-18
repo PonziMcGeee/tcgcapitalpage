@@ -1485,11 +1485,40 @@ h2 {
   margin-top: 4px;
 }
 @media (max-width: 760px) {
+  /* En móvil siguen en paralelo, con la foto arriba y el texto debajo */
   .featured-grid {
-    grid-template-columns: 1fr;
+    gap: 10px;
   }
   .featured-card {
-    padding: 18px;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: center;
+    gap: 10px;
+    padding: 16px 10px;
     min-height: 0;
+    border-left-width: 0;
+    border-top: 6px solid var(--seller, var(--accent));
+  }
+  .featured-card .avatar {
+    width: 68px !important;
+    height: 68px !important;
+    font-size: 1.9rem !important;
+  }
+  .featured-info {
+    justify-items: center;
+    gap: 3px;
+  }
+  .featured-kicker {
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+  }
+  .featured-name {
+    font-size: 1rem;
+  }
+  .featured-count {
+    font-size: 0.8rem;
+  }
+  .featured-link {
+    font-size: 0.82rem;
   }
 }
