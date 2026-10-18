@@ -94,6 +94,7 @@ export default function DetalleCarta() {
 
         <div className="panel">
           <span className={`badge ${vendida ? 'badge-sold' : ''}`}>{vendida ? 'Vendida' : listing.game}</span>
+          {listing.collection && <span className="badge" style={{ marginLeft: 6 }}>{listing.collection}</span>}
           <h1 style={{ marginTop: 8 }}>{listing.name}</h1>
           <Link href={`/tienda/${listing.seller_id}`} className="seller-link">
             <SellerBadge id={listing.seller_id} name={listing.seller_name} color={color} size={30} />

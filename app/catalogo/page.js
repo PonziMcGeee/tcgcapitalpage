@@ -5,6 +5,7 @@ import CardTile from '../../components/CardTile';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerSection from '../../components/SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
+import { POKEMON_COLLECTIONS } from '../../lib/collections';
 import { GAMES } from '../../lib/format';
 import { getSupabase } from '../../lib/supabase';
 
@@ -18,6 +19,7 @@ export default function Catalogo() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [game, setGame] = useState('');
+  const [coleccion, setColeccion] = useState('');
   const [seller, setSeller] = useState('');
   const [vista, setVista] = useState('vendedores');
   const [mostradas, setMostradas] = useState(STEP);
@@ -41,7 +43,7 @@ export default function Catalogo() {
 
   useEffect(() => {
     setMostradas(STEP);
-  }, [search, game, seller, vista]);
+  }, [search, game, coleccion, seller, vista]);
 
   const sellerMap = useMemo(() => new Map(sellers.map((s) => [s.id, s])), [sellers]);
 
@@ -49,11 +51,12 @@ export default function Catalogo() {
     () =>
       listings.filter((l) => {
         if (game && l.game !== game) return false;
+        if (coleccion && l.collection !== coleccion) return false;
         if (seller && l.seller_id !== seller) return false;
         if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
         return true;
       }),
-    [listings, game, seller, search]
+    [listings, game, coleccion, seller, search]
   );
 
   // Vista por vendedor: un bloque por vendedor con solo unas pocas cartas de muestra
@@ -84,7 +87,13 @@ export default function Catalogo() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <select value={game} onChange={(e) => setGame(e.target.value)}>
+        <select
+          value={game}
+          onChange={(e) => {
+            setGame(e.target.value);
+            setColeccion('');
+          }}
+        >
           <option value="">Todos los juegos</option>
           {GAMES.map((g) => (
             <option key={g} value={g}>
@@ -100,6 +109,16 @@ export default function Catalogo() {
             </option>
           ))}
         </select>
+        {game === 'Pokémon' && (
+          <select value={coleccion} onChange={(e) => setColeccion(e.target.value)} style={{ gridColumn: '1 / -1' }}>
+            <option value="">Todas las colecciones</option>
+            {POKEMON_COLLECTIONS.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="toolbar">

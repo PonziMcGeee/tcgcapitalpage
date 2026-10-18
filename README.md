@@ -10,6 +10,8 @@ El precio que ve el comprador es **carta + envío** (España o resto de Europa),
 
 **Pagos**: en esta primera versión no hay pasarela. El comprador contacta con el vendedor y acuerdan el pago y el envío. Más adelante se puede añadir Stripe Connect para que cada vendedor cobre directamente.
 
+**Juegos**: de momento solo Pokémon y One Piece (lista en `lib/format.js`). En Pokémon el vendedor puede indicar la colección (hasta 2006, lista en `lib/collections.js`) y el catálogo permite filtrar por ella.
+
 ## Tecnología
 
 - Next.js 14 (App Router) + React
@@ -28,6 +30,7 @@ El precio que ve el comprador es **carta + envío** (España o resto de Europa),
 > 1. `supabase/migracion-muchos-vendedores.sql`: color de tienda, lista pública de vendedores y sincronización del nombre.
 > 2. `supabase/migracion-administrador-y-portada.sql`: rol de administrador, banners y carruseles editables.
 > 3. `supabase/migracion-moderacion.sql`: el administrador puede borrar cualquier carta y las cartas de quien deja de ser vendedor se ocultan.
+> 4. `supabase/migracion-colecciones.sql`: campo de colección para las cartas de Pokémon.
 >
 > Hazlo **antes** de usar la última versión de la web.
 
@@ -98,6 +101,8 @@ supabase/schema.sql      Tablas, permisos (RLS) y almacenamiento (instalación d
 supabase/migracion-muchos-vendedores.sql           Solo lo nuevo, para bases ya creadas
 supabase/migracion-administrador-y-portada.sql     Rol admin, banners y carruseles, para bases ya creadas
 supabase/migracion-moderacion.sql                  Borrado por el admin y ocultar cartas de ex vendedores
+supabase/migracion-colecciones.sql                 Columna de colección (Pokémon)
+lib/collections.js                                 Lista de colecciones de Pokémon hasta 2006
 ```
 
 ## Próximos pasos posibles

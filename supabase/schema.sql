@@ -84,6 +84,7 @@ create table if not exists public.listings (
   name text not null,
   game text not null default 'Pokémon',
   condition text not null default 'NM',
+  collection text,
   description text,
   price numeric(10,2) not null check (price >= 0),
   shipping_spain numeric(10,2) not null default 0 check (shipping_spain >= 0),
@@ -420,3 +421,6 @@ drop policy if exists "admin borra fotos de cartas" on storage.objects;
 create policy "admin borra fotos de cartas" on storage.objects
   for delete to authenticated
   using (bucket_id = 'cards' and public.is_admin());
+
+-- ===== Colecciones (contenido de supabase/migracion-colecciones.sql) =====
+alter table public.listings add column if not exists collection text;

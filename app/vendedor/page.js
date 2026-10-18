@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
-import { GAMES, SELLER_COLORS, euros, sellerColor } from '../../lib/format';
+import { POKEMON_COLLECTIONS } from '../../lib/collections';
+import { GAMES, SELLER_COLORS, euros, gameLabel, sellerColor } from '../../lib/format';
 import { prepararFoto } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
 import { getSupabase } from '../../lib/supabase';
@@ -12,6 +13,7 @@ import { useProfile } from '../../lib/useProfile';
 const EMPTY_FORM = {
   name: '',
   game: GAMES[0],
+  collection: '',
   description: '',
   price: '',
   shipping_spain: '',
@@ -107,6 +109,7 @@ export default function PanelVendedor() {
         seller_name: profile.display_name || user.email.split('@')[0],
         name: form.name.trim(),
         game: form.game,
+        collection: form.game === 'Pokémon' && form.collection ? form.collection : null,
         description: form.description.trim() || null,
         price: Number(form.price),
         shipping_spain: Number(form.shipping_spain || 0),
@@ -206,6 +209,20 @@ export default function PanelVendedor() {
             </select>
           </div>
 
+          {form.game === 'Pokémon' && (
+            <div className="field">
+              <label htmlFor="collection">Colección</label>
+              <select id="collection" value={form.collection} onChange={(e) => cambiar('collection', e.target.value)}>
+                <option value="">Sin indicar</option>
+                {POKEMON_COLLECTIONS.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div className="row">
             <div className="field">
               <label htmlFor="price">Precio de la carta (€)</label>
@@ -276,7 +293,7 @@ export default function PanelVendedor() {
               <div>
                 <strong>{l.name}</strong>
                 <p className="muted small">
-                  {l.game} · {euros(l.price)}
+                  {gameLabel(l)} · {euros(l.price)}
                 </p>
                 <span className={`badge ${l.status === 'sold' ? 'badge-sold' : ''}`}>
                   {l.status === 'sold' ? 'Vendida' : 'En venta'}

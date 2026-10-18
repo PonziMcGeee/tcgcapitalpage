@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { euros, sellerColor } from '../lib/format';
+import { euros, gameLabel, sellerColor } from '../lib/format';
 
 export default function CardTile({ listing, showSeller = true, color }) {
   return (
@@ -15,7 +15,7 @@ export default function CardTile({ listing, showSeller = true, color }) {
       </div>
       <div className="tile-body">
         <h3>{listing.name}</h3>
-        <p className="muted">{listing.game}</p>
+        <p className="muted">{gameLabel(listing)}</p>
         <p className="tile-price">{euros(listing.price)}</p>
         {showSeller && <p className="muted small">Vende {listing.seller_name}</p>}
       </div>
