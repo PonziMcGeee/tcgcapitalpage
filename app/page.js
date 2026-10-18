@@ -46,8 +46,6 @@ const VENTAJAS = [
   },
 ];
 
-const VENDEDORES_EN_PORTADA = 8;
-
 export default function Inicio() {
   const { user } = useProfile();
   const [latest, setLatest] = useState([]);
@@ -75,7 +73,6 @@ export default function Inicio() {
   }, []);
 
   const { banners, collections, sellerMap, featured } = home;
-  const hayCarruselDeVendedores = collections.some((c) => c.kind === 'sellers');
 
   const conCartas = sellers
     .filter((s) => s.cards_available > 0)
@@ -162,7 +159,7 @@ export default function Inicio() {
 
       {cargado && <FeaturedSellers featured={featured} />}
 
-      {cargado && featured.length === 0 && !hayCarruselDeVendedores && conCartas.length > 0 && (
+      {cargado && conCartas.length > 0 && (
         <section className="home-section">
           <div className="section-head">
             <h2>Nuestros vendedores</h2>
@@ -171,11 +168,17 @@ export default function Inicio() {
             </Link>
           </div>
           <p className="muted">Cada uno tiene su propia tienda con sus cartas.</p>
-          <div className="sellers-grid">
-            {conCartas.slice(0, VENDEDORES_EN_PORTADA).map((s) => (
-              <SellerCard key={s.id} seller={s} />
-            ))}
-          </div>
+          <Marquee
+            items={conCartas}
+            minItems={6}
+            secondsPerItem={2}
+            label="Todos los vendedores"
+            renderItem={(s, duplicada) => (
+              <div className="marquee-seller" aria-hidden={duplicada ? true : undefined}>
+                <SellerCard seller={s} />
+              </div>
+            )}
+          />
         </section>
       )}
 
