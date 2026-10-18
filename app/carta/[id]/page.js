@@ -17,6 +17,7 @@ export default function DetalleCarta() {
   const [loading, setLoading] = useState(true);
   const [destino, setDestino] = useState('spain');
   const [color, setColor] = useState(null);
+  const [avatar, setAvatar] = useState(null);
 
   useEffect(() => {
     const sb = getSupabase();
@@ -50,10 +51,13 @@ export default function DetalleCarta() {
     const sb = getSupabase();
     if (!sb || !listing) return;
     sb.from('sellers_public')
-      .select('color')
+      .select('color, avatar_url')
       .eq('id', listing.seller_id)
       .maybeSingle()
-      .then(({ data }) => setColor(data?.color || null));
+      .then(({ data }) => {
+        setColor(data?.color || null);
+        setAvatar(data?.avatar_url || null);
+      });
   }, [listing]);
 
   if (loading) return <p className="muted">Cargando…</p>;
@@ -98,7 +102,7 @@ export default function DetalleCarta() {
           {listing.collection && <span className="badge" style={{ marginLeft: 6 }}>{listing.collection}</span>}
           <h1 style={{ marginTop: 8 }}>{listing.name}</h1>
           <Link href={`/tienda/${listing.seller_id}`} className="seller-link">
-            <SellerBadge id={listing.seller_id} name={listing.seller_name} color={color} size={30} />
+            <SellerBadge id={listing.seller_id} name={listing.seller_name} color={color} avatarUrl={avatar} size={30} />
             <span>
               Vende <strong>{listing.seller_name}</strong> · ver su tienda
             </span>

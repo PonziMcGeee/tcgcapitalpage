@@ -428,3 +428,22 @@ alter table public.listings add column if not exists collection text;
 
 -- ===== Miniaturas (contenido de supabase/migracion-miniaturas.sql) =====
 alter table public.listings add column if not exists thumb_url text;
+
+-- ===== Foto de perfil (contenido de supabase/migracion-foto-perfil.sql) =====
+
+-- La lista pública de vendedores incluye ahora la foto
+create or replace view public.sellers_public as
+select
+  p.id,
+  p.display_name,
+  p.color,
+  (
+    select count(*)
+    from public.listings l
+    where l.seller_id = p.id and l.status = 'available'
+  )::int as cards_available,
+  p.avatar_url
+from public.profiles p
+where p.role in ('seller', 'admin');
+
+grant select on public.sellers_public to anon, authenticated;

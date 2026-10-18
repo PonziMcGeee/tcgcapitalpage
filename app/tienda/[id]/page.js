@@ -28,7 +28,7 @@ export default function TiendaVendedor() {
     }
     Promise.all([
       sb.from('listings').select('*').eq('seller_id', id).order('created_at', { ascending: false }),
-      sb.from('sellers_public').select('id, display_name, color').eq('id', id).maybeSingle(),
+      sb.from('sellers_public').select('id, display_name, color, avatar_url').eq('id', id).maybeSingle(),
     ]).then(([cartas, vendedor]) => {
       setListings(cartas.data || []);
       setInfo(vendedor.data || null);
@@ -82,7 +82,7 @@ export default function TiendaVendedor() {
       </p>
 
       <div className="shop-hero">
-        <SellerBadge id={id} name={name} color={color} size={72} />
+        <SellerBadge id={id} name={name} color={color} avatarUrl={info?.avatar_url} size={72} />
         <div className="shop-hero-info">
           <h1>Tienda de {name}</h1>
           <p className="muted">

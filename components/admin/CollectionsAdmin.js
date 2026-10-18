@@ -96,7 +96,7 @@ function SellerPicker({ existentes, onAdd }) {
       <div className="picker-results">
         {lista.slice(0, 20).map((s) => (
           <div className="picker-row" key={s.id}>
-            <SellerBadge id={s.id} name={s.display_name} color={s.color} size={32} />
+            <SellerBadge id={s.id} name={s.display_name} color={s.color} avatarUrl={s.avatar_url} size={32} />
             <div className="grow">
               <strong>{s.display_name}</strong>
               <p className="muted small">{s.cards_available} cartas en venta</p>
@@ -334,7 +334,7 @@ export default function CollectionsAdmin() {
                     )}
                     {s && (
                       <div style={{ display: 'grid', placeItems: 'center', padding: '10px 0' }}>
-                        <SellerBadge id={s.id} name={s.display_name} color={s.color} size={48} />
+                        <SellerBadge id={s.id} name={s.display_name} color={s.color} avatarUrl={s.avatar_url} size={48} />
                       </div>
                     )}
                     <strong>{l ? l.name : s?.display_name}</strong>

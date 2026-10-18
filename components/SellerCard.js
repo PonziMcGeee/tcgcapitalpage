@@ -11,7 +11,7 @@ export default function SellerCard({ seller }) {
       className="seller-card"
       style={{ '--seller': sellerColor(seller.id, seller.color) }}
     >
-      <SellerBadge id={seller.id} name={seller.display_name} color={seller.color} size={56} />
+      <SellerBadge id={seller.id} name={seller.display_name} color={seller.color} avatarUrl={seller.avatar_url} size={64} />
       <strong>{seller.display_name}</strong>
       <span className="muted small">
         {n === 0 ? 'Sin cartas ahora mismo' : `${n} ${n === 1 ? 'carta' : 'cartas'} en venta`}

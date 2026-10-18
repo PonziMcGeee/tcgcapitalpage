@@ -153,6 +153,7 @@ export default function Catalogo() {
             sellerId={g.seller.id}
             name={g.seller.display_name}
             color={g.seller.color}
+            avatarUrl={g.seller.avatar_url}
             // Si se filtra por un vendedor concreto se enseñan todas sus cartas
             listings={seller ? g.items : g.items.slice(0, PREVIEW)}
             total={g.items.length}

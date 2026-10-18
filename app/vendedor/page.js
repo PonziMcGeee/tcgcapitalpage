@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import SellerBadge from '../../components/SellerBadge';
 import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
 import { POKEMON_COLLECTIONS } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
-import { prepararFoto, prepararMiniatura } from '../../lib/image';
+import { prepararAvatar, prepararFoto, prepararMiniatura } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
 import { getSupabase } from '../../lib/supabase';
 import { useProfile } from '../../lib/useProfile';
@@ -213,6 +214,41 @@ export default function PanelVendedor() {
     }
     setOptimizando(false);
     cargarMias();
+  }
+
+  const [subiendoAvatar, setSubiendoAvatar] = useState(false);
+
+  async function cambiarAvatar(file) {
+    if (!file) return;
+    const sb = getSupabase();
+    setSubiendoAvatar(true);
+    setContactoMsg('');
+    try {
+      const blob = await prepararAvatar(file);
+      const ruta = `${user.id}/avatar-${crypto.randomUUID()}.jpg`;
+      const { error: errSubida } = await sb.storage
+        .from('cards')
+        .upload(ruta, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
+      if (errSubida) throw errSubida;
+      const avatar_url = sb.storage.from('cards').getPublicUrl(ruta).data.publicUrl;
+      const { error } = await sb.from('profiles').update({ avatar_url }).eq('id', user.id);
+      if (error) throw error;
+      const vieja = rutaCards(profile.avatar_url);
+      if (vieja) await sb.storage.from('cards').remove([vieja]);
+      setContactoMsg('Foto de perfil guardada.');
+      reload();
+    } catch {
+      setContactoMsg('No se ha podido guardar la foto de perfil. ¿Has ejecutado la migración de Supabase?');
+    }
+    setSubiendoAvatar(false);
+  }
+
+  async function quitarAvatar() {
+    const sb = getSupabase();
+    const vieja = rutaCards(profile.avatar_url);
+    await sb.from('profiles').update({ avatar_url: null }).eq('id', user.id);
+    if (vieja) await sb.storage.from('cards').remove([vieja]);
+    reload();
   }
 
   async function cambiarEstado(listing) {
@@ -446,6 +482,34 @@ export default function PanelVendedor() {
               value={contacto.display_name}
               onChange={(e) => setContacto({ ...contacto, display_name: e.target.value })}
             />
+          </div>
+          <div className="field">
+            <label>Foto de perfil</label>
+            <div className="avatar-edit">
+              <SellerBadge
+                id={user.id}
+                name={contacto.display_name}
+                color={contacto.color}
+                avatarUrl={profile.avatar_url}
+                size={72}
+              />
+              <label className="btn btn-small btn-outline" style={{ cursor: 'pointer' }}>
+                {subiendoAvatar ? 'Subiendo…' : profile.avatar_url ? 'Cambiar foto' : 'Subir foto'}
+                <input
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  disabled={subiendoAvatar}
+                  onChange={(e) => cambiarAvatar(e.target.files?.[0])}
+                />
+              </label>
+              {profile.avatar_url && (
+                <button type="button" className="btn btn-small btn-outline" onClick={quitarAvatar}>
+                  Quitar foto
+                </button>
+              )}
+            </div>
+            <span className="hint">Se ve en el directorio de vendedores, en el catálogo y en tu tienda.</span>
           </div>
           <div className="field">
             <label>Color de tu tienda</label>

@@ -1340,3 +1340,16 @@ h2 {
     top: -70px;
   }
 }
+
+.avatar-img {
+  object-fit: cover;
+  border: 3px solid var(--accent);
+  background: #efe9e1;
+  display: inline-block;
+}
+.avatar-edit {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}

@@ -5,12 +5,12 @@ import SellerBadge from './SellerBadge';
 
 // Bloque con las cartas de un único vendedor, con su nombre y color.
 // `listings` son las que se muestran; `total` es cuántas tiene en total (puede ser más que las mostradas).
-export default function SellerSection({ sellerId, name, color, listings, total }) {
+export default function SellerSection({ sellerId, name, color, avatarUrl, listings, total }) {
   const resto = total - listings.length;
   return (
     <section className="seller-section" style={{ '--seller': sellerColor(sellerId, color) }}>
       <div className="seller-head">
-        <SellerBadge id={sellerId} name={name} color={color} />
+        <SellerBadge id={sellerId} name={name} color={color} avatarUrl={avatarUrl} />
         <div>
           <h2>{name}</h2>
           <p className="muted small">
