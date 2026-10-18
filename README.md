@@ -1,4 +1,4 @@
-# TCG Capital Page
+# AkibaTrade
 
 Web de venta de cartas TCG con tres tipos de usuario:
 

@@ -23,7 +23,8 @@ export default function Header() {
     <header className="header">
       <div className="container header-inner">
         <Link href="/" className="logo">
-          TCG <span>Capital</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="AkibaTrade" className="logo-img" />
         </Link>
         <button
           type="button"

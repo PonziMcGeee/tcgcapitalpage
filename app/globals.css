@@ -60,7 +60,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  height: 76px;
 }
 .logo {
   white-space: nowrap;
@@ -1172,7 +1172,7 @@ a.marquee-card:hover {
   .nav {
     display: none;
     position: absolute;
-    top: 60px;
+    top: 76px;
     left: 0;
     right: 0;
     flex-direction: column;
@@ -1352,4 +1352,15 @@ h2 {
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+}
+
+.logo-img {
+  display: block;
+  height: 58px;
+  width: auto;
+}
+@media (max-width: 760px) {
+  .logo-img {
+    height: 48px;
+  }
 }

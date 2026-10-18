@@ -2,7 +2,7 @@ import './globals.css';
 import Header from '../components/Header';
 
 export const metadata = {
-  title: 'TCG Capital',
+  title: 'AkibaTrade',
   description: 'Compra y venta de cartas TCG',
 };
 
@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
         <Header />
         <main className="container main">{children}</main>
         <footer className="footer">
-          <div className="container">TCG Capital · Envíos a España y Europa</div>
+          <div className="container">AkibaTrade · Envíos a España y Europa</div>
         </footer>
       </body>
     </html>

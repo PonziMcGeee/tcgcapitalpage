@@ -83,7 +83,7 @@ export default function Inicio() {
             Encuentra tus cartas favoritas, <span>directo del vendedor</span>
           </h1>
           <p className="hero-text">
-            TCG Capital es un mercado de cartas coleccionables donde cada vendedor tiene su propia tienda, con fotos
+            AkibaTrade es un mercado de cartas coleccionables donde cada vendedor tiene su propia tienda, con fotos
             reales y precio claro. Tú eliges, hablas con ellos y te la enviamos a casa.
           </p>
           <div className="hero-actions">
