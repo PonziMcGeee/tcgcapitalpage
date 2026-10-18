@@ -85,6 +85,7 @@ create table if not exists public.listings (
   game text not null default 'Pokémon',
   condition text not null default 'NM',
   collection text,
+  thumb_url text,
   description text,
   price numeric(10,2) not null check (price >= 0),
   shipping_spain numeric(10,2) not null default 0 check (shipping_spain >= 0),
@@ -424,3 +425,6 @@ create policy "admin borra fotos de cartas" on storage.objects
 
 -- ===== Colecciones (contenido de supabase/migracion-colecciones.sql) =====
 alter table public.listings add column if not exists collection text;
+
+-- ===== Miniaturas (contenido de supabase/migracion-miniaturas.sql) =====
+alter table public.listings add column if not exists thumb_url text;

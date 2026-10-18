@@ -55,7 +55,7 @@ export default function Inicio() {
     if (!sb) return;
     fetchHome(sb).then(setHome);
     sb.from('listings')
-      .select('id, name, price, front_url')
+      .select('id, name, price, front_url, thumb_url')
       .eq('status', 'available')
       .order('created_at', { ascending: false })
       .limit(12)

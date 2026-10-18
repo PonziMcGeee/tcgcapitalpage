@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
 import { POKEMON_COLLECTIONS } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
-import { prepararFoto } from '../../lib/image';
+import { prepararFoto, prepararMiniatura } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
 import { getSupabase } from '../../lib/supabase';
 import { useProfile } from '../../lib/useProfile';
@@ -87,9 +87,12 @@ export default function PanelVendedor() {
 
   async function subirFoto(file, lado) {
     const sb = getSupabase();
-    const blob = await prepararFoto(file);
+    const blob = lado === 'thumb' ? await prepararMiniatura(file) : await prepararFoto(file);
     const ruta = `${user.id}/${crypto.randomUUID()}-${lado}.jpg`;
-    const { error } = await sb.storage.from('cards').upload(ruta, blob, { contentType: 'image/jpeg' });
+    // Los nombres no se repiten nunca, así que el navegador puede guardar la foto un año
+    const { error } = await sb.storage
+      .from('cards')
+      .upload(ruta, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
     if (error) throw error;
     return sb.storage.from('cards').getPublicUrl(ruta).data.publicUrl;
   }
@@ -149,7 +152,8 @@ export default function PanelVendedor() {
         const viejas = [];
         if (front) {
           datos.front_url = await subirFoto(front, 'front');
-          viejas.push(rutaCards(editando.front_url));
+          datos.thumb_url = await subirFoto(front, 'thumb');
+          viejas.push(rutaCards(editando.front_url), rutaCards(editando.thumb_url));
         }
         if (back) {
           datos.back_url = await subirFoto(back, 'back');
@@ -164,11 +168,13 @@ export default function PanelVendedor() {
       } else {
         const front_url = await subirFoto(front, 'front');
         const back_url = await subirFoto(back, 'back');
+        const thumb_url = await subirFoto(front, 'thumb');
         const { error } = await sb.from('listings').insert({
           seller_id: user.id,
           seller_name: profile.display_name || user.email.split('@')[0],
           ...datos,
           front_url,
+          thumb_url,
           back_url,
         });
         if (error) throw error;
@@ -185,6 +191,30 @@ export default function PanelVendedor() {
     setBusy(false);
   }
 
+  // Crea la miniatura de las cartas subidas antes de existir esta función
+  const sinMiniatura = mine.filter((l) => !l.thumb_url);
+  const [optimizando, setOptimizando] = useState(false);
+
+  async function optimizarAntiguas() {
+    const sb = getSupabase();
+    setOptimizando(true);
+    setFormMsg(null);
+    try {
+      for (const l of sinMiniatura) {
+        const resp = await fetch(l.front_url);
+        const blob = await resp.blob();
+        const thumb_url = await subirFoto(blob, 'thumb');
+        const { error } = await sb.from('listings').update({ thumb_url }).eq('id', l.id);
+        if (error) throw error;
+      }
+      setFormMsg({ type: 'ok', text: 'Listo: las fotos antiguas ya están optimizadas.' });
+    } catch {
+      setFormMsg({ type: 'error', text: 'No se han podido optimizar todas las fotos. Inténtalo de nuevo.' });
+    }
+    setOptimizando(false);
+    cargarMias();
+  }
+
   async function cambiarEstado(listing) {
     const sb = getSupabase();
     const status = listing.status === 'sold' ? 'available' : 'sold';
@@ -195,7 +225,7 @@ export default function PanelVendedor() {
   async function borrar(listing) {
     if (!window.confirm(`¿Borrar "${listing.name}" definitivamente?`)) return;
     const sb = getSupabase();
-    const rutas = [listing.front_url, listing.back_url]
+    const rutas = [listing.front_url, listing.back_url, listing.thumb_url]
       .filter(Boolean)
       .map((u) => u.split('/object/public/cards/')[1])
       .filter(Boolean);
@@ -359,11 +389,22 @@ export default function PanelVendedor() {
       <section className="panel">
         <h2>2. Mis cartas ({mine.length})</h2>
         {mine.length === 0 && <p className="muted">Todavía no has subido ninguna carta.</p>}
+        {sinMiniatura.length > 0 && (
+          <div className="notice" style={{ marginBottom: 12 }}>
+            <p style={{ margin: '0 0 8px' }}>
+              {sinMiniatura.length} {sinMiniatura.length === 1 ? 'carta tiene' : 'cartas tienen'} fotos antiguas que
+              cargan lento. Pulsa para optimizarlas (se hace una sola vez).
+            </p>
+            <button type="button" className="btn btn-small" disabled={optimizando} onClick={optimizarAntiguas}>
+              {optimizando ? 'Optimizando…' : 'Optimizar fotos antiguas'}
+            </button>
+          </div>
+        )}
         <div className="my-list">
           {mine.map((l) => (
             <div className="my-item" key={l.id}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={l.front_url} alt={l.name} />
+              <img src={l.thumb_url || l.front_url} alt={l.name} />
               <div>
                 <strong>{l.name}</strong>
                 <p className="muted small">

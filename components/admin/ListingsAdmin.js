@@ -41,7 +41,7 @@ export default function ListingsAdmin({ vendedorInicial }) {
       setLoading(true);
       let q = sb
         .from('listings')
-        .select('id, seller_id, seller_name, name, game, collection, condition, price, status, front_url, back_url, created_at')
+        .select('id, seller_id, seller_name, name, game, collection, condition, price, status, front_url, thumb_url, back_url, created_at')
         .order('created_at', { ascending: false })
         .range(desde, desde + POR_PAGINA);
       if (vendedor) q = q.eq('seller_id', vendedor);
@@ -74,7 +74,7 @@ export default function ListingsAdmin({ vendedorInicial }) {
       setMsg({ type: 'error', text: 'No se ha podido borrar. ¿Has ejecutado la migración de moderación?' });
       return;
     }
-    const rutas = [rutaEnCards(c.front_url), rutaEnCards(c.back_url)].filter(Boolean);
+    const rutas = [rutaEnCards(c.front_url), rutaEnCards(c.back_url), rutaEnCards(c.thumb_url)].filter(Boolean);
     if (rutas.length) await sb.storage.from('cards').remove(rutas);
     setCartas((prev) => prev.filter((x) => x.id !== c.id));
     setMsg({ type: 'ok', text: `Carta "${c.name}" borrada.` });
@@ -110,7 +110,7 @@ export default function ListingsAdmin({ vendedorInicial }) {
           <div className="admin-row" key={c.id}>
             <a href={c.front_url} target="_blank" rel="noreferrer">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="admin-thumb admin-thumb-card" src={c.front_url} alt={c.name} />
+              <img className="admin-thumb admin-thumb-card" src={c.thumb_url || c.front_url} alt={c.name} />
             </a>
             {c.back_url && (
               <a href={c.back_url} target="_blank" rel="noreferrer">

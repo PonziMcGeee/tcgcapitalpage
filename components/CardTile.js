@@ -10,7 +10,7 @@ export default function CardTile({ listing, showSeller = true, color }) {
     >
       <div className="tile-img">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={listing.front_url} alt={listing.name} loading="lazy" />
+        <img src={listing.thumb_url || listing.front_url} alt={listing.name} loading="lazy" />
         {listing.condition && <span className="cond-tag" title={conditionLabel(listing.condition)}>{listing.condition}</span>}
         {listing.status === 'sold' && <span className="sold-tag">Vendida</span>}
       </div>

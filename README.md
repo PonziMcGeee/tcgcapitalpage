@@ -31,6 +31,7 @@ El precio que ve el comprador es **carta + envío** (España o resto de Europa),
 > 2. `supabase/migracion-administrador-y-portada.sql`: rol de administrador, banners y carruseles editables.
 > 3. `supabase/migracion-moderacion.sql`: el administrador puede borrar cualquier carta y las cartas de quien deja de ser vendedor se ocultan.
 > 4. `supabase/migracion-colecciones.sql`: campo de colección para las cartas de Pokémon.
+> 5. `supabase/migracion-miniaturas.sql`: miniaturas de las cartas (menos tráfico de fotos). Después, cada vendedor con cartas antiguas pulsa **Optimizar fotos antiguas** en su panel.
 >
 > Hazlo **antes** de usar la última versión de la web.
 
@@ -102,6 +103,7 @@ supabase/migracion-muchos-vendedores.sql           Solo lo nuevo, para bases ya 
 supabase/migracion-administrador-y-portada.sql     Rol admin, banners y carruseles, para bases ya creadas
 supabase/migracion-moderacion.sql                  Borrado por el admin y ocultar cartas de ex vendedores
 supabase/migracion-colecciones.sql                 Columna de colección (Pokémon)
+supabase/migracion-miniaturas.sql                  Columna de miniatura
 lib/collections.js                                 Lista de colecciones de Pokémon hasta 2006
 ```
 

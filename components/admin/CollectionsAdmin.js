@@ -27,7 +27,7 @@ function CardPicker({ existentes, onAdd }) {
       const sb = getSupabase();
       let consulta = sb
         .from('listings')
-        .select('id, name, front_url, seller_id, seller_name, status, price')
+        .select('id, name, front_url, thumb_url, seller_id, seller_name, status, price')
         .order('created_at', { ascending: false })
         .limit(20);
       if (q.trim()) consulta = consulta.ilike('name', `%${q.trim()}%`);
@@ -56,7 +56,7 @@ function CardPicker({ existentes, onAdd }) {
         {resultados.map((l) => (
           <div className="picker-row" key={l.id}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={l.front_url} alt="" />
+            <img src={l.thumb_url || l.front_url} alt="" />
             <div className="grow">
               <strong>{l.name}</strong>
               <p className="muted small">
@@ -145,7 +145,7 @@ export default function CollectionsAdmin() {
     const sellerIds = [...new Set(lista.flatMap((c) => c.items.map((i) => i.seller_id).filter(Boolean)))];
     const [listings, sellers] = await Promise.all([
       listingIds.length
-        ? sb.from('listings').select('id, name, front_url, seller_name, status').in('id', listingIds)
+        ? sb.from('listings').select('id, name, front_url, thumb_url, seller_name, status').in('id', listingIds)
         : { data: [] },
       sellerIds.length ? sb.from('sellers_public').select('*').in('id', sellerIds) : { data: [] },
     ]);
@@ -330,7 +330,7 @@ export default function CollectionsAdmin() {
                   <div className="mini" key={it.id}>
                     {l && (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img src={l.front_url} alt={l.name} />
+                      <img src={l.thumb_url || l.front_url} alt={l.name} />
                     )}
                     {s && (
                       <div style={{ display: 'grid', placeItems: 'center', padding: '10px 0' }}>

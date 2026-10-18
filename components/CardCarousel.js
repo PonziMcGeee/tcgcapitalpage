@@ -24,7 +24,7 @@ export default function CardCarousel({ listings, label = 'Cartas' }) {
             tabIndex={duplicada ? -1 : undefined}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={l.front_url} alt={l.name} loading="lazy" />
+            <img src={l.thumb_url || l.front_url} alt={l.name} loading="lazy" />
             {l.status === 'sold' && <span className="sold-tag">Vendida</span>}
             <span className="marquee-price">{euros(l.price)}</span>
           </Link>
