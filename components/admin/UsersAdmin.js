@@ -7,7 +7,7 @@ const ETIQUETAS = { buyer: 'Comprador', seller: 'Vendedor', admin: 'Administrado
 const MAX_VISIBLES = 50;
 
 // Lista de usuarios. El administrador puede pasar a un comprador a vendedor, y al revés.
-export default function UsersAdmin() {
+export default function UsersAdmin({ onVerCartas }) {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -32,6 +32,13 @@ export default function UsersAdmin() {
   }, [cargar]);
 
   async function cambiarRol(usuario, role) {
+    if (
+      role === 'buyer' &&
+      !window.confirm(
+        `¿Quitar a ${usuario.display_name || usuario.email} como vendedor? Dejará de poder vender y sus cartas dejarán de verse en la web (no se borran; si vuelve a ser vendedor, reaparecen).`
+      )
+    )
+      return;
     const sb = getSupabase();
     setMsg(null);
     const { error: err } = await sb.from('profiles').update({ role }).eq('id', usuario.id);
@@ -95,6 +102,11 @@ export default function UsersAdmin() {
               {u.role === 'buyer' && (
                 <button type="button" className="btn btn-small" onClick={() => cambiarRol(u, 'seller')}>
                   Hacer vendedor
+                </button>
+              )}
+              {(u.role === 'seller' || u.role === 'admin') && onVerCartas && (
+                <button type="button" className="btn btn-small btn-outline" onClick={() => onVerCartas(u)}>
+                  Ver cartas
                 </button>
               )}
               {u.role === 'seller' && (

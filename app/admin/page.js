@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import BannersAdmin from '../../components/admin/BannersAdmin';
 import CollectionsAdmin from '../../components/admin/CollectionsAdmin';
+import ListingsAdmin from '../../components/admin/ListingsAdmin';
 import UsersAdmin from '../../components/admin/UsersAdmin';
 import ConfigWarning from '../../components/ConfigWarning';
 import { isAdmin } from '../../lib/roles';
@@ -11,6 +12,7 @@ import { useProfile } from '../../lib/useProfile';
 
 const PESTANAS = [
   { id: 'usuarios', texto: 'Usuarios' },
+  { id: 'cartas', texto: 'Cartas' },
   { id: 'banners', texto: 'Banners' },
   { id: 'carruseles', texto: 'Carruseles' },
 ];
@@ -18,6 +20,7 @@ const PESTANAS = [
 export default function Admin() {
   const { user, profile, loading } = useProfile();
   const [pestana, setPestana] = useState('usuarios');
+  const [vendedorFiltro, setVendedorFiltro] = useState('');
 
   if (loading) return <p className="muted">Cargando…</p>;
 
@@ -37,7 +40,7 @@ export default function Admin() {
     <>
       <ConfigWarning />
       <h1>Administración</h1>
-      <p className="muted">Aquí gestionas quién puede vender y qué se ve en la portada.</p>
+      <p className="muted">Aquí gestionas quién puede vender, qué cartas se publican y qué se ve en la portada.</p>
 
       <div className="tabs" role="tablist">
         {PESTANAS.map((p) => (
@@ -47,14 +50,25 @@ export default function Admin() {
             role="tab"
             aria-selected={pestana === p.id}
             className={pestana === p.id ? 'active' : ''}
-            onClick={() => setPestana(p.id)}
+            onClick={() => {
+              if (p.id === 'cartas' && pestana !== 'cartas') setVendedorFiltro('');
+              setPestana(p.id);
+            }}
           >
             {p.texto}
           </button>
         ))}
       </div>
 
-      {pestana === 'usuarios' && <UsersAdmin />}
+      {pestana === 'usuarios' && (
+        <UsersAdmin
+          onVerCartas={(u) => {
+            setVendedorFiltro(u.id);
+            setPestana('cartas');
+          }}
+        />
+      )}
+      {pestana === 'cartas' && <ListingsAdmin key={vendedorFiltro} vendedorInicial={vendedorFiltro} />}
       {pestana === 'banners' && <BannersAdmin />}
       {pestana === 'carruseles' && <CollectionsAdmin />}
     </>

@@ -4,7 +4,7 @@ Web de venta de cartas TCG con tres tipos de usuario:
 
 - **Comprador**: se registra libremente, navega por el catálogo y, al tener cuenta, ve el contacto del vendedor (botones de WhatsApp, Telegram o Instagram).
 - **Vendedor** (pensado para unos 30): tiene su propio panel para subir cartas (foto delante y detrás), marcarlas como vendidas o borrarlas, elegir el color de su tienda y editar sus datos de contacto. Cada vendedor solo ve y modifica sus propias cartas, y tiene su propia página de tienda.
-- **Administrador**: tiene todo lo de un vendedor y además, desde `/admin`, convierte compradores en vendedores y edita la portada: los banners del slider de arriba y los carruseles de debajo (con las cartas o vendedores que él elija).
+- **Administrador**: tiene todo lo de un vendedor y además, desde `/admin`, convierte compradores en vendedores y edita la portada: los banners del slider de arriba y los carruseles de debajo (con las cartas o vendedores que él elija). Todos los carruseles tienen el mismo aspecto que el predefinido: movimiento automático continuo y precio sobre la carta.
 
 El precio que ve el comprador es **carta + envío** (España o resto de Europa), con el envío fijado por el vendedor en cada carta.
 
@@ -27,6 +27,7 @@ El precio que ve el comprador es **carta + envío** (España o resto de Europa),
 > **Si ya habías ejecutado una versión anterior de `schema.sql`**, ejecuta además, una sola vez y por este orden, estos archivos (SQL Editor > New query > Run):
 > 1. `supabase/migracion-muchos-vendedores.sql`: color de tienda, lista pública de vendedores y sincronización del nombre.
 > 2. `supabase/migracion-administrador-y-portada.sql`: rol de administrador, banners y carruseles editables.
+> 3. `supabase/migracion-moderacion.sql`: el administrador puede borrar cualquier carta y las cartas de quien deja de ser vendedor se ocultan.
 >
 > Hazlo **antes** de usar la última versión de la web.
 
@@ -55,7 +56,11 @@ where id = (select id from auth.users where email = 'tu-email@ejemplo.com');
 ```
 
 3. Cierra sesión y vuelve a entrar: verás **Mi panel** y **Admin** en la cabecera.
-4. Cada vendedor se registra en `/registro`. Tú entras en **Admin > Usuarios**, lo buscas por nombre o email y pulsas **Hacer vendedor**. Para quitárselo, **Quitar vendedor**.
+4. Cada vendedor se registra en `/registro`. Tú entras en **Admin > Usuarios**, lo buscas por nombre o email y pulsas **Hacer vendedor**. Para quitárselo, **Quitar vendedor** (pide confirmación): deja de poder vender y sus cartas se ocultan de la web sin borrarse; si vuelve a ser vendedor, reaparecen.
+
+### Moderación de cartas
+
+En **Admin > Cartas** ves las cartas de todos los vendedores (filtro por nombre, vendedor y estado, con las dos fotos ampliables) y puedes **Borrar** cualquiera que no sea adecuada; se borran también sus fotos. Desde **Admin > Usuarios**, el botón **Ver cartas** te lleva a las de ese vendedor.
 
 Solo un administrador puede cambiar roles, y nadie puede cambiarse el suyo ni tocar a otro administrador desde la web.
 
@@ -63,7 +68,7 @@ Solo un administrador puede cambiar roles, y nadie puede cambiarse el suyo ni to
 
 En **Admin > Banners** subes los banners del slider de arriba (imagen, título, subtítulo y botón con enlace), los ordenas y los activas o desactivas.
 
-En **Admin > Carruseles** creas las filas deslizables de debajo ("Mejores cartas", "Mejores vendedores"…). Cada una puede llevar cartas de cualquier vendedor (también vendidas, para un "Mejores ventas") o vendedores elegidos a mano. Las ordenas y las activas o desactivas cuando quieras. Si no hay carruseles, la portada enseña las últimas cartas añadidas.
+En **Admin > Carruseles** creas los carruseles de debajo ("Mejores cartas", "Mejores vendedores"…). Cada una puede llevar cartas de cualquier vendedor (también vendidas, para un "Mejores ventas") o vendedores elegidos a mano. Las ordenas y las activas o desactivas cuando quieras. Si no hay carruseles, la portada enseña las últimas cartas añadidas.
 
 ### Notas para muchos vendedores
 
@@ -92,6 +97,7 @@ app/vendedor/page.js     Panel del vendedor
 supabase/schema.sql      Tablas, permisos (RLS) y almacenamiento (instalación desde cero)
 supabase/migracion-muchos-vendedores.sql           Solo lo nuevo, para bases ya creadas
 supabase/migracion-administrador-y-portada.sql     Rol admin, banners y carruseles, para bases ya creadas
+supabase/migracion-moderacion.sql                  Borrado por el admin y ocultar cartas de ex vendedores
 ```
 
 ## Próximos pasos posibles

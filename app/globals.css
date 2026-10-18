@@ -530,12 +530,22 @@ textarea:focus {
     transform: translateX(-50%);
   }
 }
+.marquee-slot {
+  flex: 0 0 auto;
+  margin-right: 16px;
+}
+.marquee-seller {
+  width: 230px;
+  height: 100%;
+}
+.marquee-seller .seller-card {
+  height: 100%;
+}
 .marquee-card {
   position: relative;
-  flex: 0 0 auto;
+  display: block;
   width: 170px;
   aspect-ratio: 5 / 7;
-  margin-right: 16px;
   border-radius: 12px;
   overflow: hidden;
   background: #eceef5;

@@ -4,9 +4,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import BannerSlider from '../components/BannerSlider';
 import CardCarousel from '../components/CardCarousel';
-import CardTile from '../components/CardTile';
 import ConfigWarning from '../components/ConfigWarning';
-import ItemCarousel from '../components/ItemCarousel';
+import Marquee from '../components/Marquee';
 import SellerCard from '../components/SellerCard';
 import { fetchSellers } from '../lib/data';
 import { fetchHome } from '../lib/home';
@@ -102,25 +101,31 @@ export default function Inicio() {
 
       {/* Carruseles que elige el administrador. Si no hay ninguno, se enseñan las últimas cartas. */}
       {collections.length > 0 ? (
-        collections.map((c) =>
-          c.kind === 'sellers' ? (
-            <ItemCarousel key={c.id} title={c.title} subtitle={c.subtitle} moreHref="/vendedores" moreText="Ver todos →">
-              {c.sellers.map((s) => (
-                <div className="carousel-item carousel-item-seller" key={s.id}>
-                  <SellerCard seller={s} />
-                </div>
-              ))}
-            </ItemCarousel>
-          ) : (
-            <ItemCarousel key={c.id} title={c.title} subtitle={c.subtitle} moreHref="/catalogo" moreText="Ver catálogo →">
-              {c.cards.map((l) => (
-                <div className="carousel-item" key={l.id}>
-                  <CardTile listing={l} color={sellerMap.get(l.seller_id)?.color} />
-                </div>
-              ))}
-            </ItemCarousel>
-          )
-        )
+        collections.map((c) => (
+          <section className="home-section" key={c.id}>
+            <div className="section-head">
+              <h2>{c.title}</h2>
+              <Link href={c.kind === 'sellers' ? '/vendedores' : '/catalogo'} className="small">
+                {c.kind === 'sellers' ? 'Ver todos →' : 'Ver catálogo →'}
+              </Link>
+            </div>
+            {c.subtitle && <p className="muted">{c.subtitle}</p>}
+            {c.kind === 'sellers' ? (
+              <Marquee
+                items={c.sellers}
+                minItems={6}
+                label={c.title}
+                renderItem={(s, duplicada) => (
+                  <div className="marquee-seller" aria-hidden={duplicada ? true : undefined}>
+                    <SellerCard seller={s} />
+                  </div>
+                )}
+              />
+            ) : (
+              <CardCarousel listings={c.cards} label={c.title} />
+            )}
+          </section>
+        ))
       ) : (
         <section className="home-section">
           <div className="section-head">
