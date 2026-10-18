@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { getSupabase } from '../lib/supabase';
 import { isAdmin, isSeller } from '../lib/roles';
 import { useProfile } from '../lib/useProfile';
@@ -9,10 +10,12 @@ import { useProfile } from '../lib/useProfile';
 export default function Header() {
   const { user, profile, loading } = useProfile();
   const router = useRouter();
+  const [abierto, setAbierto] = useState(false);
 
   async function salir() {
     const sb = getSupabase();
     if (sb) await sb.auth.signOut();
+    setAbierto(false);
     router.push('/');
   }
 
@@ -22,7 +25,16 @@ export default function Header() {
         <Link href="/" className="logo">
           TCG <span>Capital</span>
         </Link>
-        <nav className="nav">
+        <button
+          type="button"
+          className="nav-toggle"
+          aria-label={abierto ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={abierto}
+          onClick={() => setAbierto((v) => !v)}
+        >
+          {abierto ? '✕' : '☰'}
+        </button>
+        <nav className={`nav ${abierto ? 'open' : ''}`} onClick={() => setAbierto(false)}>
           <Link href="/catalogo">Catálogo</Link>
           <Link href="/vendedores">Vendedores</Link>
           {!loading && isSeller(profile) && <Link href="/vendedor">Mi panel</Link>}

@@ -71,7 +71,7 @@ export default function UsersAdmin({ onVerCartas }) {
         Busca a la persona por su nombre o email y conviértela en vendedora. Tiene que haberse registrado antes.
       </p>
 
-      <div className="filters" style={{ gridTemplateColumns: '2fr 1fr' }}>
+      <div className="filters filters-2">
         <input
           type="text"
           placeholder="Buscar por nombre o email…"

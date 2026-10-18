@@ -86,7 +86,7 @@ export default function ListingsAdmin({ vendedorInicial }) {
         Aquí ves las cartas de todos los vendedores. Si alguna no es adecuada (una foto ofensiva, por ejemplo), bórrala.
       </p>
 
-      <div className="filters" style={{ gridTemplateColumns: '2fr 1fr 1fr' }}>
+      <div className="filters">
         <input type="text" placeholder="Buscar por nombre de carta…" value={texto} onChange={(e) => setTexto(e.target.value)} />
         <select value={vendedor} onChange={(e) => setVendedor(e.target.value)}>
           <option value="">Todos los vendedores</option>
@@ -110,12 +110,12 @@ export default function ListingsAdmin({ vendedorInicial }) {
           <div className="admin-row" key={c.id}>
             <a href={c.front_url} target="_blank" rel="noreferrer">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className="admin-thumb" src={c.front_url} alt={c.name} />
+              <img className="admin-thumb admin-thumb-card" src={c.front_url} alt={c.name} />
             </a>
             {c.back_url && (
               <a href={c.back_url} target="_blank" rel="noreferrer">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="admin-thumb" src={c.back_url} alt={`${c.name} (detrás)`} />
+                <img className="admin-thumb admin-thumb-card" src={c.back_url} alt={`${c.name} (detrás)`} />
               </a>
             )}
             <div className="admin-row-main">

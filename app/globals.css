@@ -56,12 +56,14 @@ a {
   z-index: 10;
 }
 .header-inner {
+  position: static;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 60px;
 }
 .logo {
+  white-space: nowrap;
   font-weight: 800;
   font-size: 1.3rem;
   letter-spacing: -0.02em;
@@ -276,6 +278,12 @@ textarea:focus {
 }
 
 /* Catálogo */
+.filters-1 {
+  grid-template-columns: 1fr !important;
+}
+.filters-2 {
+  grid-template-columns: 2fr 1fr !important;
+}
 .filters {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -1133,4 +1141,111 @@ a.marquee-card:hover {
 .role-tag.buyer {
   background: #f1f5f9;
   color: var(--muted);
+}
+
+.admin-thumb-card {
+  width: 40px;
+  height: 56px;
+}
+.nav-toggle {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  width: 42px;
+  height: 38px;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+}
+.nav a,
+.nav .link-button {
+  white-space: nowrap;
+}
+
+/* ===== Móvil ===== */
+@media (max-width: 760px) {
+  .nav-toggle {
+    display: block;
+  }
+  .nav {
+    display: none;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 10px 20px rgba(30, 40, 90, 0.1);
+    padding: 6px 16px 12px;
+    font-size: 1rem;
+  }
+  .nav.open {
+    display: flex;
+  }
+  .nav a,
+  .nav .link-button {
+    padding: 12px 4px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .nav .btn {
+    margin-top: 10px;
+    text-align: center;
+    border-bottom: none;
+    padding: 10px 16px;
+  }
+  .filters,
+  .filters-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .main {
+    padding-top: 16px;
+  }
+  .hero {
+    padding: 36px 18px;
+    border-radius: 16px;
+  }
+  .hero-text {
+    font-size: 1rem;
+  }
+  .panel,
+  .shop-hero {
+    padding: 16px;
+  }
+  .marquee-card {
+    width: 140px;
+  }
+  .marquee-seller {
+    width: 200px;
+  }
+  .banner-slider {
+    border-radius: 14px;
+  }
+  .section-head {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .tabs button {
+    white-space: nowrap;
+    padding: 10px 12px;
+  }
+  .admin-row {
+    padding: 10px;
+  }
+  .admin-actions {
+    width: 100%;
+  }
 }

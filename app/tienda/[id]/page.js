@@ -104,7 +104,7 @@ export default function TiendaVendedor() {
       </div>
 
       {(totalEnVenta > 8 || colecciones.length > 0) && (
-        <div className="filters" style={{ gridTemplateColumns: colecciones.length > 0 ? '2fr 1fr' : '1fr' }}>
+        <div className={`filters ${colecciones.length > 0 ? 'filters-2' : 'filters-1'}`}>
           <input
             type="text"
             placeholder={`Buscar en la tienda de ${name}…`}

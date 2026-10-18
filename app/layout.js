@@ -6,6 +6,11 @@ export const metadata = {
   description: 'Compra y venta de cartas TCG',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="es">
