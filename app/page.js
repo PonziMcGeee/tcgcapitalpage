@@ -1,87 +1,131 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import CardTile from '../components/CardTile';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import CardCarousel from '../components/CardCarousel';
 import ConfigWarning from '../components/ConfigWarning';
-import { GAMES } from '../lib/format';
 import { getSupabase } from '../lib/supabase';
+import { useProfile } from '../lib/useProfile';
 
-export default function Catalogo() {
+const PASOS = [
+  {
+    titulo: 'Explora el catálogo',
+    texto: 'Busca por nombre, juego o vendedor. Cada carta tiene foto por delante y por detrás.',
+  },
+  {
+    titulo: 'Crea tu cuenta y contacta',
+    texto: 'Con tu cuenta ves los botones para escribir al vendedor por WhatsApp, Telegram o Instagram.',
+  },
+  {
+    titulo: 'Acordad pago y envío',
+    texto: 'Hablas directamente con el vendedor y os ponéis de acuerdo. Enviamos a España y a toda Europa.',
+  },
+];
+
+const VENTAJAS = [
+  {
+    titulo: 'Precio claro',
+    texto: 'Ves el precio de la carta, el envío según tu destino y el total antes de escribir a nadie.',
+  },
+  {
+    titulo: 'Trato directo',
+    texto: 'Pocos vendedores y conversación directa con ellos, sin intermediarios ni comisiones.',
+  },
+  {
+    titulo: 'Fotos reales',
+    texto: 'Cada anuncio enseña la carta real por delante y por detrás para que sepas qué compras.',
+  },
+];
+
+export default function Inicio() {
+  const { user } = useProfile();
   const [listings, setListings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [search, setSearch] = useState('');
-  const [game, setGame] = useState('');
-  const [seller, setSeller] = useState('');
 
   useEffect(() => {
     const sb = getSupabase();
-    if (!sb) {
-      setLoading(false);
-      return;
-    }
+    if (!sb) return;
     sb.from('listings')
-      .select('*')
+      .select('id, name, price, front_url')
       .eq('status', 'available')
       .order('created_at', { ascending: false })
-      .then(({ data, error: err }) => {
-        if (err) setError('No se han podido cargar las cartas.');
-        else setListings(data || []);
-        setLoading(false);
-      });
+      .limit(12)
+      .then(({ data }) => setListings(data || []));
   }, []);
-
-  const sellers = useMemo(() => [...new Set(listings.map((l) => l.seller_name))].sort(), [listings]);
-
-  const visibles = listings.filter((l) => {
-    if (game && l.game !== game) return false;
-    if (seller && l.seller_name !== seller) return false;
-    if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
-    return true;
-  });
 
   return (
     <>
       <ConfigWarning />
-      <h1>Cartas en venta</h1>
-      <p className="muted">Envíos a España y Europa. Regístrate para ver cómo contactar con el vendedor.</p>
 
-      <div className="filters">
-        <input
-          type="text"
-          placeholder="Buscar carta…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select value={game} onChange={(e) => setGame(e.target.value)}>
-          <option value="">Todos los juegos</option>
-          {GAMES.map((g) => (
-            <option key={g} value={g}>
-              {g}
-            </option>
+      <section className="hero">
+        <p className="hero-kicker">Compra y venta de cartas TCG</p>
+        <h1 className="hero-title">
+          Encuentra tus cartas favoritas, <span>directo del vendedor</span>
+        </h1>
+        <p className="hero-text">
+          TCG Capital es un pequeño mercado de cartas coleccionables donde unos pocos vendedores publican sus cartas con
+          fotos reales y precio claro. Tú eliges, hablas con ellos y te la enviamos a casa.
+        </p>
+        <div className="hero-actions">
+          <Link href="/catalogo" className="btn btn-light">
+            Ver catálogo
+          </Link>
+          {!user && (
+            <Link href="/registro" className="btn btn-ghost">
+              Crear cuenta
+            </Link>
+          )}
+        </div>
+      </section>
+
+      <section className="home-section">
+        <div className="section-head">
+          <h2>{listings.length > 0 ? 'Últimas cartas añadidas' : 'Pronto, las primeras cartas'}</h2>
+          <Link href="/catalogo" className="small">
+            Ver todas →
+          </Link>
+        </div>
+        <CardCarousel listings={listings} />
+      </section>
+
+      <section className="home-section">
+        <h2>Cómo funciona</h2>
+        <div className="steps">
+          {PASOS.map((p, i) => (
+            <div className="step" key={p.titulo}>
+              <span className="step-num">{i + 1}</span>
+              <h3>{p.titulo}</h3>
+              <p className="muted">{p.texto}</p>
+            </div>
           ))}
-        </select>
-        <select value={seller} onChange={(e) => setSeller(e.target.value)}>
-          <option value="">Todos los vendedores</option>
-          {sellers.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
+        </div>
+      </section>
+
+      <section className="home-section">
+        <h2>Por qué comprar aquí</h2>
+        <div className="steps">
+          {VENTAJAS.map((v) => (
+            <div className="step" key={v.titulo}>
+              <h3>{v.titulo}</h3>
+              <p className="muted">{v.texto}</p>
+            </div>
           ))}
-        </select>
-      </div>
+        </div>
+      </section>
 
-      {error && <div className="notice notice-error">{error}</div>}
-      {loading && <p className="muted">Cargando…</p>}
-      {!loading && !error && visibles.length === 0 && (
-        <div className="empty">Todavía no hay cartas que mostrar.</div>
-      )}
-
-      <div className="grid">
-        {visibles.map((l) => (
-          <CardTile key={l.id} listing={l} />
-        ))}
-      </div>
+      <section className="cta">
+        <h2>¿Buscas una carta?</h2>
+        <p>Échale un vistazo al catálogo o crea tu cuenta para contactar con los vendedores.</p>
+        <div className="hero-actions" style={{ justifyContent: 'center' }}>
+          <Link href="/catalogo" className="btn btn-light">
+            Ir al catálogo
+          </Link>
+          {!user && (
+            <Link href="/registro" className="btn btn-ghost">
+              Crear cuenta
+            </Link>
+          )}
+        </div>
+      </section>
     </>
   );
 }

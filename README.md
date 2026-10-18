@@ -2,7 +2,7 @@
 
 Web de venta de cartas TCG con dos tipos de usuario:
 
-- **Comprador**: se registra libremente, navega por el catálogo y, al tener cuenta, ve el contacto del vendedor (teléfono, Telegram o Instagram).
+- **Comprador**: se registra libremente, navega por el catálogo y, al tener cuenta, ve el contacto del vendedor (botones de WhatsApp, Telegram o Instagram).
 - **Vendedor** (de momento 3): tiene su propio panel para subir cartas (foto delante y detrás), marcarlas como vendidas o borrarlas, y editar sus datos de contacto. Cada vendedor solo ve y modifica sus propias cartas.
 
 El precio que ve el comprador es **carta + envío** (España o resto de Europa), con el envío fijado por el vendedor en cada carta.
@@ -63,7 +63,8 @@ El rol solo se puede cambiar desde el SQL Editor; nadie puede hacerse vendedor d
 ## Estructura
 
 ```
-app/page.js              Catálogo con búsqueda y filtros
+app/page.js              Portada con presentación y carrusel de cartas
+app/catalogo/page.js     Catálogo con búsqueda y filtros
 app/carta/[id]/page.js   Detalle de carta, total con envío y contacto
 app/login, app/registro  Acceso de usuarios
 app/vendedor/page.js     Panel del vendedor

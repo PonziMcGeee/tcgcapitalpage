@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { euros, instagramUrl, phoneUrl, telegramUrl } from '../../../lib/format';
+import { euros, instagramUrl, telegramUrl, whatsappUrl } from '../../../lib/format';
 import { getSupabase } from '../../../lib/supabase';
 import { useProfile } from '../../../lib/useProfile';
 
@@ -46,7 +46,7 @@ export default function DetalleCarta() {
   if (!listing) {
     return (
       <div className="empty">
-        Esta carta no existe. <Link href="/">Volver al catálogo</Link>
+        Esta carta no existe. <Link href="/catalogo">Volver al catálogo</Link>
       </div>
     );
   }
@@ -55,14 +55,14 @@ export default function DetalleCarta() {
   const total = Number(listing.price) + Number(envio);
   const vendida = listing.status === 'sold';
 
-  const tel = phoneUrl(seller?.phone);
+  const wa = whatsappUrl(seller?.phone);
   const tg = telegramUrl(seller?.telegram);
   const ig = instagramUrl(seller?.instagram);
 
   return (
     <>
       <p className="small">
-        <Link href="/">← Volver al catálogo</Link>
+        <Link href="/catalogo">← Volver al catálogo</Link>
       </p>
       <div className="detail">
         <div className="detail-photos">
@@ -129,22 +129,22 @@ export default function DetalleCarta() {
             <div className="contact">
               <strong>Contactar con {listing.seller_name}</strong>
               {!seller && <p className="muted small">Cargando contacto…</p>}
-              {seller && !tel && !tg && !ig && (
+              {seller && !wa && !tg && !ig && (
                 <p className="muted small">El vendedor aún no ha añadido datos de contacto.</p>
               )}
-              {tel && (
-                <a className="btn btn-outline" href={tel}>
-                  Llamar · {seller.phone}
+              {wa && (
+                <a className="btn btn-outline" href={wa} target="_blank" rel="noreferrer">
+                  Hablar por WhatsApp
                 </a>
               )}
               {tg && (
                 <a className="btn btn-outline" href={tg} target="_blank" rel="noreferrer">
-                  Telegram · {seller.telegram}
+                  Hablar por Telegram
                 </a>
               )}
               {ig && (
                 <a className="btn btn-outline" href={ig} target="_blank" rel="noreferrer">
-                  Instagram · {seller.instagram}
+                  Hablar por Instagram
                 </a>
               )}
               <p className="muted small">

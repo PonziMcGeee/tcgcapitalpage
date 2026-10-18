@@ -22,7 +22,8 @@ export default function Header() {
           TCG <span>Capital</span>
         </Link>
         <nav className="nav">
-          <Link href="/">Catálogo</Link>
+          <Link href="/">Inicio</Link>
+          <Link href="/catalogo">Catálogo</Link>
           {!loading && profile?.role === 'seller' && <Link href="/vendedor">Mi panel</Link>}
           {!loading && !user && (
             <>

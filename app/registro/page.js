@@ -42,7 +42,7 @@ export default function Registro() {
             <p>Te hemos enviado un email para confirmar tu cuenta. Confírmala y luego entra.</p>
           ) : (
             <p>
-              Ya puedes ver el contacto de los vendedores. <Link href="/">Ir al catálogo</Link>
+              Ya puedes ver el contacto de los vendedores. <Link href="/catalogo">Ir al catálogo</Link>
             </p>
           )}
         </div>

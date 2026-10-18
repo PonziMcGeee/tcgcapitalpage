@@ -306,7 +306,8 @@ export default function PanelVendedor() {
       <section className="panel">
         <h2>3. Mis datos de contacto</h2>
         <p className="muted small" style={{ marginBottom: 12 }}>
-          Los compradores con cuenta verán estos datos para hablar contigo. Rellena los que quieras.
+          Los compradores con cuenta verán botones para escribirte por WhatsApp, Telegram o Instagram. Rellena los que
+          quieras.
         </p>
         <form className="form" onSubmit={guardarContacto}>
           <div className="field">
@@ -321,7 +322,7 @@ export default function PanelVendedor() {
           </div>
           <div className="row">
             <div className="field">
-              <label htmlFor="phone">Teléfono</label>
+              <label htmlFor="phone">WhatsApp</label>
               <input
                 id="phone"
                 type="text"
@@ -329,6 +330,7 @@ export default function PanelVendedor() {
                 value={contacto.phone}
                 onChange={(e) => setContacto({ ...contacto, phone: e.target.value })}
               />
+              <span className="hint">Número de tu WhatsApp. Se mostrará un botón, no el número.</span>
             </div>
             <div className="field">
               <label htmlFor="tg">Telegram</label>
