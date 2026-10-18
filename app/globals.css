@@ -827,7 +827,7 @@ a.marquee-card:hover {
 /* ===== Banners y carruseles de la portada ===== */
 .banner-slider {
   position: relative;
-  height: clamp(210px, 30vw, 360px);
+  aspect-ratio: 1280 / 771; /* proporción de la imagen del banner: se ve entera, sin recortes */
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 36px;
