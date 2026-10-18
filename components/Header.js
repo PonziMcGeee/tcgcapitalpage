@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getSupabase } from '../lib/supabase';
+import { isAdmin, isSeller } from '../lib/roles';
 import { useProfile } from '../lib/useProfile';
 
 export default function Header() {
@@ -24,7 +25,8 @@ export default function Header() {
         <nav className="nav">
           <Link href="/catalogo">Catálogo</Link>
           <Link href="/vendedores">Vendedores</Link>
-          {!loading && profile?.role === 'seller' && <Link href="/vendedor">Mi panel</Link>}
+          {!loading && isSeller(profile) && <Link href="/vendedor">Mi panel</Link>}
+          {!loading && isAdmin(profile) && <Link href="/admin">Admin</Link>}
           {!loading && !user && (
             <>
               <Link href="/login">Entrar</Link>

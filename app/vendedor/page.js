@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
 import { GAMES, SELLER_COLORS, euros, sellerColor } from '../../lib/format';
 import { prepararFoto } from '../../lib/image';
+import { isSeller } from '../../lib/roles';
 import { getSupabase } from '../../lib/supabase';
 import { useProfile } from '../../lib/useProfile';
 
@@ -155,10 +156,10 @@ export default function PanelVendedor() {
     );
   }
 
-  if (profile?.role !== 'seller') {
+  if (!isSeller(profile)) {
     return (
       <div className="empty">
-        Tu cuenta es de comprador. Si quieres vender, pídele a Pablo que te active como vendedor.
+        Tu cuenta es de comprador. Si quieres vender, pídele a un administrador que te active como vendedor.
       </div>
     );
   }

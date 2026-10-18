@@ -1,9 +1,10 @@
 # TCG Capital Page
 
-Web de venta de cartas TCG con dos tipos de usuario:
+Web de venta de cartas TCG con tres tipos de usuario:
 
 - **Comprador**: se registra libremente, navega por el catálogo y, al tener cuenta, ve el contacto del vendedor (botones de WhatsApp, Telegram o Instagram).
 - **Vendedor** (pensado para unos 30): tiene su propio panel para subir cartas (foto delante y detrás), marcarlas como vendidas o borrarlas, elegir el color de su tienda y editar sus datos de contacto. Cada vendedor solo ve y modifica sus propias cartas, y tiene su propia página de tienda.
+- **Administrador**: tiene todo lo de un vendedor y además, desde `/admin`, convierte compradores en vendedores y edita la portada: los banners del slider de arriba y los carruseles de debajo (con las cartas o vendedores que él elija).
 
 El precio que ve el comprador es **carta + envío** (España o resto de Europa), con el envío fijado por el vendedor en cada carta.
 
@@ -23,7 +24,11 @@ El precio que ve el comprador es **carta + envío** (España o resto de Europa),
 2. Ve a **SQL Editor > New query**, pega el contenido de `supabase/schema.sql` y pulsa **Run**. Esto crea las tablas, los permisos y la carpeta de fotos.
 3. Ve a **Project Settings > API** y copia la **Project URL** y la clave **anon public**.
 
-> **Si ya habías ejecutado una versión anterior de `schema.sql`**, ejecuta además, una sola vez, el archivo `supabase/migracion-muchos-vendedores.sql` (SQL Editor > New query > Run). Añade el color de tienda, la lista pública de vendedores y la sincronización del nombre. Hazlo **antes** de usar la última versión de la web.
+> **Si ya habías ejecutado una versión anterior de `schema.sql`**, ejecuta además, una sola vez y por este orden, estos archivos (SQL Editor > New query > Run):
+> 1. `supabase/migracion-muchos-vendedores.sql`: color de tienda, lista pública de vendedores y sincronización del nombre.
+> 2. `supabase/migracion-administrador-y-portada.sql`: rol de administrador, banners y carruseles editables.
+>
+> Hazlo **antes** de usar la última versión de la web.
 
 (Opcional, para probar más rápido) En **Authentication > Providers > Email**, desactiva "Confirm email" para que los registros entren sin confirmar el correo.
 
@@ -38,25 +43,27 @@ npm run dev
 
 La web queda en http://localhost:3000.
 
-### 3. Dar de alta a los vendedores
+### 3. Hacerte administrador y dar de alta a los vendedores
 
-1. Cada uno se registra normalmente en `/registro` (así queda como comprador).
-2. Después, en Supabase > SQL Editor, ejecuta esto con los emails de los vendedores (puedes añadir todos los que quieras a la lista, y repetirlo cuando se sumen más):
+1. Regístrate en `/registro` con tu email (así quedas como comprador).
+2. En Supabase > SQL Editor, ejecuta esto **una sola vez**, cambiando el email por el tuyo. Es la única forma de crear un administrador:
 
 ```sql
 update public.profiles
-set role = 'seller'
-where id in (
-  select id from auth.users
-  where email in ('pablo@ejemplo.com', 'vendedor2@ejemplo.com', 'vendedor3@ejemplo.com')
-);
+set role = 'admin'
+where id = (select id from auth.users where email = 'tu-email@ejemplo.com');
 ```
 
-3. Al volver a entrar, verán el enlace **Mi panel** en la cabecera.
+3. Cierra sesión y vuelve a entrar: verás **Mi panel** y **Admin** en la cabecera.
+4. Cada vendedor se registra en `/registro`. Tú entras en **Admin > Usuarios**, lo buscas por nombre o email y pulsas **Hacer vendedor**. Para quitárselo, **Quitar vendedor**.
 
-El rol solo se puede cambiar desde el SQL Editor; nadie puede hacerse vendedor desde la web.
+Solo un administrador puede cambiar roles, y nadie puede cambiarse el suyo ni tocar a otro administrador desde la web.
 
-Para quitar a alguien como vendedor, cambia `'seller'` por `'buyer'` en esa misma consulta.
+### Portada editable
+
+En **Admin > Banners** subes los banners del slider de arriba (imagen, título, subtítulo y botón con enlace), los ordenas y los activas o desactivas.
+
+En **Admin > Carruseles** creas las filas deslizables de debajo ("Mejores cartas", "Mejores vendedores"…). Cada una puede llevar cartas de cualquier vendedor (también vendidas, para un "Mejores ventas") o vendedores elegidos a mano. Las ordenas y las activas o desactivas cuando quieras. Si no hay carruseles, la portada enseña las últimas cartas añadidas.
 
 ### Notas para muchos vendedores
 
@@ -74,7 +81,8 @@ Para quitar a alguien como vendedor, cambia `'seller'` por `'buyer'` en esa mism
 ## Estructura
 
 ```
-app/page.js              Portada con presentación y carrusel de cartas
+app/page.js              Portada: banners y carruseles editables
+app/admin/page.js        Administración: usuarios, banners y carruseles
 app/catalogo/page.js     Catálogo con búsqueda, filtros y vista por vendedor
 app/vendedores/page.js   Directorio de vendedores con buscador
 app/carta/[id]/page.js   Detalle de carta, total con envío y contacto
@@ -82,7 +90,8 @@ app/tienda/[id]/page.js  Tienda propia de cada vendedor
 app/login, app/registro  Acceso de usuarios
 app/vendedor/page.js     Panel del vendedor
 supabase/schema.sql      Tablas, permisos (RLS) y almacenamiento (instalación desde cero)
-supabase/migracion-muchos-vendedores.sql   Solo lo nuevo, para bases ya creadas
+supabase/migracion-muchos-vendedores.sql           Solo lo nuevo, para bases ya creadas
+supabase/migracion-administrador-y-portada.sql     Rol admin, banners y carruseles, para bases ya creadas
 ```
 
 ## Próximos pasos posibles

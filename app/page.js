@@ -2,10 +2,14 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import BannerSlider from '../components/BannerSlider';
 import CardCarousel from '../components/CardCarousel';
+import CardTile from '../components/CardTile';
 import ConfigWarning from '../components/ConfigWarning';
+import ItemCarousel from '../components/ItemCarousel';
 import SellerCard from '../components/SellerCard';
 import { fetchSellers } from '../lib/data';
+import { fetchHome } from '../lib/home';
 import { getSupabase } from '../lib/supabase';
 import { useProfile } from '../lib/useProfile';
 
@@ -43,21 +47,25 @@ const VENDEDORES_EN_PORTADA = 8;
 
 export default function Inicio() {
   const { user } = useProfile();
-  const [listings, setListings] = useState([]);
+  const [latest, setLatest] = useState([]);
   const [sellers, setSellers] = useState([]);
+  const [home, setHome] = useState({ banners: [], collections: [], sellerMap: new Map() });
 
   useEffect(() => {
     const sb = getSupabase();
     if (!sb) return;
-    // Solo las últimas 12 cartas para el carrusel
+    fetchHome(sb).then(setHome);
     sb.from('listings')
       .select('id, name, price, front_url')
       .eq('status', 'available')
       .order('created_at', { ascending: false })
       .limit(12)
-      .then(({ data }) => setListings(data || []));
+      .then(({ data }) => setLatest(data || []));
     fetchSellers(sb).then(({ data }) => setSellers(data || []));
   }, []);
+
+  const { banners, collections, sellerMap } = home;
+  const hayCarruselDeVendedores = collections.some((c) => c.kind === 'sellers');
 
   const conCartas = sellers
     .filter((s) => s.cards_available > 0)
@@ -67,38 +75,65 @@ export default function Inicio() {
     <>
       <ConfigWarning />
 
-      <section className="hero">
-        <p className="hero-kicker">Compra y venta de cartas TCG</p>
-        <h1 className="hero-title">
-          Encuentra tus cartas favoritas, <span>directo del vendedor</span>
-        </h1>
-        <p className="hero-text">
-          TCG Capital es un mercado de cartas coleccionables donde cada vendedor tiene su propia tienda, con fotos reales
-          y precio claro. Tú eliges, hablas con ellos y te la enviamos a casa.
-        </p>
-        <div className="hero-actions">
-          <Link href="/catalogo" className="btn btn-light">
-            Ver catálogo
-          </Link>
-          {!user && (
-            <Link href="/registro" className="btn btn-ghost">
-              Crear cuenta
+      {banners.length > 0 ? (
+        <BannerSlider banners={banners} />
+      ) : (
+        <section className="hero">
+          <p className="hero-kicker">Compra y venta de cartas TCG</p>
+          <h1 className="hero-title">
+            Encuentra tus cartas favoritas, <span>directo del vendedor</span>
+          </h1>
+          <p className="hero-text">
+            TCG Capital es un mercado de cartas coleccionables donde cada vendedor tiene su propia tienda, con fotos
+            reales y precio claro. Tú eliges, hablas con ellos y te la enviamos a casa.
+          </p>
+          <div className="hero-actions">
+            <Link href="/catalogo" className="btn btn-light">
+              Ver catálogo
             </Link>
-          )}
-        </div>
-      </section>
+            {!user && (
+              <Link href="/registro" className="btn btn-ghost">
+                Crear cuenta
+              </Link>
+            )}
+          </div>
+        </section>
+      )}
 
-      <section className="home-section">
-        <div className="section-head">
-          <h2>{listings.length > 0 ? 'Últimas cartas añadidas' : 'Pronto, las primeras cartas'}</h2>
-          <Link href="/catalogo" className="small">
-            Ver todas →
-          </Link>
-        </div>
-        <CardCarousel listings={listings} />
-      </section>
+      {/* Carruseles que elige el administrador. Si no hay ninguno, se enseñan las últimas cartas. */}
+      {collections.length > 0 ? (
+        collections.map((c) =>
+          c.kind === 'sellers' ? (
+            <ItemCarousel key={c.id} title={c.title} subtitle={c.subtitle} moreHref="/vendedores" moreText="Ver todos →">
+              {c.sellers.map((s) => (
+                <div className="carousel-item carousel-item-seller" key={s.id}>
+                  <SellerCard seller={s} />
+                </div>
+              ))}
+            </ItemCarousel>
+          ) : (
+            <ItemCarousel key={c.id} title={c.title} subtitle={c.subtitle} moreHref="/catalogo" moreText="Ver catálogo →">
+              {c.cards.map((l) => (
+                <div className="carousel-item" key={l.id}>
+                  <CardTile listing={l} color={sellerMap.get(l.seller_id)?.color} />
+                </div>
+              ))}
+            </ItemCarousel>
+          )
+        )
+      ) : (
+        <section className="home-section">
+          <div className="section-head">
+            <h2>{latest.length > 0 ? 'Últimas cartas añadidas' : 'Pronto, las primeras cartas'}</h2>
+            <Link href="/catalogo" className="small">
+              Ver todas →
+            </Link>
+          </div>
+          <CardCarousel listings={latest} />
+        </section>
+      )}
 
-      {conCartas.length > 0 && (
+      {!hayCarruselDeVendedores && conCartas.length > 0 && (
         <section className="home-section">
           <div className="section-head">
             <h2>Nuestros vendedores</h2>
