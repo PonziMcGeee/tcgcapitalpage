@@ -109,16 +109,21 @@ export default function Catalogo() {
             </option>
           ))}
         </select>
-        {game === 'Pokémon' && (
-          <select value={coleccion} onChange={(e) => setColeccion(e.target.value)} style={{ gridColumn: '1 / -1' }}>
+        <select
+          value={coleccion}
+          onChange={(e) => {
+            setColeccion(e.target.value);
+            if (e.target.value) setGame('Pokémon');
+          }}
+          style={{ gridColumn: '1 / -1' }}
+        >
             <option value="">Todas las colecciones</option>
             {POKEMON_COLLECTIONS.map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
             ))}
-          </select>
-        )}
+        </select>
       </div>
 
       <div className="toolbar">

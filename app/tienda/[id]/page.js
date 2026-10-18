@@ -18,6 +18,7 @@ export default function TiendaVendedor() {
   const [info, setInfo] = useState(null); // nombre y color públicos del vendedor
   const [contacto, setContacto] = useState(null);
   const [search, setSearch] = useState('');
+  const [coleccion, setColeccion] = useState('');
 
   useEffect(() => {
     const sb = getSupabase();
@@ -50,8 +51,14 @@ export default function TiendaVendedor() {
     () =>
       listings
         .filter((l) => l.status === 'available')
-        .filter((l) => !search || l.name.toLowerCase().includes(search.toLowerCase())),
-    [listings, search]
+        .filter((l) => !search || l.name.toLowerCase().includes(search.toLowerCase()))
+        .filter((l) => !coleccion || l.collection === coleccion),
+    [listings, search, coleccion]
+  );
+  // Solo las colecciones que este vendedor tiene realmente
+  const colecciones = useMemo(
+    () => [...new Set(listings.filter((l) => l.status === 'available' && l.collection).map((l) => l.collection))].sort(),
+    [listings]
   );
   const vendidas = listings.filter((l) => l.status === 'sold');
 
@@ -96,14 +103,24 @@ export default function TiendaVendedor() {
         </div>
       </div>
 
-      {totalEnVenta > 8 && (
-        <div className="filters" style={{ gridTemplateColumns: '1fr' }}>
+      {(totalEnVenta > 8 || colecciones.length > 0) && (
+        <div className="filters" style={{ gridTemplateColumns: colecciones.length > 0 ? '2fr 1fr' : '1fr' }}>
           <input
             type="text"
             placeholder={`Buscar en la tienda de ${name}…`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          {colecciones.length > 0 && (
+            <select value={coleccion} onChange={(e) => setColeccion(e.target.value)}>
+              <option value="">Todas las colecciones</option>
+              {colecciones.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       )}
 
@@ -114,7 +131,7 @@ export default function TiendaVendedor() {
         ))}
       </div>
 
-      {vendidas.length > 0 && !search && (
+      {vendidas.length > 0 && !search && !coleccion && (
         <>
           <h2 style={{ marginTop: 36 }}>Vendidas</h2>
           <div className="grid grid-sold">
