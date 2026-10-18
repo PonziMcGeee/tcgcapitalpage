@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
 import { POKEMON_COLLECTIONS } from '../../lib/collections';
-import { GAMES, SELLER_COLORS, euros, gameLabel, sellerColor } from '../../lib/format';
+import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
 import { prepararFoto } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
 import { getSupabase } from '../../lib/supabase';
@@ -14,6 +14,7 @@ const EMPTY_FORM = {
   name: '',
   game: GAMES[0],
   collection: '',
+  condition: 'NM',
   description: '',
   price: '',
   shipping_spain: '',
@@ -33,6 +34,7 @@ export default function PanelVendedor() {
   const [busy, setBusy] = useState(false);
 
   const [mine, setMine] = useState([]);
+  const [editando, setEditando] = useState(null); // carta que se está editando, o null
 
   useEffect(() => {
     if (profile) {
@@ -92,40 +94,93 @@ export default function PanelVendedor() {
     return sb.storage.from('cards').getPublicUrl(ruta).data.publicUrl;
   }
 
+  function rutaCards(url) {
+    return url ? url.split('/object/public/cards/')[1] : null;
+  }
+
+  function empezarEdicion(l) {
+    setEditando(l);
+    setForm({
+      name: l.name,
+      game: l.game,
+      collection: l.collection || '',
+      condition: l.condition || 'NM',
+      description: l.description || '',
+      price: String(l.price),
+      shipping_spain: String(l.shipping_spain ?? ''),
+      shipping_europe: String(l.shipping_europe ?? ''),
+    });
+    setFront(null);
+    setBack(null);
+    setFormMsg(null);
+    document.getElementById('formulario-carta')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function cancelarEdicion() {
+    setEditando(null);
+    setForm((f) => ({ ...EMPTY_FORM, shipping_spain: f.shipping_spain, shipping_europe: f.shipping_europe, game: f.game }));
+    setFront(null);
+    setBack(null);
+    setFormMsg(null);
+  }
+
   async function publicar(e) {
     e.preventDefault();
     setFormMsg(null);
-    if (!front || !back) {
+    if (!editando && (!front || !back)) {
       setFormMsg({ type: 'error', text: 'Sube las dos fotos: delante y detrás.' });
       return;
     }
     const sb = getSupabase();
     setBusy(true);
     try {
-      const front_url = await subirFoto(front, 'front');
-      const back_url = await subirFoto(back, 'back');
-      const { error } = await sb.from('listings').insert({
-        seller_id: user.id,
-        seller_name: profile.display_name || user.email.split('@')[0],
+      const datos = {
         name: form.name.trim(),
         game: form.game,
         collection: form.game === 'Pokémon' && form.collection ? form.collection : null,
+        condition: form.condition,
         description: form.description.trim() || null,
         price: Number(form.price),
         shipping_spain: Number(form.shipping_spain || 0),
         shipping_europe: Number(form.shipping_europe || 0),
-        front_url,
-        back_url,
-      });
-      if (error) throw error;
-      // Se mantiene el envío para la siguiente carta; se limpia lo demás
-      setForm((f) => ({ ...EMPTY_FORM, shipping_spain: f.shipping_spain, shipping_europe: f.shipping_europe, game: f.game }));
-      setFront(null);
-      setBack(null);
-      setFormMsg({ type: 'ok', text: '¡Carta publicada! Ya aparece en el catálogo.' });
+      };
+      if (editando) {
+        // Solo se cambian las fotos que se hayan vuelto a elegir
+        const viejas = [];
+        if (front) {
+          datos.front_url = await subirFoto(front, 'front');
+          viejas.push(rutaCards(editando.front_url));
+        }
+        if (back) {
+          datos.back_url = await subirFoto(back, 'back');
+          viejas.push(rutaCards(editando.back_url));
+        }
+        const { error } = await sb.from('listings').update(datos).eq('id', editando.id);
+        if (error) throw error;
+        const aBorrar = viejas.filter(Boolean);
+        if (aBorrar.length) await sb.storage.from('cards').remove(aBorrar);
+        cancelarEdicion();
+        setFormMsg({ type: 'ok', text: 'Cambios guardados.' });
+      } else {
+        const front_url = await subirFoto(front, 'front');
+        const back_url = await subirFoto(back, 'back');
+        const { error } = await sb.from('listings').insert({
+          seller_id: user.id,
+          seller_name: profile.display_name || user.email.split('@')[0],
+          ...datos,
+          front_url,
+          back_url,
+        });
+        if (error) throw error;
+        // Se mantiene el envío para la siguiente carta; se limpia lo demás
+        setForm((f) => ({ ...EMPTY_FORM, shipping_spain: f.shipping_spain, shipping_europe: f.shipping_europe, game: f.game }));
+        setFront(null);
+        setBack(null);
+        setFormMsg({ type: 'ok', text: '¡Carta publicada! Ya aparece en el catálogo.' });
+      }
       cargarMias();
     } catch {
-      setFormMsg({ type: 'error', text: 'No se ha podido publicar la carta. Inténtalo de nuevo.' });
+      setFormMsg({ type: 'error', text: 'No se ha podido guardar la carta. Inténtalo de nuevo.' });
     }
     setBusy(false);
   }
@@ -145,6 +200,7 @@ export default function PanelVendedor() {
       .map((u) => u.split('/object/public/cards/')[1])
       .filter(Boolean);
     await sb.from('listings').delete().eq('id', listing.id);
+    if (editando?.id === listing.id) cancelarEdicion();
     if (rutas.length) await sb.storage.from('cards').remove(rutas);
     cargarMias();
   }
@@ -178,12 +234,12 @@ export default function PanelVendedor() {
         </Link>
       </p>
 
-      <section className="panel">
-        <h2>1. Subir una carta nueva</h2>
+      <section className="panel" id="formulario-carta">
+        <h2>{editando ? `1. Editar: ${editando.name}` : '1. Subir una carta nueva'}</h2>
         <form className="form" onSubmit={publicar}>
           <div className="photos">
-            <FotoCampo titulo="Foto de delante" file={front} onChange={setFront} />
-            <FotoCampo titulo="Foto de detrás" file={back} onChange={setBack} />
+            <FotoCampo titulo="Foto de delante" file={front} onChange={setFront} actual={editando?.front_url} />
+            <FotoCampo titulo="Foto de detrás" file={back} onChange={setBack} actual={editando?.back_url} />
           </div>
 
           <div className="field">
@@ -222,6 +278,17 @@ export default function PanelVendedor() {
               </select>
             </div>
           )}
+
+          <div className="field">
+            <label htmlFor="condition">Estado de la carta</label>
+            <select id="condition" value={form.condition} onChange={(e) => cambiar('condition', e.target.value)}>
+              {CONDITIONS.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.label} ({c.code})
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="row">
             <div className="field">
@@ -276,9 +343,16 @@ export default function PanelVendedor() {
           {formMsg && (
             <div className={`notice ${formMsg.type === 'ok' ? 'notice-ok' : 'notice-error'}`}>{formMsg.text}</div>
           )}
-          <button className="btn" disabled={busy}>
-            {busy ? 'Subiendo fotos…' : 'Publicar carta'}
-          </button>
+          <div className="admin-actions">
+            <button className="btn" disabled={busy}>
+              {busy ? 'Guardando…' : editando ? 'Guardar cambios' : 'Publicar carta'}
+            </button>
+            {editando && (
+              <button type="button" className="btn btn-outline" onClick={cancelarEdicion}>
+                Cancelar
+              </button>
+            )}
+          </div>
         </form>
       </section>
 
@@ -293,7 +367,7 @@ export default function PanelVendedor() {
               <div>
                 <strong>{l.name}</strong>
                 <p className="muted small">
-                  {gameLabel(l)} · {euros(l.price)}
+                  {gameLabel(l)} · {conditionLabel(l.condition)} · {euros(l.price)}
                 </p>
                 <span className={`badge ${l.status === 'sold' ? 'badge-sold' : ''}`}>
                   {l.status === 'sold' ? 'Vendida' : 'En venta'}
@@ -302,6 +376,9 @@ export default function PanelVendedor() {
               <div className="my-actions">
                 <button type="button" className="btn btn-small btn-outline" onClick={() => cambiarEstado(l)}>
                   {l.status === 'sold' ? 'Volver a poner en venta' : 'Marcar como vendida'}
+                </button>
+                <button type="button" className="btn btn-small btn-outline" onClick={() => empezarEdicion(l)}>
+                  Editar
                 </button>
                 <button type="button" className="btn btn-small btn-danger" onClick={() => borrar(l)}>
                   Borrar
@@ -390,7 +467,7 @@ export default function PanelVendedor() {
   );
 }
 
-function FotoCampo({ titulo, file, onChange }) {
+function FotoCampo({ titulo, file, onChange, actual }) {
   const [preview, setPreview] = useState(null);
 
   useEffect(() => {
@@ -408,11 +485,14 @@ function FotoCampo({ titulo, file, onChange }) {
       {preview ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={preview} alt={titulo} />
+      ) : actual ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={actual} alt={titulo} />
       ) : (
         <div className="photo-empty">{titulo}</div>
       )}
       <label className="btn btn-small btn-outline" style={{ cursor: 'pointer' }}>
-        {file ? 'Cambiar foto' : 'Elegir foto'}
+        {file || actual ? 'Cambiar foto' : 'Elegir foto'}
         <input
           type="file"
           accept="image/*"

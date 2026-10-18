@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { euros, gameLabel, sellerColor } from '../lib/format';
+import { conditionLabel, euros, gameLabel, sellerColor } from '../lib/format';
 
 export default function CardTile({ listing, showSeller = true, color }) {
   return (
@@ -11,6 +11,7 @@ export default function CardTile({ listing, showSeller = true, color }) {
       <div className="tile-img">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={listing.front_url} alt={listing.name} loading="lazy" />
+        {listing.condition && <span className="cond-tag" title={conditionLabel(listing.condition)}>{listing.condition}</span>}
         {listing.status === 'sold' && <span className="sold-tag">Vendida</span>}
       </div>
       <div className="tile-body">

@@ -3,7 +3,7 @@
 Web de venta de cartas TCG con tres tipos de usuario:
 
 - **Comprador**: se registra libremente, navega por el catálogo y, al tener cuenta, ve el contacto del vendedor (botones de WhatsApp, Telegram o Instagram).
-- **Vendedor** (pensado para unos 30): tiene su propio panel para subir cartas (foto delante y detrás), marcarlas como vendidas o borrarlas, elegir el color de su tienda y editar sus datos de contacto. Cada vendedor solo ve y modifica sus propias cartas, y tiene su propia página de tienda.
+- **Vendedor** (pensado para unos 30): tiene su propio panel para subir cartas (foto delante y detrás, con su estado: Mint, Near Mint, Excellent…), editarlas, marcarlas como vendidas o borrarlas, elegir el color de su tienda y editar sus datos de contacto. Cada vendedor solo ve y modifica sus propias cartas, y tiene su propia página de tienda.
 - **Administrador**: tiene todo lo de un vendedor y además, desde `/admin`, convierte compradores en vendedores y edita la portada: los banners del slider de arriba y los carruseles de debajo (con las cartas o vendedores que él elija). Todos los carruseles tienen el mismo aspecto que el predefinido: movimiento automático continuo y precio sobre la carta.
 
 El precio que ve el comprador es **carta + envío** (España o resto de Europa), con el envío fijado por el vendedor en cada carta.

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
-import { euros, gameLabel } from '../../lib/format';
+import { conditionLabel, euros, gameLabel } from '../../lib/format';
 import { getSupabase } from '../../lib/supabase';
 
 const POR_PAGINA = 24;
@@ -41,7 +41,7 @@ export default function ListingsAdmin({ vendedorInicial }) {
       setLoading(true);
       let q = sb
         .from('listings')
-        .select('id, seller_id, seller_name, name, game, collection, price, status, front_url, back_url, created_at')
+        .select('id, seller_id, seller_name, name, game, collection, condition, price, status, front_url, back_url, created_at')
         .order('created_at', { ascending: false })
         .range(desde, desde + POR_PAGINA);
       if (vendedor) q = q.eq('seller_id', vendedor);
@@ -121,7 +121,7 @@ export default function ListingsAdmin({ vendedorInicial }) {
             <div className="admin-row-main">
               <strong>{c.name}</strong>
               <p className="muted small">
-                {gameLabel(c)} · {euros(c.price)} · {c.status === 'sold' ? 'Vendida' : 'Disponible'}
+                {gameLabel(c)} · {conditionLabel(c.condition)} · {euros(c.price)} · {c.status === 'sold' ? 'Vendida' : 'Disponible'}
               </p>
               <p className="muted small">
                 Vende <Link href={`/tienda/${c.seller_id}`}>{c.seller_name}</Link>

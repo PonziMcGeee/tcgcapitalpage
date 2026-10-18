@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import SellerBadge from '../../../components/SellerBadge';
 import SellerContact from '../../../components/SellerContact';
-import { euros } from '../../../lib/format';
+import { conditionLabel, euros } from '../../../lib/format';
 import { getSupabase } from '../../../lib/supabase';
 import { useProfile } from '../../../lib/useProfile';
 
@@ -94,6 +94,7 @@ export default function DetalleCarta() {
 
         <div className="panel">
           <span className={`badge ${vendida ? 'badge-sold' : ''}`}>{vendida ? 'Vendida' : listing.game}</span>
+          <span className="badge" style={{ marginLeft: 6 }}>{conditionLabel(listing.condition)}</span>
           {listing.collection && <span className="badge" style={{ marginLeft: 6 }}>{listing.collection}</span>}
           <h1 style={{ marginTop: 8 }}>{listing.name}</h1>
           <Link href={`/tienda/${listing.seller_id}`} className="seller-link">

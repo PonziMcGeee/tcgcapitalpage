@@ -1249,3 +1249,18 @@ a.marquee-card:hover {
     width: 100%;
   }
 }
+
+.cond-tag {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(17, 24, 39, 0.85);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.marquee-card .sold-tag {
+  top: 8px;
+}
