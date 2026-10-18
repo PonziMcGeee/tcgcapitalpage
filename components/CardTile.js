@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { euros, sellerColor } from '../lib/format';
 
-export default function CardTile({ listing, showSeller = true }) {
+export default function CardTile({ listing, showSeller = true, color }) {
   return (
     <Link
       href={`/carta/${listing.id}`}
       className="tile"
-      style={{ '--seller': sellerColor(listing.seller_id) }}
+      style={{ '--seller': sellerColor(listing.seller_id, color) }}
     >
       <div className="tile-img">
         {/* eslint-disable-next-line @next/next/no-img-element */}

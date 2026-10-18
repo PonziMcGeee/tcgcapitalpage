@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
-import { GAMES, euros } from '../../lib/format';
+import { GAMES, SELLER_COLORS, euros, sellerColor } from '../../lib/format';
 import { prepararFoto } from '../../lib/image';
 import { getSupabase } from '../../lib/supabase';
 import { useProfile } from '../../lib/useProfile';
@@ -20,7 +20,7 @@ const EMPTY_FORM = {
 export default function PanelVendedor() {
   const { user, profile, loading, reload } = useProfile();
 
-  const [contacto, setContacto] = useState({ display_name: '', phone: '', telegram: '', instagram: '' });
+  const [contacto, setContacto] = useState({ display_name: '', phone: '', telegram: '', instagram: '', color: '' });
   const [contactoMsg, setContactoMsg] = useState('');
 
   const [form, setForm] = useState(EMPTY_FORM);
@@ -38,6 +38,7 @@ export default function PanelVendedor() {
         phone: profile.phone || '',
         telegram: profile.telegram || '',
         instagram: profile.instagram || '',
+        color: profile.color || '',
       });
     }
   }, [profile]);
@@ -72,6 +73,7 @@ export default function PanelVendedor() {
         phone: contacto.phone.trim() || null,
         telegram: contacto.telegram.trim() || null,
         instagram: contacto.instagram.trim() || null,
+        color: contacto.color || null,
       })
       .eq('id', user.id);
     setContactoMsg(error ? 'No se han podido guardar los datos.' : 'Datos guardados.');
@@ -308,6 +310,22 @@ export default function PanelVendedor() {
               value={contacto.display_name}
               onChange={(e) => setContacto({ ...contacto, display_name: e.target.value })}
             />
+          </div>
+          <div className="field">
+            <label>Color de tu tienda</label>
+            <div className="swatches">
+              {SELLER_COLORS.map((c) => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`swatch ${sellerColor(user.id, contacto.color) === c ? 'selected' : ''}`}
+                  style={{ background: c }}
+                  aria-label={`Color ${c}`}
+                  onClick={() => setContacto({ ...contacto, color: c })}
+                />
+              ))}
+            </div>
+            <span className="hint">Con este color te reconocerán en el catálogo y en tu tienda.</span>
           </div>
           <div className="row">
             <div className="field">

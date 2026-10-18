@@ -16,6 +16,7 @@ export default function DetalleCarta() {
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
   const [destino, setDestino] = useState('spain');
+  const [color, setColor] = useState(null);
 
   useEffect(() => {
     const sb = getSupabase();
@@ -43,6 +44,17 @@ export default function DetalleCarta() {
       .maybeSingle()
       .then(({ data }) => setSeller(data));
   }, [user, listing]);
+
+  // Color público de la tienda del vendedor
+  useEffect(() => {
+    const sb = getSupabase();
+    if (!sb || !listing) return;
+    sb.from('sellers_public')
+      .select('color')
+      .eq('id', listing.seller_id)
+      .maybeSingle()
+      .then(({ data }) => setColor(data?.color || null));
+  }, [listing]);
 
   if (loading) return <p className="muted">Cargando…</p>;
   if (!listing) {
@@ -84,7 +96,7 @@ export default function DetalleCarta() {
           <span className={`badge ${vendida ? 'badge-sold' : ''}`}>{vendida ? 'Vendida' : listing.game}</span>
           <h1 style={{ marginTop: 8 }}>{listing.name}</h1>
           <Link href={`/tienda/${listing.seller_id}`} className="seller-link">
-            <SellerBadge id={listing.seller_id} name={listing.seller_name} size={30} />
+            <SellerBadge id={listing.seller_id} name={listing.seller_name} color={color} size={30} />
             <span>
               Vende <strong>{listing.seller_name}</strong> · ver su tienda
             </span>

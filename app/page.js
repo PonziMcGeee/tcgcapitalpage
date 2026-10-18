@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import CardCarousel from '../components/CardCarousel';
 import ConfigWarning from '../components/ConfigWarning';
-import SellerBadge from '../components/SellerBadge';
-import { sellerColor } from '../lib/format';
+import SellerCard from '../components/SellerCard';
+import { fetchSellers } from '../lib/data';
 import { getSupabase } from '../lib/supabase';
 import { useProfile } from '../lib/useProfile';
 
@@ -31,7 +31,7 @@ const VENTAJAS = [
   },
   {
     titulo: 'Trato directo',
-    texto: 'Pocos vendedores y conversación directa con ellos, sin intermediarios ni comisiones.',
+    texto: 'Conversación directa con cada vendedor, sin intermediarios ni comisiones.',
   },
   {
     titulo: 'Fotos reales',
@@ -39,28 +39,29 @@ const VENTAJAS = [
   },
 ];
 
+const VENDEDORES_EN_PORTADA = 8;
+
 export default function Inicio() {
   const { user } = useProfile();
   const [listings, setListings] = useState([]);
+  const [sellers, setSellers] = useState([]);
 
   useEffect(() => {
     const sb = getSupabase();
     if (!sb) return;
+    // Solo las últimas 12 cartas para el carrusel
     sb.from('listings')
-      .select('id, name, price, front_url, seller_id, seller_name')
+      .select('id, name, price, front_url')
       .eq('status', 'available')
       .order('created_at', { ascending: false })
+      .limit(12)
       .then(({ data }) => setListings(data || []));
+    fetchSellers(sb).then(({ data }) => setSellers(data || []));
   }, []);
 
-  // Vendedores con cartas en venta, y cuántas tiene cada uno
-  const vendedores = [];
-  listings.forEach((l) => {
-    const v = vendedores.find((x) => x.id === l.seller_id);
-    if (v) v.total += 1;
-    else vendedores.push({ id: l.seller_id, name: l.seller_name, total: 1 });
-  });
-  vendedores.sort((a, b) => a.name.localeCompare(b.name));
+  const conCartas = sellers
+    .filter((s) => s.cards_available > 0)
+    .sort((a, b) => b.cards_available - a.cards_available || a.display_name.localeCompare(b.display_name));
 
   return (
     <>
@@ -72,8 +73,8 @@ export default function Inicio() {
           Encuentra tus cartas favoritas, <span>directo del vendedor</span>
         </h1>
         <p className="hero-text">
-          TCG Capital es un pequeño mercado de cartas coleccionables donde unos pocos vendedores publican sus cartas con
-          fotos reales y precio claro. Tú eliges, hablas con ellos y te la enviamos a casa.
+          TCG Capital es un mercado de cartas coleccionables donde cada vendedor tiene su propia tienda, con fotos reales
+          y precio claro. Tú eliges, hablas con ellos y te la enviamos a casa.
         </p>
         <div className="hero-actions">
           <Link href="/catalogo" className="btn btn-light">
@@ -94,28 +95,21 @@ export default function Inicio() {
             Ver todas →
           </Link>
         </div>
-        <CardCarousel listings={listings.slice(0, 12)} />
+        <CardCarousel listings={listings} />
       </section>
 
-      {vendedores.length > 0 && (
+      {conCartas.length > 0 && (
         <section className="home-section">
-          <h2>Nuestros vendedores</h2>
+          <div className="section-head">
+            <h2>Nuestros vendedores</h2>
+            <Link href="/vendedores" className="small">
+              Ver los {sellers.length} vendedores →
+            </Link>
+          </div>
           <p className="muted">Cada uno tiene su propia tienda con sus cartas.</p>
           <div className="sellers-grid">
-            {vendedores.map((v) => (
-              <Link
-                key={v.id}
-                href={`/tienda/${v.id}`}
-                className="seller-card"
-                style={{ '--seller': sellerColor(v.id) }}
-              >
-                <SellerBadge id={v.id} name={v.name} size={56} />
-                <strong>{v.name}</strong>
-                <span className="muted small">
-                  {v.total} {v.total === 1 ? 'carta' : 'cartas'} en venta
-                </span>
-                <span className="seller-card-link">Ver tienda →</span>
-              </Link>
+            {conCartas.slice(0, VENDEDORES_EN_PORTADA).map((s) => (
+              <SellerCard key={s.id} seller={s} />
             ))}
           </div>
         </section>
