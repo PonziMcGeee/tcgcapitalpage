@@ -29,14 +29,17 @@ const PASOS = [
 
 const VENTAJAS = [
   {
+    icono: '💶',
     titulo: 'Precio claro',
     texto: 'Ves el precio de la carta, el envío según tu destino y el total antes de escribir a nadie.',
   },
   {
+    icono: '🤝',
     titulo: 'Trato directo',
     texto: 'Conversación directa con cada vendedor, sin intermediarios ni comisiones.',
   },
   {
+    icono: '📷',
     titulo: 'Fotos reales',
     texto: 'Cada anuncio enseña la carta real por delante y por detrás para que sepas qué compras.',
   },
@@ -173,7 +176,12 @@ export default function Inicio() {
         <div className="steps">
           {VENTAJAS.map((v) => (
             <div className="step" key={v.titulo}>
-              <h3>{v.titulo}</h3>
+              <h3 className="step-title">
+                <span className="step-icon" aria-hidden="true">
+                  {v.icono}
+                </span>
+                {v.titulo}
+              </h3>
               <p className="muted">{v.texto}</p>
             </div>
           ))}

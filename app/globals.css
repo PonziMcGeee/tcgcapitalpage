@@ -1364,3 +1364,20 @@ h2 {
     height: 48px;
   }
 }
+
+.step-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.step-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fdecee;
+  font-size: 1.4rem;
+  line-height: 1;
+}
