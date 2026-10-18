@@ -78,7 +78,7 @@ export default function Inicio() {
         <BannerSlider banners={banners} />
       ) : (
         <section className="hero">
-          <p className="hero-kicker">Compra y venta de cartas TCG</p>
+          <p className="hero-kicker">カード · Compra y venta de cartas TCG</p>
           <h1 className="hero-title">
             Encuentra tus cartas favoritas, <span>directo del vendedor</span>
           </h1>
