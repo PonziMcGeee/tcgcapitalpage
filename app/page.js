@@ -52,11 +52,18 @@ export default function Inicio() {
   const [latest, setLatest] = useState([]);
   const [sellers, setSellers] = useState([]);
   const [home, setHome] = useState({ banners: [], collections: [], sellerMap: new Map() });
+  // Hasta que no llegan los banners y carruseles no se enseña nada por defecto (evita el parpadeo)
+  const [cargado, setCargado] = useState(false);
 
   useEffect(() => {
     const sb = getSupabase();
-    if (!sb) return;
-    fetchHome(sb).then(setHome);
+    if (!sb) {
+      setCargado(true);
+      return;
+    }
+    fetchHome(sb)
+      .then(setHome)
+      .finally(() => setCargado(true));
     sb.from('listings')
       .select('id, name, price, front_url, thumb_url')
       .eq('status', 'available')
@@ -77,7 +84,9 @@ export default function Inicio() {
     <>
       <ConfigWarning />
 
-      {banners.length > 0 ? (
+      {!cargado ? (
+        <div className="banner-slider banner-skeleton" aria-hidden="true" />
+      ) : banners.length > 0 ? (
         <BannerSlider banners={banners} />
       ) : (
         <section className="hero">
@@ -103,7 +112,16 @@ export default function Inicio() {
       )}
 
       {/* Carruseles que elige el administrador. Si no hay ninguno, se enseñan las últimas cartas. */}
-      {collections.length > 0 ? (
+      {!cargado ? (
+        <section className="home-section" aria-hidden="true">
+          <div className="skeleton-line" />
+          <div className="skeleton-row">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="skeleton-card" />
+            ))}
+          </div>
+        </section>
+      ) : collections.length > 0 ? (
         collections.map((c) => (
           <section className="home-section" key={c.id}>
             <div className="section-head">
@@ -141,7 +159,7 @@ export default function Inicio() {
         </section>
       )}
 
-      {!hayCarruselDeVendedores && conCartas.length > 0 && (
+      {cargado && !hayCarruselDeVendedores && conCartas.length > 0 && (
         <section className="home-section">
           <div className="section-head">
             <h2>Nuestros vendedores</h2>

@@ -1381,3 +1381,50 @@ h2 {
   font-size: 1.4rem;
   line-height: 1;
 }
+
+/* Marcadores de posición mientras carga la portada */
+.banner-skeleton,
+.skeleton-line,
+.skeleton-card {
+  background: linear-gradient(90deg, #efe9e1 25%, #f7f2ec 50%, #efe9e1 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shine 1.4s linear infinite;
+}
+.skeleton-line {
+  height: 28px;
+  width: 240px;
+  max-width: 70%;
+  border-radius: 8px;
+  margin-bottom: 14px;
+}
+.skeleton-row {
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+}
+.skeleton-card {
+  flex: 0 0 auto;
+  width: 170px;
+  aspect-ratio: 5 / 7;
+  border-radius: 12px;
+}
+@keyframes skeleton-shine {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+@media (max-width: 760px) {
+  .skeleton-card {
+    width: 140px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner-skeleton,
+  .skeleton-line,
+  .skeleton-card {
+    animation: none;
+  }
+}
