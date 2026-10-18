@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import BannerSlider from '../components/BannerSlider';
 import CardCarousel from '../components/CardCarousel';
+import FeaturedSellers from '../components/FeaturedSellers';
 import ConfigWarning from '../components/ConfigWarning';
 import Marquee from '../components/Marquee';
 import SellerCard from '../components/SellerCard';
@@ -51,7 +52,7 @@ export default function Inicio() {
   const { user } = useProfile();
   const [latest, setLatest] = useState([]);
   const [sellers, setSellers] = useState([]);
-  const [home, setHome] = useState({ banners: [], collections: [], sellerMap: new Map() });
+  const [home, setHome] = useState({ banners: [], collections: [], sellerMap: new Map(), featured: [] });
   // Hasta que no llegan los banners y carruseles no se enseña nada por defecto (evita el parpadeo)
   const [cargado, setCargado] = useState(false);
 
@@ -73,7 +74,7 @@ export default function Inicio() {
     fetchSellers(sb).then(({ data }) => setSellers(data || []));
   }, []);
 
-  const { banners, collections, sellerMap } = home;
+  const { banners, collections, sellerMap, featured } = home;
   const hayCarruselDeVendedores = collections.some((c) => c.kind === 'sellers');
 
   const conCartas = sellers
@@ -159,7 +160,9 @@ export default function Inicio() {
         </section>
       )}
 
-      {cargado && !hayCarruselDeVendedores && conCartas.length > 0 && (
+      {cargado && <FeaturedSellers featured={featured} />}
+
+      {cargado && featured.length === 0 && !hayCarruselDeVendedores && conCartas.length > 0 && (
         <section className="home-section">
           <div className="section-head">
             <h2>Nuestros vendedores</h2>

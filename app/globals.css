@@ -1428,3 +1428,68 @@ h2 {
     animation: none;
   }
 }
+
+/* ===== Vendedores destacados ===== */
+.featured-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.featured-grid.featured-one {
+  grid-template-columns: 1fr;
+}
+.featured-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: #141414;
+  color: #fff;
+  border-radius: 18px;
+  border-left: 8px solid var(--seller, var(--accent));
+  padding: 22px 24px;
+  min-height: 150px;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.featured-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 26px rgba(20, 20, 20, 0.3);
+}
+.featured-card .avatar-img {
+  border-color: var(--seller, var(--accent));
+}
+.featured-info {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.featured-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ff6b7d;
+}
+.featured-name {
+  font-size: 1.3rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.featured-count {
+  color: #d9d2ca;
+  font-size: 0.9rem;
+}
+.featured-link {
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+@media (max-width: 760px) {
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+  .featured-card {
+    padding: 18px;
+    min-height: 0;
+  }
+}

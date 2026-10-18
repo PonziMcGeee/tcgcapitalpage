@@ -33,6 +33,7 @@ El precio que ve el comprador es **carta + envío** (España o resto de Europa),
 > 4. `supabase/migracion-colecciones.sql`: campo de colección para las cartas de Pokémon.
 > 5. `supabase/migracion-miniaturas.sql`: miniaturas de las cartas (menos tráfico de fotos). Después, cada vendedor con cartas antiguas pulsa **Optimizar fotos antiguas** en su panel.
 > 6. `supabase/migracion-foto-perfil.sql`: foto de perfil de los vendedores.
+> 7. `supabase/migracion-vendedores-destacados.sql`: dos vendedores destacados en la portada.
 >
 > Hazlo **antes** de usar la última versión de la web.
 
@@ -75,6 +76,8 @@ En **Admin > Banners** subes los banners del slider de arriba (imagen, título, 
 
 En **Admin > Carruseles** creas los carruseles de debajo ("Mejores cartas", "Mejores vendedores"…). Cada una puede llevar cartas de cualquier vendedor (también vendidas, para un "Mejores ventas") o vendedores elegidos a mano. Las ordenas y las activas o desactivas cuando quieras. Si no hay carruseles, la portada enseña las últimas cartas añadidas.
 
+En **Admin > Destacados** eliges a mano hasta dos vendedores top (con un texto opcional como "Vendedor del mes"). Salen como dos banners grandes debajo del carrusel.
+
 ### Notas para muchos vendedores
 
 - Supabase devuelve como máximo 1000 filas por consulta; el catálogo ya pide las cartas por páginas.
@@ -106,6 +109,7 @@ supabase/migracion-moderacion.sql                  Borrado por el admin y oculta
 supabase/migracion-colecciones.sql                 Columna de colección (Pokémon)
 supabase/migracion-miniaturas.sql                  Columna de miniatura
 supabase/migracion-foto-perfil.sql                 Foto de perfil de los vendedores
+supabase/migracion-vendedores-destacados.sql       Dos vendedores destacados en la portada
 lib/collections.js                                 Lista de colecciones de Pokémon hasta 2006
 ```
 
