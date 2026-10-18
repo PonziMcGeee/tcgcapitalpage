@@ -66,6 +66,7 @@ El rol solo se puede cambiar desde el SQL Editor; nadie puede hacerse vendedor d
 app/page.js              Portada con presentación y carrusel de cartas
 app/catalogo/page.js     Catálogo con búsqueda y filtros
 app/carta/[id]/page.js   Detalle de carta, total con envío y contacto
+app/tienda/[id]/page.js  Tienda propia de cada vendedor
 app/login, app/registro  Acceso de usuarios
 app/vendedor/page.js     Panel del vendedor
 supabase/schema.sql      Tablas, permisos (RLS) y almacenamiento

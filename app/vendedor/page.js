@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
-import { CONDITIONS, GAMES, euros } from '../../lib/format';
+import { GAMES, euros } from '../../lib/format';
 import { prepararFoto } from '../../lib/image';
 import { getSupabase } from '../../lib/supabase';
 import { useProfile } from '../../lib/useProfile';
@@ -11,7 +11,6 @@ import { useProfile } from '../../lib/useProfile';
 const EMPTY_FORM = {
   name: '',
   game: GAMES[0],
-  condition: 'NM',
   description: '',
   price: '',
   shipping_spain: '',
@@ -105,7 +104,6 @@ export default function PanelVendedor() {
         seller_name: profile.display_name || user.email.split('@')[0],
         name: form.name.trim(),
         game: form.game,
-        condition: form.condition,
         description: form.description.trim() || null,
         price: Number(form.price),
         shipping_spain: Number(form.shipping_spain || 0),
@@ -168,7 +166,10 @@ export default function PanelVendedor() {
       <ConfigWarning />
       <h1>Mi panel de vendedor</h1>
       <p className="muted" style={{ marginBottom: 20 }}>
-        Hola, {profile.display_name}. Aquí subes y gestionas tus cartas.
+        Hola, {profile.display_name}. Aquí subes y gestionas tus cartas.{' '}
+        <Link href={`/tienda/${user.id}`}>
+          <strong>Ver mi tienda →</strong>
+        </Link>
       </p>
 
       <section className="panel">
@@ -191,27 +192,15 @@ export default function PanelVendedor() {
             />
           </div>
 
-          <div className="row">
-            <div className="field">
-              <label htmlFor="game">Juego</label>
-              <select id="game" value={form.game} onChange={(e) => cambiar('game', e.target.value)}>
-                {GAMES.map((g) => (
-                  <option key={g} value={g}>
-                    {g}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="condition">Estado</label>
-              <select id="condition" value={form.condition} onChange={(e) => cambiar('condition', e.target.value)}>
-                {CONDITIONS.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="field">
+            <label htmlFor="game">Juego</label>
+            <select id="game" value={form.game} onChange={(e) => cambiar('game', e.target.value)}>
+              {GAMES.map((g) => (
+                <option key={g} value={g}>
+                  {g}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="row">
@@ -284,7 +273,7 @@ export default function PanelVendedor() {
               <div>
                 <strong>{l.name}</strong>
                 <p className="muted small">
-                  {l.game} · {l.condition} · {euros(l.price)}
+                  {l.game} · {euros(l.price)}
                 </p>
                 <span className={`badge ${l.status === 'sold' ? 'badge-sold' : ''}`}>
                   {l.status === 'sold' ? 'Vendida' : 'En venta'}

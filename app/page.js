@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import CardCarousel from '../components/CardCarousel';
 import ConfigWarning from '../components/ConfigWarning';
+import SellerBadge from '../components/SellerBadge';
+import { sellerColor } from '../lib/format';
 import { getSupabase } from '../lib/supabase';
 import { useProfile } from '../lib/useProfile';
 
@@ -45,12 +47,20 @@ export default function Inicio() {
     const sb = getSupabase();
     if (!sb) return;
     sb.from('listings')
-      .select('id, name, price, front_url')
+      .select('id, name, price, front_url, seller_id, seller_name')
       .eq('status', 'available')
       .order('created_at', { ascending: false })
-      .limit(12)
       .then(({ data }) => setListings(data || []));
   }, []);
+
+  // Vendedores con cartas en venta, y cuántas tiene cada uno
+  const vendedores = [];
+  listings.forEach((l) => {
+    const v = vendedores.find((x) => x.id === l.seller_id);
+    if (v) v.total += 1;
+    else vendedores.push({ id: l.seller_id, name: l.seller_name, total: 1 });
+  });
+  vendedores.sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <>
@@ -84,8 +94,32 @@ export default function Inicio() {
             Ver todas →
           </Link>
         </div>
-        <CardCarousel listings={listings} />
+        <CardCarousel listings={listings.slice(0, 12)} />
       </section>
+
+      {vendedores.length > 0 && (
+        <section className="home-section">
+          <h2>Nuestros vendedores</h2>
+          <p className="muted">Cada uno tiene su propia tienda con sus cartas.</p>
+          <div className="sellers-grid">
+            {vendedores.map((v) => (
+              <Link
+                key={v.id}
+                href={`/tienda/${v.id}`}
+                className="seller-card"
+                style={{ '--seller': sellerColor(v.id) }}
+              >
+                <SellerBadge id={v.id} name={v.name} size={56} />
+                <strong>{v.name}</strong>
+                <span className="muted small">
+                  {v.total} {v.total === 1 ? 'carta' : 'cartas'} en venta
+                </span>
+                <span className="seller-card-link">Ver tienda →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="home-section">
         <h2>Cómo funciona</h2>

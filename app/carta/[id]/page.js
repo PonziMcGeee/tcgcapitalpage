@@ -3,7 +3,9 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { euros, instagramUrl, telegramUrl, whatsappUrl } from '../../../lib/format';
+import SellerBadge from '../../../components/SellerBadge';
+import SellerContact from '../../../components/SellerContact';
+import { euros } from '../../../lib/format';
 import { getSupabase } from '../../../lib/supabase';
 import { useProfile } from '../../../lib/useProfile';
 
@@ -55,10 +57,6 @@ export default function DetalleCarta() {
   const total = Number(listing.price) + Number(envio);
   const vendida = listing.status === 'sold';
 
-  const wa = whatsappUrl(seller?.phone);
-  const tg = telegramUrl(seller?.telegram);
-  const ig = instagramUrl(seller?.instagram);
-
   return (
     <>
       <p className="small">
@@ -85,9 +83,12 @@ export default function DetalleCarta() {
         <div className="panel">
           <span className={`badge ${vendida ? 'badge-sold' : ''}`}>{vendida ? 'Vendida' : listing.game}</span>
           <h1 style={{ marginTop: 8 }}>{listing.name}</h1>
-          <p className="muted">
-            Estado: {listing.condition} · Vende {listing.seller_name}
-          </p>
+          <Link href={`/tienda/${listing.seller_id}`} className="seller-link">
+            <SellerBadge id={listing.seller_id} name={listing.seller_name} size={30} />
+            <span>
+              Vende <strong>{listing.seller_name}</strong> · ver su tienda
+            </span>
+          </Link>
           {listing.description && <p>{listing.description}</p>}
 
           <div className="field" style={{ marginTop: 14 }}>
@@ -128,25 +129,7 @@ export default function DetalleCarta() {
           {!vendida && user && (
             <div className="contact">
               <strong>Contactar con {listing.seller_name}</strong>
-              {!seller && <p className="muted small">Cargando contacto…</p>}
-              {seller && !wa && !tg && !ig && (
-                <p className="muted small">El vendedor aún no ha añadido datos de contacto.</p>
-              )}
-              {wa && (
-                <a className="btn btn-outline" href={wa} target="_blank" rel="noreferrer">
-                  Hablar por WhatsApp
-                </a>
-              )}
-              {tg && (
-                <a className="btn btn-outline" href={tg} target="_blank" rel="noreferrer">
-                  Hablar por Telegram
-                </a>
-              )}
-              {ig && (
-                <a className="btn btn-outline" href={ig} target="_blank" rel="noreferrer">
-                  Hablar por Instagram
-                </a>
-              )}
+              <SellerContact seller={seller} />
               <p className="muted small">
                 Acordad con el vendedor el pago y el envío. Indícale la carta y el destino ({destino === 'spain' ? 'España' : 'Europa'}).
               </p>

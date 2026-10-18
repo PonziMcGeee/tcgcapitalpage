@@ -643,3 +643,111 @@ a.marquee-card:hover {
 .cta .btn-light:hover {
   background: var(--accent-dark);
 }
+
+/* ===== Vendedores ===== */
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-weight: 800;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+.tile {
+  border-top: 4px solid var(--seller, var(--border));
+}
+.seller-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 6px solid var(--seller, var(--border));
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 28px;
+}
+.seller-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.seller-head h2 {
+  margin: 0;
+}
+.seller-head-link {
+  margin-left: auto;
+  color: var(--seller, var(--accent));
+  font-weight: 700;
+  white-space: nowrap;
+}
+.seller-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 4px;
+  font-size: 0.95rem;
+}
+.seller-link:hover span {
+  text-decoration: underline;
+}
+
+.sellers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 16px;
+  margin-top: 14px;
+}
+.seller-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 5px solid var(--seller, var(--border));
+  border-radius: var(--radius);
+  padding: 20px;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.seller-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(30, 40, 90, 0.12);
+}
+.seller-card-link {
+  color: var(--seller, var(--accent));
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.shop-hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 8px solid var(--seller, var(--border));
+  border-radius: var(--radius);
+  padding: 22px;
+  margin: 12px 0 26px;
+}
+.shop-hero-info {
+  flex: 1 1 200px;
+}
+.shop-contact {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.grid-sold {
+  opacity: 0.55;
+}
+@media (max-width: 760px) {
+  .seller-head {
+    flex-wrap: wrap;
+  }
+  .seller-head-link {
+    margin-left: 0;
+  }
+}

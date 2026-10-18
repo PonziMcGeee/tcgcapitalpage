@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import CardTile from '../../components/CardTile';
 import ConfigWarning from '../../components/ConfigWarning';
+import SellerSection from '../../components/SellerSection';
 import { GAMES } from '../../lib/format';
 import { getSupabase } from '../../lib/supabase';
 
@@ -31,20 +31,31 @@ export default function Catalogo() {
       });
   }, []);
 
-  const sellers = useMemo(() => [...new Set(listings.map((l) => l.seller_name))].sort(), [listings]);
+  // Vendedores distintos (id + nombre), ordenados por nombre
+  const sellers = useMemo(() => {
+    const map = new Map();
+    listings.forEach((l) => map.set(l.seller_id, l.seller_name));
+    return [...map.entries()].sort((a, b) => a[1].localeCompare(b[1]));
+  }, [listings]);
 
-  const visibles = listings.filter((l) => {
-    if (game && l.game !== game) return false;
-    if (seller && l.seller_name !== seller) return false;
-    if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
-    return true;
-  });
+  // Cartas filtradas y agrupadas por vendedor: cada uno en su propio bloque
+  const grupos = useMemo(() => {
+    const visibles = listings.filter((l) => {
+      if (game && l.game !== game) return false;
+      if (seller && l.seller_id !== seller) return false;
+      if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
+      return true;
+    });
+    return sellers
+      .map(([id, name]) => ({ id, name, items: visibles.filter((l) => l.seller_id === id) }))
+      .filter((g) => g.items.length > 0);
+  }, [listings, sellers, game, seller, search]);
 
   return (
     <>
       <ConfigWarning />
       <h1>Cartas en venta</h1>
-      <p className="muted">Envíos a España y Europa. Regístrate para ver cómo contactar con el vendedor.</p>
+      <p className="muted">Cada vendedor tiene su propio apartado. Regístrate para ver cómo contactar con ellos.</p>
 
       <div className="filters">
         <input
@@ -63,9 +74,9 @@ export default function Catalogo() {
         </select>
         <select value={seller} onChange={(e) => setSeller(e.target.value)}>
           <option value="">Todos los vendedores</option>
-          {sellers.map((s) => (
-            <option key={s} value={s}>
-              {s}
+          {sellers.map(([id, name]) => (
+            <option key={id} value={id}>
+              {name}
             </option>
           ))}
         </select>
@@ -73,15 +84,13 @@ export default function Catalogo() {
 
       {error && <div className="notice notice-error">{error}</div>}
       {loading && <p className="muted">Cargando…</p>}
-      {!loading && !error && visibles.length === 0 && (
-        <div className="empty">Todavía no hay cartas que mostrar.</div>
+      {!loading && !error && grupos.length === 0 && (
+        <div className="empty">No hay cartas que mostrar.</div>
       )}
 
-      <div className="grid">
-        {visibles.map((l) => (
-          <CardTile key={l.id} listing={l} />
-        ))}
-      </div>
+      {grupos.map((g) => (
+        <SellerSection key={g.id} sellerId={g.id} name={g.name} listings={g.items} />
+      ))}
     </>
   );
 }
