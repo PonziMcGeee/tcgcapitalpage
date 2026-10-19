@@ -809,7 +809,8 @@ a.marquee-card:hover {
   .seller-head-actions {
     margin-left: 0;
     width: 100%;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 12px;
   }
 }
 
@@ -1573,14 +1574,15 @@ h2 {
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--surface);
-  color: #555;
+  color: #c8102e;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  line-height: 0;
   cursor: pointer;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
-  transition: transform 0.12s, color 0.12s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.12s, color 0.12s, background 0.12s;
 }
 .fav-btn svg {
   fill: none;
@@ -1590,7 +1592,8 @@ h2 {
   transform: scale(1.08);
 }
 .fav-btn.active {
-  color: #c8102e;
+  background: #c8102e;
+  color: #fff;
   border-color: #c8102e;
 }
 .fav-btn.active svg {
