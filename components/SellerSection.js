@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { sellerColor } from '../lib/format';
 import CardTile from './CardTile';
 import SellerBadge from './SellerBadge';
+import ShareButton from './ShareButton';
 
 // Bloque con las cartas de un único vendedor, con su nombre y color.
 // `listings` son las que se muestran; `total` es cuántas tiene en total (puede ser más que las mostradas).
@@ -17,9 +18,12 @@ export default function SellerSection({ sellerId, name, color, avatarUrl, listin
             {total} {total === 1 ? 'carta' : 'cartas'}
           </p>
         </div>
-        <Link href={`/tienda/${sellerId}`} className="seller-head-link">
-          Ver tienda →
-        </Link>
+        <div className="seller-head-actions">
+          <ShareButton path={`/tienda/${sellerId}`} title={`Tienda de ${name} en AkibaTrade`} />
+          <Link href={`/tienda/${sellerId}`} className="seller-head-link">
+            Ver tienda →
+          </Link>
+        </div>
       </div>
       <div className="grid">
         {listings.map((l) => (

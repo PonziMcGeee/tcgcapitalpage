@@ -692,8 +692,49 @@ a.marquee-card:hover {
 .seller-head h2 {
   margin: 0;
 }
-.seller-head-link {
+.seller-head-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.share-wrap {
+  position: relative;
+  display: inline-flex;
+}
+.share-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text, #111);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.share-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+.share-toast {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #111;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  z-index: 20;
+}
+.seller-head-link {
+  margin-left: 0;
   color: var(--seller, var(--accent));
   font-weight: 700;
   white-space: nowrap;
@@ -765,8 +806,10 @@ a.marquee-card:hover {
   .seller-head {
     flex-wrap: wrap;
   }
-  .seller-head-link {
+  .seller-head-actions {
     margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
   }
 }
 
