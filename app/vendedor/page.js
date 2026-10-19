@@ -37,6 +37,12 @@ export default function PanelVendedor() {
 
   const [mine, setMine] = useState([]);
   const [editando, setEditando] = useState(null); // carta que se está editando, o null
+  const [ventas, setVentas] = useState({}); // listing_id -> nombre del comprador
+  const [vendiendo, setVendiendo] = useState(null); // carta que se está marcando como vendida
+  const [busqueda, setBusqueda] = useState('');
+  const [resultados, setResultados] = useState([]);
+  const [buscando, setBuscando] = useState(false);
+  const [ventaMsg, setVentaMsg] = useState('');
 
   useEffect(() => {
     if (profile) {
@@ -59,6 +65,8 @@ export default function PanelVendedor() {
       .eq('seller_id', user.id)
       .order('created_at', { ascending: false });
     setMine(data || []);
+    const { data: ventasData } = await sb.from('sales').select('listing_id, buyer_name').eq('seller_id', user.id);
+    setVentas(Object.fromEntries((ventasData || []).map((s) => [s.listing_id, s.buyer_name])));
   }, [user]);
 
   useEffect(() => {
@@ -256,8 +264,55 @@ export default function PanelVendedor() {
 
   async function cambiarEstado(listing) {
     const sb = getSupabase();
-    const status = listing.status === 'sold' ? 'available' : 'sold';
-    await sb.from('listings').update({ status }).eq('id', listing.id);
+    if (listing.status !== 'sold') {
+      // Al marcar como vendida se pregunta a quién (opcional) para que pueda dejar una reseña
+      setVendiendo(listing);
+      setBusqueda('');
+      setResultados([]);
+      setVentaMsg('');
+      return;
+    }
+    await sb.from('listings').update({ status: 'available' }).eq('id', listing.id);
+    await sb.from('sales').delete().eq('listing_id', listing.id);
+    cargarMias();
+  }
+
+  async function buscarComprador(texto) {
+    setBusqueda(texto);
+    setVentaMsg('');
+    if (texto.trim().length < 2) {
+      setResultados([]);
+      return;
+    }
+    const sb = getSupabase();
+    setBuscando(true);
+    const { data, error } = await sb.rpc('buscar_compradores', { q: texto });
+    setBuscando(false);
+    if (error) {
+      setVentaMsg('No se ha podido buscar. ¿Has ejecutado la migración de reseñas?');
+      return;
+    }
+    setResultados(data || []);
+  }
+
+  async function confirmarVenta(comprador) {
+    const sb = getSupabase();
+    const { error } = await sb.from('listings').update({ status: 'sold' }).eq('id', vendiendo.id);
+    if (error) {
+      setVentaMsg('No se ha podido marcar como vendida.');
+      return;
+    }
+    if (comprador) {
+      const { error: errVenta } = await sb
+        .from('sales')
+        .upsert({ listing_id: vendiendo.id, seller_id: user.id, buyer_id: comprador.id }, { onConflict: 'listing_id' });
+      if (errVenta) {
+        setVentaMsg('La carta se ha marcado como vendida, pero no se ha podido guardar el comprador.');
+        cargarMias();
+        return;
+      }
+    }
+    setVendiendo(null);
     cargarMias();
   }
 
@@ -461,6 +516,7 @@ export default function PanelVendedor() {
                 <span className={`badge ${l.status === 'sold' ? 'badge-sold' : ''}`}>
                   {l.status === 'sold' ? 'Vendida' : 'En venta'}
                 </span>
+                {l.status === 'sold' && ventas[l.id] && <span className="muted small"> a {ventas[l.id]}</span>}
               </div>
               <div className="my-actions">
                 <button type="button" className="btn btn-small btn-outline" onClick={() => cambiarEstado(l)}>
@@ -473,6 +529,40 @@ export default function PanelVendedor() {
                   Borrar
                 </button>
               </div>
+              {vendiendo?.id === l.id && (
+                <div className="buyer-picker">
+                  <strong>¿A quién se la has vendido?</strong>
+                  <p className="muted small" style={{ margin: '4px 0 8px' }}>
+                    Busca su nombre o email en AkibaTrade. Así podrá dejarte una reseña que saldrá en tu perfil.
+                  </p>
+                  <input
+                    type="text"
+                    placeholder="Nombre o email del comprador…"
+                    value={busqueda}
+                    onChange={(e) => buscarComprador(e.target.value)}
+                  />
+                  <div className="buyer-results">
+                    {buscando && <span className="muted small">Buscando…</span>}
+                    {!buscando && busqueda.trim().length >= 2 && resultados.length === 0 && !ventaMsg && (
+                      <span className="muted small">No hay ningún usuario con ese nombre.</span>
+                    )}
+                    {resultados.map((r) => (
+                      <button type="button" key={r.id} className="buyer-result" onClick={() => confirmarVenta(r)}>
+                        <strong>{r.display_name}</strong> <span className="muted small">· {r.email_oculto}</span>
+                      </button>
+                    ))}
+                  </div>
+                  {ventaMsg && <div className="notice notice-error">{ventaMsg}</div>}
+                  <div className="admin-actions">
+                    <button type="button" className="btn btn-small btn-outline" onClick={() => confirmarVenta(null)}>
+                      Vendida a otra persona / fuera de la web
+                    </button>
+                    <button type="button" className="btn btn-small btn-outline" onClick={() => setVendiendo(null)}>
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>

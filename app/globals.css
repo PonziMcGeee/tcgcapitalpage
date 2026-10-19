@@ -1698,3 +1698,85 @@ h2 {
   accent-color: #c8102e;
   flex: none;
 }
+
+/* ===== Reseñas ===== */
+.stars {
+  display: inline-flex;
+  gap: 2px;
+  vertical-align: middle;
+}
+.star {
+  fill: none;
+  stroke: #c8102e;
+  stroke-width: 1.6;
+}
+.star.on {
+  fill: #c8102e;
+}
+.star-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+  line-height: 0;
+}
+.rating-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+.review {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.review-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.review p {
+  margin: 8px 0 0;
+  white-space: pre-line;
+}
+.sale-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.sale-card textarea {
+  width: 100%;
+  min-height: 80px;
+}
+.buyer-picker {
+  grid-column: 1 / -1;
+  background: #faf6f1;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+}
+.buyer-results {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0;
+}
+.buyer-result {
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font: inherit;
+}
+.buyer-result:hover {
+  border-color: #c8102e;
+}

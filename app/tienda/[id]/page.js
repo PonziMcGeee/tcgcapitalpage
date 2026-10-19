@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 import CardTile from '../../../components/CardTile';
 import SellerBadge from '../../../components/SellerBadge';
 import FavoriteButton from '../../../components/FavoriteButton';
+import Stars from '../../../components/Stars';
 import ShareButton from '../../../components/ShareButton';
 import SellerContact from '../../../components/SellerContact';
 import { sellerColor } from '../../../lib/format';
@@ -21,6 +22,7 @@ export default function TiendaVendedor() {
   const [contacto, setContacto] = useState(null);
   const [search, setSearch] = useState('');
   const [coleccion, setColeccion] = useState('');
+  const [resenas, setResenas] = useState([]);
 
   useEffect(() => {
     const sb = getSupabase();
@@ -31,7 +33,9 @@ export default function TiendaVendedor() {
     Promise.all([
       sb.from('listings').select('*').eq('seller_id', id).order('created_at', { ascending: false }),
       sb.from('sellers_public').select('id, display_name, color, avatar_url').eq('id', id).maybeSingle(),
-    ]).then(([cartas, vendedor]) => {
+      sb.from('reviews').select('*').eq('seller_id', id).order('created_at', { ascending: false }),
+    ]).then(([cartas, vendedor, rs]) => {
+      setResenas(rs.data || []);
       setListings(cartas.data || []);
       setInfo(vendedor.data || null);
       setLoading(false);
@@ -76,6 +80,7 @@ export default function TiendaVendedor() {
   }
   const color = info?.color;
   const totalEnVenta = listings.filter((l) => l.status === 'available').length;
+  const media = resenas.length ? resenas.reduce((a, r) => a + r.rating, 0) / resenas.length : 0;
 
   return (
     <div style={{ '--seller': sellerColor(id, color) }}>
@@ -90,6 +95,14 @@ export default function TiendaVendedor() {
           <p className="muted">
             {totalEnVenta} {totalEnVenta === 1 ? 'carta' : 'cartas'} en venta
           </p>
+          {resenas.length > 0 && (
+            <a href="#resenas" className="rating-line">
+              <Stars value={media} />
+              <span>
+                {media.toFixed(1)} <span className="muted small">({resenas.length} {resenas.length === 1 ? 'reseña' : 'reseñas'})</span>
+              </span>
+            </a>
+          )}
         </div>
         <div className="shop-contact">
           <div className="shop-icons">
@@ -147,6 +160,22 @@ export default function TiendaVendedor() {
           </div>
         </>
       )}
+
+      <section id="resenas" style={{ marginTop: 36 }}>
+        <h2>Reseñas de compradores</h2>
+        {resenas.length === 0 && <p className="muted">Este vendedor todavía no tiene reseñas.</p>}
+        {resenas.map((r) => (
+          <div className="review" key={r.id}>
+            <div className="review-head">
+              <strong>{r.buyer_name || 'Comprador'}</strong>
+              <Stars value={r.rating} size={18} />
+            </div>
+            {r.listing_name && <p className="muted small" style={{ margin: '2px 0 0' }}>Compró: {r.listing_name}</p>}
+            {r.comment && <p>{r.comment}</p>}
+            <p className="muted small">{new Date(r.created_at).toLocaleDateString('es-ES')}</p>
+          </div>
+        ))}
+      </section>
     </div>
   );
 }

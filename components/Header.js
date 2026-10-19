@@ -42,6 +42,7 @@ export default function Header() {
             Conviértete en vendedor
           </a>
           {!loading && user && <Link href="/favoritos">♥ Favoritos</Link>}
+          {!loading && user && <Link href="/mis-compras">Mis compras</Link>}
           {!loading && isSeller(profile) && <Link href="/vendedor">Mi panel</Link>}
           {!loading && isAdmin(profile) && <Link href="/admin">Admin</Link>}
           {!loading && !user && (
