@@ -909,6 +909,21 @@ a.marquee-card:hover {
   opacity: 1;
   pointer-events: auto;
 }
+.banner-hotspot {
+  position: absolute;
+  left: 51%;
+  top: 73%;
+  width: 34%;
+  height: 11%;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.banner-hotspot:hover {
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.55);
+}
 .banner-text {
   max-width: 560px;
   padding: 0 clamp(20px, 6vw, 70px);
