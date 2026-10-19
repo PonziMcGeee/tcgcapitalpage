@@ -32,7 +32,7 @@ const VENTAJAS = [
   {
     icono: '✅',
     titulo: 'Vendedores contrastados',
-    texto: 'Todos los vendedores son seleccionados y contratados por AkibaTrade. Total confianza al comprar.',
+    texto: 'Todos los vendedores están contrastados por TCGCapital. Total confianza al comprar.',
   },
   {
     icono: '🤝',
