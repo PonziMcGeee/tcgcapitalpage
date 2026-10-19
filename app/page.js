@@ -30,9 +30,9 @@ const PASOS = [
 
 const VENTAJAS = [
   {
-    icono: '💶',
-    titulo: 'Precio claro',
-    texto: 'Ves el precio de la carta, el envío según tu destino y el total antes de escribir a nadie.',
+    icono: '✅',
+    titulo: 'Vendedores contrastados',
+    texto: 'Todos los vendedores son seleccionados y contratados por AkibaTrade. Total confianza al comprar.',
   },
   {
     icono: '🤝',
@@ -40,9 +40,9 @@ const VENTAJAS = [
     texto: 'Conversación directa con cada vendedor, sin intermediarios ni comisiones.',
   },
   {
-    icono: '📷',
-    titulo: 'Fotos reales',
-    texto: 'Cada anuncio enseña la carta real por delante y por detrás para que sepas qué compras.',
+    icono: '🗂️',
+    titulo: 'Amplio catálogo',
+    texto: 'El catálogo más amplio de TCG vintage de toda España, con cartas japonesas de Pokémon y One Piece.',
   },
 ];
 

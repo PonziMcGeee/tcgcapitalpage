@@ -38,6 +38,9 @@ export default function Header() {
         <nav className={`nav ${abierto ? 'open' : ''}`} onClick={() => setAbierto(false)}>
           <Link href="/catalogo">Catálogo</Link>
           <Link href="/vendedores">Vendedores</Link>
+          <a href="https://t.me/tcgcapital_esp" target="_blank" rel="noreferrer" className="nav-seller">
+            Conviértete en vendedor
+          </a>
           {!loading && user && <Link href="/favoritos">♥ Favoritos</Link>}
           {!loading && isSeller(profile) && <Link href="/vendedor">Mi panel</Link>}
           {!loading && isAdmin(profile) && <Link href="/admin">Admin</Link>}
