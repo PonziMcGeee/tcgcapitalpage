@@ -64,7 +64,7 @@ export default function Inicio() {
       .then(setHome)
       .finally(() => setCargado(true));
     sb.from('listings')
-      .select('id, name, price, front_url, thumb_url')
+      .select('id, name, price, front_url, thumb_url, accepts_trade')
       .eq('status', 'available')
       .order('created_at', { ascending: false })
       .limit(12)

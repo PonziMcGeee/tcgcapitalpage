@@ -16,6 +16,7 @@ const EMPTY_FORM = {
   game: GAMES[0],
   collection: '',
   condition: 'NM',
+  accepts_trade: false,
   description: '',
   price: '',
   shipping_spain: '',
@@ -109,6 +110,7 @@ export default function PanelVendedor() {
       game: l.game,
       collection: l.collection || '',
       condition: l.condition || 'NM',
+      accepts_trade: !!l.accepts_trade,
       description: l.description || '',
       price: String(l.price),
       shipping_spain: String(l.shipping_spain ?? ''),
@@ -143,6 +145,7 @@ export default function PanelVendedor() {
         game: form.game,
         collection: form.game === 'Pokémon' && form.collection ? form.collection : null,
         condition: form.condition,
+        accepts_trade: !!form.accepts_trade,
         description: form.description.trim() || null,
         price: Number(form.price),
         shipping_spain: Number(form.shipping_spain || 0),
@@ -356,6 +359,15 @@ export default function PanelVendedor() {
             </select>
           </div>
 
+          <label className="check-row">
+            <input
+              type="checkbox"
+              checked={!!form.accepts_trade}
+              onChange={(e) => cambiar('accepts_trade', e.target.checked)}
+            />
+            <span>Admito trade (intercambio) por esta carta</span>
+          </label>
+
           <div className="row">
             <div className="field">
               <label htmlFor="price">Precio de la carta (€)</label>
@@ -444,7 +456,7 @@ export default function PanelVendedor() {
               <div>
                 <strong>{l.name}</strong>
                 <p className="muted small">
-                  {gameLabel(l)} · {conditionLabel(l.condition)} · {euros(l.price)}
+                  {gameLabel(l)} · {conditionLabel(l.condition)} · {euros(l.price)}{l.accepts_trade ? ' · Trade' : ''}
                 </p>
                 <span className={`badge ${l.status === 'sold' ? 'badge-sold' : ''}`}>
                   {l.status === 'sold' ? 'Vendida' : 'En venta'}

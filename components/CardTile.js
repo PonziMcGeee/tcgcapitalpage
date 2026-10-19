@@ -14,6 +14,11 @@ export default function CardTile({ listing, showSeller = true, color }) {
         <img src={listing.thumb_url || listing.front_url} alt={listing.name} loading="lazy" />
         {listing.condition && <span className="cond-tag" title={conditionLabel(listing.condition)}>{listing.condition}</span>}
         <FavoriteButton kind="card" id={listing.id} label={listing.name} className="fav-corner" />
+        {listing.accepts_trade && (
+          <span className="trade-tag" title="El vendedor admite trade (intercambio)">
+            ⇄ Trade
+          </span>
+        )}
         {listing.status === 'sold' && <span className="sold-tag">Vendida</span>}
       </div>
       <div className="tile-body">

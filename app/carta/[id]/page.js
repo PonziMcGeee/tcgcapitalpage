@@ -100,6 +100,7 @@ export default function DetalleCarta() {
         <div className="panel">
           <span className={`badge ${vendida ? 'badge-sold' : ''}`}>{vendida ? 'Vendida' : listing.game}</span>
           <span className="badge" style={{ marginLeft: 6 }}>{conditionLabel(listing.condition)}</span>
+          {listing.accepts_trade && <span className="badge badge-trade" style={{ marginLeft: 6 }}>⇄ Admite trade</span>}
           {listing.collection && <span className="badge" style={{ marginLeft: 6 }}>{listing.collection}</span>}
           <div className="title-row">
             <h1 style={{ marginTop: 8 }}>{listing.name}</h1>

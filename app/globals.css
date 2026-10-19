@@ -1651,3 +1651,35 @@ h2 {
   border-color: #c8102e;
   color: #fff;
 }
+
+/* ===== Trade ===== */
+.trade-tag {
+  position: absolute;
+  top: 36px;
+  right: 8px;
+  background: #c8102e;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  z-index: 2;
+}
+.badge-trade {
+  background: #c8102e;
+  color: #fff;
+}
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.check-row input {
+  width: 20px;
+  height: 20px;
+  accent-color: #c8102e;
+  flex: none;
+}

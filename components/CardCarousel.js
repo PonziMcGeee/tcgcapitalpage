@@ -26,6 +26,7 @@ export default function CardCarousel({ listings, label = 'Cartas' }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={l.thumb_url || l.front_url} alt={l.name} loading="lazy" />
             {l.status === 'sold' && <span className="sold-tag">Vendida</span>}
+            {l.accepts_trade && <span className="trade-tag">⇄ Trade</span>}
             <span className="marquee-price">{euros(l.price)}</span>
           </Link>
         )

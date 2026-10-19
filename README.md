@@ -35,6 +35,7 @@ El precio que ve el comprador es **carta + envío** (España o resto de Europa),
 > 6. `supabase/migracion-foto-perfil.sql`: foto de perfil de los vendedores.
 > 7. `supabase/migracion-vendedores-destacados.sql`: dos vendedores destacados en la portada.
 > 8. `supabase/migracion-favoritos.sql`: favoritos (cartas y vendedores) de cada comprador.
+> 9. `supabase/migracion-trade.sql`: casilla «Admito trade» en cada carta.
 >
 > Hazlo **antes** de usar la última versión de la web.
 
@@ -112,6 +113,7 @@ supabase/migracion-miniaturas.sql                  Columna de miniatura
 supabase/migracion-foto-perfil.sql                 Foto de perfil de los vendedores
 supabase/migracion-vendedores-destacados.sql       Dos vendedores destacados en la portada
 supabase/migracion-favoritos.sql                    Favoritos de cada usuario (cartas y vendedores)
+supabase/migracion-trade.sql                        Columna accepts_trade (admite trade)
 lib/collections.js                                 Lista de colecciones de Pokémon hasta 2006
 ```
 

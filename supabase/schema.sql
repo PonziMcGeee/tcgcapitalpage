@@ -491,3 +491,7 @@ create policy "añadir mis favoritos" on public.favorites
 drop policy if exists "quitar mis favoritos" on public.favorites;
 create policy "quitar mis favoritos" on public.favorites
   for delete to authenticated using (user_id = auth.uid());
+
+-- ===== Trade =====
+-- Ejecútalo una sola vez en Supabase > SQL Editor > New query > Run.
+alter table public.listings add column if not exists accepts_trade boolean not null default false;
