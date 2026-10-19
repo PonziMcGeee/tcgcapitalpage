@@ -4,10 +4,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { prepararFoto } from '../../lib/image';
 import { getSupabase } from '../../lib/supabase';
 
-const VACIO = { title: '', subtitle: '', button_text: '', link_url: '' };
-
 function BannerForm({ inicial, onSave, onCancel, busy }) {
-  const [campos, setCampos] = useState(inicial ? { ...VACIO, ...inicial } : VACIO);
+  // Los campos vacíos llegan como null desde la base de datos: se pasan a texto vacío
+  const [campos, setCampos] = useState(() => ({
+    title: inicial?.title ?? '',
+    subtitle: inicial?.subtitle ?? '',
+    button_text: inicial?.button_text ?? '',
+    link_url: inicial?.link_url ?? '',
+  }));
   const [file, setFile] = useState(null);
 
   function enviar(e) {
@@ -24,7 +28,7 @@ function BannerForm({ inicial, onSave, onCancel, busy }) {
       <div className="field">
         <label>Imagen del banner {inicial ? '(déjala vacía para mantener la actual)' : ''}</label>
         <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-        <span className="hint">Mejor apaisada, tipo 1920×600. Se recorta para llenar todo el ancho.</span>
+        <span className="hint">Se ve entera, sin recortes. Mejor con proporción 1280×771 (como el banner actual).</span>
       </div>
       <div className="row">
         <div className="field">
@@ -110,10 +114,10 @@ export default function BannersAdmin() {
       }
       const datos = {
         image_url,
-        title: campos.title.trim() || null,
-        subtitle: campos.subtitle.trim() || null,
-        button_text: campos.button_text.trim() || null,
-        link_url: campos.link_url.trim() || null,
+        title: (campos.title || '').trim() || null,
+        subtitle: (campos.subtitle || '').trim() || null,
+        button_text: (campos.button_text || '').trim() || null,
+        link_url: (campos.link_url || '').trim() || null,
       };
       const resultado = banner
         ? await sb.from('home_banners').update(datos).eq('id', banner.id)
@@ -124,8 +128,8 @@ export default function BannersAdmin() {
       setEditando(null);
       setMsg({ type: 'ok', text: 'Banner guardado.' });
       cargar();
-    } catch {
-      setMsg({ type: 'error', text: 'No se ha podido guardar el banner.' });
+    } catch (err) {
+      setMsg({ type: 'error', text: `No se ha podido guardar el banner${err?.message ? `: ${err.message}` : '.'}` });
     }
     setBusy(false);
   }
