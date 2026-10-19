@@ -22,8 +22,8 @@ export default function FavoriteButton({ kind, id, label = '', className = '' })
       aria-label={activo ? `Quitar ${label} de favoritos` : `Añadir ${label} a favoritos`}
       title={activo ? 'Quitar de favoritos' : 'Añadir a favoritos'}
     >
-      <svg viewBox="0 0 24 24" width="20" height="20" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
-        <path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6.1 5c2 0 3.2 1 3.9 2.2h.0C10.7 6 11.9 5 13.9 5c3.4 0 5.2 3.4 3.7 6.8C19.5 16.4 12 21 12 21z" transform="translate(0 .5)" />
+      <svg viewBox="0 0 24 24" width="22" height="22" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
     </button>
   );
