@@ -92,8 +92,10 @@ export default function TiendaVendedor() {
           </p>
         </div>
         <div className="shop-contact">
-          <FavoriteButton kind="seller" id={id} label={name} />
-          <ShareButton path={`/tienda/${id}`} title={`Tienda de ${name} en AkibaTrade`} />
+          <div className="shop-icons">
+            <FavoriteButton kind="seller" id={id} label={name} />
+            <ShareButton path={`/tienda/${id}`} title={`Tienda de ${name} en AkibaTrade`} />
+          </div>
           {user ? (
             <SellerContact seller={contacto} />
           ) : (

@@ -799,6 +799,23 @@ a.marquee-card:hover {
   flex-wrap: wrap;
   align-items: center;
 }
+.shop-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+@media (max-width: 760px) {
+  .shop-contact {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .shop-contact .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
 .grid-sold {
   opacity: 0.55;
 }
