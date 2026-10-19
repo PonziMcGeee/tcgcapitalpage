@@ -8,7 +8,7 @@ import FeaturedSellers from '../components/FeaturedSellers';
 import ConfigWarning from '../components/ConfigWarning';
 import Marquee from '../components/Marquee';
 import SellerCard from '../components/SellerCard';
-import { fetchSellers } from '../lib/data';
+import { fetchRatings, fetchSellers } from '../lib/data';
 import { fetchHome } from '../lib/home';
 import { getSupabase } from '../lib/supabase';
 import { useProfile } from '../lib/useProfile';
@@ -50,6 +50,7 @@ export default function Inicio() {
   const { user } = useProfile();
   const [latest, setLatest] = useState([]);
   const [sellers, setSellers] = useState([]);
+  const [ratings, setRatings] = useState(new Map());
   const [home, setHome] = useState({ banners: [], collections: [], sellerMap: new Map(), featured: [] });
   // Hasta que no llegan los banners y carruseles no se enseña nada por defecto (evita el parpadeo)
   const [cargado, setCargado] = useState(false);
@@ -70,6 +71,7 @@ export default function Inicio() {
       .limit(12)
       .then(({ data }) => setLatest(data || []));
     fetchSellers(sb).then(({ data }) => setSellers(data || []));
+    fetchRatings(sb).then(setRatings);
   }, []);
 
   const { banners, collections, sellerMap, featured } = home;
@@ -136,7 +138,7 @@ export default function Inicio() {
                 label={c.title}
                 renderItem={(s, duplicada) => (
                   <div className="marquee-seller" aria-hidden={duplicada ? true : undefined}>
-                    <SellerCard seller={s} />
+                    <SellerCard seller={s} rating={ratings.get(s.id)} />
                   </div>
                 )}
               />
@@ -175,7 +177,7 @@ export default function Inicio() {
             label="Todos los vendedores"
             renderItem={(s, duplicada) => (
               <div className="marquee-seller" aria-hidden={duplicada ? true : undefined}>
-                <SellerCard seller={s} />
+                <SellerCard seller={s} rating={ratings.get(s.id)} />
               </div>
             )}
           />

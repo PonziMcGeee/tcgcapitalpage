@@ -6,6 +6,7 @@ import BannersAdmin from '../../components/admin/BannersAdmin';
 import CollectionsAdmin from '../../components/admin/CollectionsAdmin';
 import FeaturedAdmin from '../../components/admin/FeaturedAdmin';
 import ListingsAdmin from '../../components/admin/ListingsAdmin';
+import ReviewsAdmin from '../../components/admin/ReviewsAdmin';
 import UsersAdmin from '../../components/admin/UsersAdmin';
 import ConfigWarning from '../../components/ConfigWarning';
 import { isAdmin } from '../../lib/roles';
@@ -17,6 +18,7 @@ const PESTANAS = [
   { id: 'banners', texto: 'Banners' },
   { id: 'carruseles', texto: 'Carruseles' },
   { id: 'destacados', texto: 'Destacados' },
+  { id: 'resenas', texto: 'Reseñas' },
 ];
 
 export default function Admin() {
@@ -74,6 +76,7 @@ export default function Admin() {
       {pestana === 'banners' && <BannersAdmin />}
       {pestana === 'carruseles' && <CollectionsAdmin />}
       {pestana === 'destacados' && <FeaturedAdmin />}
+      {pestana === 'resenas' && <ReviewsAdmin />}
     </>
   );
 }

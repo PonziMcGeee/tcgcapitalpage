@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import CardTile from '../../components/CardTile';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerCard from '../../components/SellerCard';
-import { fetchAllAvailable, fetchSellers } from '../../lib/data';
+import { fetchAllAvailable, fetchRatings, fetchSellers } from '../../lib/data';
 import { getSupabase } from '../../lib/supabase';
 import { useFavorites } from '../../lib/useFavorites';
 
@@ -15,6 +15,7 @@ export default function Favoritos() {
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('cartas');
+  const [ratings, setRatings] = useState(new Map());
 
   useEffect(() => {
     const sb = getSupabase();
@@ -22,6 +23,7 @@ export default function Favoritos() {
       setLoading(false);
       return;
     }
+    fetchRatings(sb).then(setRatings);
     Promise.all([fetchAllAvailable(sb), fetchSellers(sb)]).then(([cartas, vendedores]) => {
       setListings(cartas.data || []);
       setSellers(vendedores.data || []);
@@ -89,7 +91,7 @@ export default function Favoritos() {
           )}
           <div className="sellers-grid">
             {vendedores.map((s) => (
-              <SellerCard key={s.id} seller={s} />
+              <SellerCard key={s.id} seller={s} rating={ratings.get(s.id)} />
             ))}
           </div>
         </>

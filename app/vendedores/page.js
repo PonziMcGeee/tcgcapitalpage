@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerCard from '../../components/SellerCard';
-import { fetchSellers } from '../../lib/data';
+import { fetchRatings, fetchSellers } from '../../lib/data';
 import { getSupabase } from '../../lib/supabase';
 import { useFavorites } from '../../lib/useFavorites';
 
@@ -13,6 +13,7 @@ export default function Vendedores() {
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
   const [soloFav, setSoloFav] = useState(false);
+  const [ratings, setRatings] = useState(new Map());
   const favs = useFavorites();
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function Vendedores() {
       setLoading(false);
       return;
     }
+    fetchRatings(sb).then(setRatings);
     fetchSellers(sb).then(({ data, error: err }) => {
       if (err) setError('No se ha podido cargar la lista de vendedores. ¿Has ejecutado la migración de Supabase? (mira el README)');
       else setSellers(data);
@@ -68,7 +70,7 @@ export default function Vendedores() {
 
       <div className="sellers-grid">
         {lista.map((s) => (
-          <SellerCard key={s.id} seller={s} />
+          <SellerCard key={s.id} seller={s} rating={ratings.get(s.id)} />
         ))}
       </div>
     </>
