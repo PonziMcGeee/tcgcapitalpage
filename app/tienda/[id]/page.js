@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import CardTile from '../../../components/CardTile';
 import SellerBadge from '../../../components/SellerBadge';
+import FavoriteButton from '../../../components/FavoriteButton';
 import ShareButton from '../../../components/ShareButton';
 import SellerContact from '../../../components/SellerContact';
 import { sellerColor } from '../../../lib/format';
@@ -91,6 +92,7 @@ export default function TiendaVendedor() {
           </p>
         </div>
         <div className="shop-contact">
+          <FavoriteButton kind="seller" id={id} label={name} />
           <ShareButton path={`/tienda/${id}`} title={`Tienda de ${name} en AkibaTrade`} />
           {user ? (
             <SellerContact seller={contacto} />

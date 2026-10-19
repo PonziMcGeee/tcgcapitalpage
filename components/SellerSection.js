@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { sellerColor } from '../lib/format';
 import CardTile from './CardTile';
 import SellerBadge from './SellerBadge';
+import FavoriteButton from './FavoriteButton';
 import ShareButton from './ShareButton';
 
 // Bloque con las cartas de un único vendedor, con su nombre y color.
@@ -19,6 +20,7 @@ export default function SellerSection({ sellerId, name, color, avatarUrl, listin
           </p>
         </div>
         <div className="seller-head-actions">
+          <FavoriteButton kind="seller" id={sellerId} label={name} />
           <ShareButton path={`/tienda/${sellerId}`} title={`Tienda de ${name} en AkibaTrade`} />
           <Link href={`/tienda/${sellerId}`} className="seller-head-link">
             Ver tienda →

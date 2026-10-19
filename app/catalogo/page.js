@@ -8,6 +8,7 @@ import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
 import { POKEMON_COLLECTIONS } from '../../lib/collections';
 import { GAMES } from '../../lib/format';
 import { getSupabase } from '../../lib/supabase';
+import { useFavorites } from '../../lib/useFavorites';
 
 const PREVIEW = 6; // cartas que se enseñan por vendedor en la vista agrupada
 const STEP = 24; // cartas que se añaden cada vez en la vista "todas juntas"
@@ -23,6 +24,8 @@ export default function Catalogo() {
   const [seller, setSeller] = useState('');
   const [vista, setVista] = useState('vendedores');
   const [mostradas, setMostradas] = useState(STEP);
+  const [soloFav, setSoloFav] = useState(false);
+  const favs = useFavorites();
 
   useEffect(() => {
     const sb = getSupabase();
@@ -43,7 +46,7 @@ export default function Catalogo() {
 
   useEffect(() => {
     setMostradas(STEP);
-  }, [search, game, coleccion, seller, vista]);
+  }, [search, game, coleccion, seller, vista, soloFav]);
 
   const sellerMap = useMemo(() => new Map(sellers.map((s) => [s.id, s])), [sellers]);
 
@@ -53,10 +56,11 @@ export default function Catalogo() {
         if (game && l.game !== game) return false;
         if (coleccion && l.collection !== coleccion) return false;
         if (seller && l.seller_id !== seller) return false;
+        if (soloFav && !favs.cards.has(l.id)) return false;
         if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
         return true;
       }),
-    [listings, game, coleccion, seller, search]
+    [listings, game, coleccion, seller, search, soloFav, favs.cards]
   );
 
   // Vista por vendedor: un bloque por vendedor con solo unas pocas cartas de muestra
@@ -139,12 +143,24 @@ export default function Catalogo() {
             Todas juntas
           </button>
         </div>
+        <button
+          type="button"
+          className={`fav-filter ${soloFav ? 'active' : ''}`}
+          aria-pressed={soloFav}
+          onClick={() => (favs.logged || !favs.loaded ? setSoloFav((v) => !v) : (window.location.href = '/login'))}
+        >
+          ♥ Solo favoritos
+        </button>
         {!loading && <span className="muted small">{visibles.length} cartas</span>}
       </div>
 
       {error && <div className="notice notice-error">{error}</div>}
       {loading && <p className="muted">Cargando…</p>}
-      {!loading && !error && visibles.length === 0 && <div className="empty">No hay cartas que mostrar.</div>}
+      {!loading && !error && visibles.length === 0 && (
+        <div className="empty">
+          {soloFav ? 'Todavía no has marcado ninguna carta como favorita (con estos filtros).' : 'No hay cartas que mostrar.'}
+        </div>
+      )}
 
       {vista === 'vendedores' &&
         grupos.map((g) => (

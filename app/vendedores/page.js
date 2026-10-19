@@ -5,12 +5,15 @@ import ConfigWarning from '../../components/ConfigWarning';
 import SellerCard from '../../components/SellerCard';
 import { fetchSellers } from '../../lib/data';
 import { getSupabase } from '../../lib/supabase';
+import { useFavorites } from '../../lib/useFavorites';
 
 export default function Vendedores() {
   const [sellers, setSellers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
+  const [soloFav, setSoloFav] = useState(false);
+  const favs = useFavorites();
 
   useEffect(() => {
     const sb = getSupabase();
@@ -30,8 +33,9 @@ export default function Vendedores() {
     const q = search.trim().toLowerCase();
     return sellers
       .filter((s) => !q || s.display_name.toLowerCase().includes(q))
+      .filter((s) => !soloFav || favs.sellers.has(s.id))
       .sort((a, b) => b.cards_available - a.cards_available || a.display_name.localeCompare(b.display_name));
-  }, [sellers, search]);
+  }, [sellers, search, soloFav, favs.sellers]);
 
   return (
     <>
@@ -46,6 +50,16 @@ export default function Vendedores() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+      </div>
+      <div className="toolbar">
+        <button
+          type="button"
+          className={`fav-filter ${soloFav ? 'active' : ''}`}
+          aria-pressed={soloFav}
+          onClick={() => (favs.logged || !favs.loaded ? setSoloFav((v) => !v) : (window.location.href = '/login'))}
+        >
+          ♥ Solo favoritos
+        </button>
       </div>
 
       {error && <div className="notice notice-error">{error}</div>}

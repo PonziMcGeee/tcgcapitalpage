@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import FavoriteButton from './FavoriteButton';
 import { conditionLabel, euros, gameLabel, sellerColor } from '../lib/format';
 
 export default function CardTile({ listing, showSeller = true, color }) {
@@ -12,6 +13,7 @@ export default function CardTile({ listing, showSeller = true, color }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={listing.thumb_url || listing.front_url} alt={listing.name} loading="lazy" />
         {listing.condition && <span className="cond-tag" title={conditionLabel(listing.condition)}>{listing.condition}</span>}
+        <FavoriteButton kind="card" id={listing.id} label={listing.name} className="fav-corner" />
         {listing.status === 'sold' && <span className="sold-tag">Vendida</span>}
       </div>
       <div className="tile-body">

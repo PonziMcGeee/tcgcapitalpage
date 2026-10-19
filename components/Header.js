@@ -38,6 +38,7 @@ export default function Header() {
         <nav className={`nav ${abierto ? 'open' : ''}`} onClick={() => setAbierto(false)}>
           <Link href="/catalogo">Catálogo</Link>
           <Link href="/vendedores">Vendedores</Link>
+          {!loading && user && <Link href="/favoritos">♥ Favoritos</Link>}
           {!loading && isSeller(profile) && <Link href="/vendedor">Mi panel</Link>}
           {!loading && isAdmin(profile) && <Link href="/admin">Admin</Link>}
           {!loading && !user && (

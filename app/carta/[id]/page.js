@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import FavoriteButton from '../../../components/FavoriteButton';
 import SellerBadge from '../../../components/SellerBadge';
 import SellerContact from '../../../components/SellerContact';
 import { conditionLabel, euros } from '../../../lib/format';
@@ -100,7 +101,10 @@ export default function DetalleCarta() {
           <span className={`badge ${vendida ? 'badge-sold' : ''}`}>{vendida ? 'Vendida' : listing.game}</span>
           <span className="badge" style={{ marginLeft: 6 }}>{conditionLabel(listing.condition)}</span>
           {listing.collection && <span className="badge" style={{ marginLeft: 6 }}>{listing.collection}</span>}
-          <h1 style={{ marginTop: 8 }}>{listing.name}</h1>
+          <div className="title-row">
+            <h1 style={{ marginTop: 8 }}>{listing.name}</h1>
+            <FavoriteButton kind="card" id={listing.id} label={listing.name} />
+          </div>
           <Link href={`/tienda/${listing.seller_id}`} className="seller-link">
             <SellerBadge id={listing.seller_id} name={listing.seller_name} color={color} avatarUrl={avatar} size={30} />
             <span>
