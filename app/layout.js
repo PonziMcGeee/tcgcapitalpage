@@ -1,4 +1,5 @@
 import './globals.css';
+import { Analytics } from '@vercel/analytics/next';
 import Header from '../components/Header';
 
 export const metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <footer className="footer">
           <div className="container">AkibaTrade · Envíos a España y Europa</div>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
