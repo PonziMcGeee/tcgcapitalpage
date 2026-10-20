@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import SellerBadge from '../../components/SellerBadge';
 import { useCallback, useEffect, useState } from 'react';
+import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
 import { LOTE, coleccionesPara } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
@@ -391,14 +392,16 @@ export default function PanelVendedor() {
 
           <div className="field">
             <label htmlFor="collection">Colección</label>
-            <select id="collection" value={form.collection} onChange={(e) => cambiar('collection', e.target.value)}>
-              <option value="">Sin indicar</option>
-              {coleccionesPara(form.game).map((c) => (
-                <option key={c} value={c}>
-                  {c === LOTE ? 'Lote (cartas de distintos tipos)' : c}
-                </option>
-              ))}
-            </select>
+            <SearchSelect
+              id="collection"
+              value={form.collection}
+              onChange={(c) => cambiar('collection', c)}
+              options={coleccionesPara(form.game).map((c) => ({
+                value: c,
+                label: c === LOTE ? 'Lote (cartas de distintos tipos)' : c,
+              }))}
+              placeholder="Escribe para buscar la colección…"
+            />
           </div>
 
           <div className="field">

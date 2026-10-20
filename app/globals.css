@@ -1829,3 +1829,64 @@ h2 {
   font-size: 1.2rem;
   cursor: pointer;
 }
+
+/* ===== Desplegable con buscador ===== */
+.ss {
+  position: relative;
+}
+.ss input {
+  width: 100%;
+  padding-right: 36px;
+}
+.ss-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+}
+.ss-list {
+  position: absolute;
+  z-index: 30;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  max-height: 280px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+}
+.ss-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font: inherit;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.ss-list button:hover,
+.ss-list button.hl {
+  background: #fbeaec;
+}
+.ss-list button.sel {
+  font-weight: 700;
+  color: #c8102e;
+}
+.ss-empty {
+  padding: 10px 12px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}

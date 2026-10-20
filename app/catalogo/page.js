@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import CardTile from '../../components/CardTile';
+import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerSection from '../../components/SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
@@ -113,22 +114,18 @@ export default function Catalogo() {
             </option>
           ))}
         </select>
-        <select
-          value={coleccion}
-          onChange={(e) => {
-            setColeccion(e.target.value);
-            if (e.target.value && e.target.value !== LOTE) setGame('Pokémon');
-          }}
-          style={{ gridColumn: '1 / -1' }}
-        >
-            <option value="">Todas las colecciones</option>
-            <option value={LOTE}>Lote</option>
-            {POKEMON_COLLECTIONS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-        </select>
+        <div style={{ gridColumn: '1 / -1' }}>
+          <SearchSelect
+            value={coleccion}
+            onChange={(v) => {
+              setColeccion(v);
+              if (v && v !== LOTE) setGame('Pokémon');
+            }}
+            emptyLabel="Todas las colecciones"
+            placeholder="Escribe para buscar la colección…"
+            options={[LOTE, ...POKEMON_COLLECTIONS].map((x) => ({ value: x, label: x }))}
+          />
+        </div>
       </div>
 
       <div className="toolbar">
