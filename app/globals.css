@@ -1780,3 +1780,52 @@ h2 {
 .buyer-result:hover {
   border-color: #c8102e;
 }
+
+/* ===== Zoom de fotos ===== */
+.zoom-box {
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #efe9e1;
+  cursor: zoom-in;
+}
+.detail-photos .zoom-box img {
+  border: none;
+  border-radius: 0;
+  transition: transform 0.15s ease-out;
+}
+@media (hover: hover) and (pointer: fine) {
+  .zoom-box:hover img {
+    transform: scale(2.5);
+  }
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: zoom-out;
+}
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.lightbox-close {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import FavoriteButton from '../../../components/FavoriteButton';
+import ZoomImage from '../../../components/ZoomImage';
 import SellerBadge from '../../../components/SellerBadge';
 import SellerContact from '../../../components/SellerContact';
 import { conditionLabel, euros } from '../../../lib/format';
@@ -82,14 +83,12 @@ export default function DetalleCarta() {
       <div className="detail">
         <div className="detail-photos">
           <figure>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={listing.front_url} alt={`${listing.name} (delante)`} />
+            <ZoomImage src={listing.front_url} alt={`${listing.name} (delante)`} />
             <figcaption>Delante</figcaption>
           </figure>
           <figure>
             {listing.back_url ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={listing.back_url} alt={`${listing.name} (detrás)`} />
+              <ZoomImage src={listing.back_url} alt={`${listing.name} (detrás)`} />
             ) : (
               <div className="empty small">Sin foto trasera</div>
             )}
