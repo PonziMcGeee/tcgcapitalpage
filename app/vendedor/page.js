@@ -5,7 +5,7 @@ import SellerBadge from '../../components/SellerBadge';
 import { useCallback, useEffect, useState } from 'react';
 import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
-import { ERAS, IDIOMAS, LOTE, coleccionesPara, inferirIdiomaEra } from '../../lib/collections';
+import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, coleccionesPara, inferirIdiomaEra } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
 import { prepararAvatar, prepararFoto, prepararMiniatura } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
@@ -406,7 +406,7 @@ export default function PanelVendedor() {
                 <select
                   id="language"
                   value={form.language}
-                  onChange={(e) => setForm((f) => ({ ...f, language: e.target.value, collection: f.collection === LOTE ? LOTE : '' }))}
+                  onChange={(e) => setForm((f) => ({ ...f, language: e.target.value, collection: ESPECIALES.includes(f.collection) ? f.collection : '' }))}
                 >
                   <option value="">Elige el idioma…</option>
                   {IDIOMAS.map((i) => (
@@ -422,7 +422,7 @@ export default function PanelVendedor() {
                   id="era"
                   value={form.era}
                   disabled={!form.language}
-                  onChange={(e) => setForm((f) => ({ ...f, era: e.target.value, collection: f.collection === LOTE ? LOTE : '' }))}
+                  onChange={(e) => setForm((f) => ({ ...f, era: e.target.value, collection: ESPECIALES.includes(f.collection) ? f.collection : '' }))}
                 >
                   <option value="">{form.language ? 'Elige la era…' : 'Primero elige el idioma'}</option>
                   {ERAS.map((e) => (
@@ -443,7 +443,7 @@ export default function PanelVendedor() {
               onChange={(c) => cambiar('collection', c)}
               options={coleccionesPara(form.game, form.language, form.era).map((c) => ({
                 value: c,
-                label: c === LOTE ? 'Lote (cartas de distintos tipos)' : c,
+                label: ESPECIAL_LABEL[c] || c,
               }))}
               emptyLabel={
                 form.game === 'Pokémon' && !(form.language && form.era)
