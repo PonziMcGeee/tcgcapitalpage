@@ -4,7 +4,7 @@ import Link from 'next/link';
 import SellerBadge from '../../components/SellerBadge';
 import { useCallback, useEffect, useState } from 'react';
 import ConfigWarning from '../../components/ConfigWarning';
-import { POKEMON_COLLECTIONS } from '../../lib/collections';
+import { LOTE, coleccionesPara } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
 import { prepararAvatar, prepararFoto, prepararMiniatura } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
@@ -151,7 +151,7 @@ export default function PanelVendedor() {
       const datos = {
         name: form.name.trim(),
         game: form.game,
-        collection: form.game === 'Pokémon' && form.collection ? form.collection : null,
+        collection: form.collection && coleccionesPara(form.game).includes(form.collection) ? form.collection : null,
         condition: form.condition,
         accepts_trade: !!form.accepts_trade,
         description: form.description.trim() || null,
@@ -389,19 +389,17 @@ export default function PanelVendedor() {
             </select>
           </div>
 
-          {form.game === 'Pokémon' && (
-            <div className="field">
-              <label htmlFor="collection">Colección</label>
-              <select id="collection" value={form.collection} onChange={(e) => cambiar('collection', e.target.value)}>
-                <option value="">Sin indicar</option>
-                {POKEMON_COLLECTIONS.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div className="field">
+            <label htmlFor="collection">Colección</label>
+            <select id="collection" value={form.collection} onChange={(e) => cambiar('collection', e.target.value)}>
+              <option value="">Sin indicar</option>
+              {coleccionesPara(form.game).map((c) => (
+                <option key={c} value={c}>
+                  {c === LOTE ? 'Lote (cartas de distintos tipos)' : c}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="field">
             <label htmlFor="condition">Estado de la carta</label>

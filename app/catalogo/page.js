@@ -5,7 +5,7 @@ import CardTile from '../../components/CardTile';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerSection from '../../components/SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
-import { POKEMON_COLLECTIONS } from '../../lib/collections';
+import { LOTE, POKEMON_COLLECTIONS } from '../../lib/collections';
 import { GAMES } from '../../lib/format';
 import { getSupabase } from '../../lib/supabase';
 import { useFavorites } from '../../lib/useFavorites';
@@ -117,11 +117,12 @@ export default function Catalogo() {
           value={coleccion}
           onChange={(e) => {
             setColeccion(e.target.value);
-            if (e.target.value) setGame('Pokémon');
+            if (e.target.value && e.target.value !== LOTE) setGame('Pokémon');
           }}
           style={{ gridColumn: '1 / -1' }}
         >
             <option value="">Todas las colecciones</option>
+            <option value={LOTE}>Lote</option>
             {POKEMON_COLLECTIONS.map((c) => (
               <option key={c} value={c}>
                 {c}

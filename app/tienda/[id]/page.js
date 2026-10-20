@@ -9,6 +9,7 @@ import FavoriteButton from '../../../components/FavoriteButton';
 import Stars from '../../../components/Stars';
 import ShareButton from '../../../components/ShareButton';
 import SellerContact from '../../../components/SellerContact';
+import { LOTE } from '../../../lib/collections';
 import { sellerColor } from '../../../lib/format';
 import { getSupabase } from '../../../lib/supabase';
 import { useProfile } from '../../../lib/useProfile';
@@ -63,7 +64,9 @@ export default function TiendaVendedor() {
   );
   // Solo las colecciones que este vendedor tiene realmente
   const colecciones = useMemo(
-    () => [...new Set(listings.filter((l) => l.status === 'available' && l.collection).map((l) => l.collection))].sort(),
+    () => [...new Set(listings.filter((l) => l.status === 'available' && l.collection).map((l) => l.collection))].sort(
+        (x, y) => (y === LOTE) - (x === LOTE) || x.localeCompare(y)
+      ),
     [listings]
   );
   const vendidas = listings.filter((l) => l.status === 'sold');
