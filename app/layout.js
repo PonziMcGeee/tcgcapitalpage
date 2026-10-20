@@ -1,5 +1,6 @@
 import './globals.css';
 import Header from '../components/Header';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata = {
   title: 'AkibaTrade',
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <footer className="footer">
           <div className="container">AkibaTrade · Envíos a España y Europa</div>
         </footer>
+        <SpeedInsights />
       </body>
     </html>
   );
