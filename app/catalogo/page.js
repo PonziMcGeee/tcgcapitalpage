@@ -6,7 +6,7 @@ import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerSection from '../../components/SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
-import { LOTE, POKEMON_COLLECTIONS } from '../../lib/collections';
+import { ERAS, IDIOMAS, LOTE, inferirIdiomaEra, setsDe } from '../../lib/collections';
 import { GAMES } from '../../lib/format';
 import { getSupabase } from '../../lib/supabase';
 import { useFavorites } from '../../lib/useFavorites';
@@ -26,6 +26,8 @@ export default function Catalogo() {
   const [vista, setVista] = useState('vendedores');
   const [mostradas, setMostradas] = useState(STEP);
   const [soloFav, setSoloFav] = useState(false);
+  const [idioma, setIdioma] = useState('');
+  const [era, setEra] = useState('');
   const favs = useFavorites();
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function Catalogo() {
 
   useEffect(() => {
     setMostradas(STEP);
-  }, [search, game, coleccion, seller, vista, soloFav]);
+  }, [search, game, coleccion, seller, vista, soloFav, idioma, era]);
 
   const sellerMap = useMemo(() => new Map(sellers.map((s) => [s.id, s])), [sellers]);
 
@@ -56,12 +58,17 @@ export default function Catalogo() {
       listings.filter((l) => {
         if (game && l.game !== game) return false;
         if (coleccion && l.collection !== coleccion) return false;
+        if (idioma || era) {
+          const deducido = inferirIdiomaEra(l.collection);
+          if (idioma && (l.language || deducido.idioma) !== idioma) return false;
+          if (era && (l.era || deducido.era) !== era) return false;
+        }
         if (seller && l.seller_id !== seller) return false;
         if (soloFav && !favs.cards.has(l.id)) return false;
         if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
         return true;
       }),
-    [listings, game, coleccion, seller, search, soloFav, favs.cards]
+    [listings, game, coleccion, seller, search, soloFav, favs.cards, idioma, era]
   );
 
   // Vista por vendedor: un bloque por vendedor con solo unas pocas cartas de muestra
@@ -114,6 +121,38 @@ export default function Catalogo() {
             </option>
           ))}
         </select>
+        <div style={{ gridColumn: '1 / -1', display: 'grid', gap: 12, gridTemplateColumns: '1fr 1fr' }}>
+          <select
+            value={idioma}
+            onChange={(e) => {
+              setIdioma(e.target.value);
+              setColeccion('');
+              if (e.target.value) setGame('Pokémon');
+            }}
+          >
+            <option value="">Todos los idiomas</option>
+            {IDIOMAS.map((i) => (
+              <option key={i.value} value={i.value}>
+                {i.label}
+              </option>
+            ))}
+          </select>
+          <select
+            value={era}
+            onChange={(e) => {
+              setEra(e.target.value);
+              setColeccion('');
+              if (e.target.value) setGame('Pokémon');
+            }}
+          >
+            <option value="">Todas las eras</option>
+            {ERAS.map((x) => (
+              <option key={x.value} value={x.value}>
+                {x.corto}
+              </option>
+            ))}
+          </select>
+        </div>
         <div style={{ gridColumn: '1 / -1' }}>
           <SearchSelect
             value={coleccion}
@@ -123,7 +162,7 @@ export default function Catalogo() {
             }}
             emptyLabel="Todas las colecciones"
             placeholder="Escribe para buscar la colección…"
-            options={[LOTE, ...POKEMON_COLLECTIONS].map((x) => ({ value: x, label: x }))}
+            options={[LOTE, ...setsDe(idioma, era)].map((x) => ({ value: x, label: x }))}
           />
         </div>
       </div>

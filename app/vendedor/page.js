@@ -5,7 +5,7 @@ import SellerBadge from '../../components/SellerBadge';
 import { useCallback, useEffect, useState } from 'react';
 import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
-import { LOTE, coleccionesPara } from '../../lib/collections';
+import { ERAS, IDIOMAS, LOTE, coleccionesPara, inferirIdiomaEra } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
 import { prepararAvatar, prepararFoto, prepararMiniatura } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
@@ -15,6 +15,8 @@ import { useProfile } from '../../lib/useProfile';
 const EMPTY_FORM = {
   name: '',
   game: GAMES[0],
+  language: '',
+  era: '',
   collection: '',
   condition: 'NM',
   accepts_trade: false,
@@ -117,6 +119,8 @@ export default function PanelVendedor() {
     setForm({
       name: l.name,
       game: l.game,
+      language: l.language || inferirIdiomaEra(l.collection).idioma,
+      era: l.era || inferirIdiomaEra(l.collection).era,
       collection: l.collection || '',
       condition: l.condition || 'NM',
       accepts_trade: !!l.accepts_trade,
@@ -152,7 +156,12 @@ export default function PanelVendedor() {
       const datos = {
         name: form.name.trim(),
         game: form.game,
-        collection: form.collection && coleccionesPara(form.game).includes(form.collection) ? form.collection : null,
+        language: form.game === 'Pokémon' && form.language ? form.language : null,
+        era: form.game === 'Pokémon' && form.era ? form.era : null,
+        collection:
+          form.collection && coleccionesPara(form.game, form.language, form.era).includes(form.collection)
+            ? form.collection
+            : null,
         condition: form.condition,
         accepts_trade: !!form.accepts_trade,
         description: form.description.trim() || null,
@@ -390,17 +399,58 @@ export default function PanelVendedor() {
             </select>
           </div>
 
+          {form.game === 'Pokémon' && (
+            <div className="row">
+              <div className="field">
+                <label htmlFor="language">Idioma de la carta</label>
+                <select
+                  id="language"
+                  value={form.language}
+                  onChange={(e) => setForm((f) => ({ ...f, language: e.target.value, collection: f.collection === LOTE ? LOTE : '' }))}
+                >
+                  <option value="">Elige el idioma…</option>
+                  {IDIOMAS.map((i) => (
+                    <option key={i.value} value={i.value}>
+                      {i.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="era">Era</label>
+                <select
+                  id="era"
+                  value={form.era}
+                  disabled={!form.language}
+                  onChange={(e) => setForm((f) => ({ ...f, era: e.target.value, collection: f.collection === LOTE ? LOTE : '' }))}
+                >
+                  <option value="">{form.language ? 'Elige la era…' : 'Primero elige el idioma'}</option>
+                  {ERAS.map((e) => (
+                    <option key={e.value} value={e.value}>
+                      {e.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
+
           <div className="field">
-            <label htmlFor="collection">Colección</label>
+            <label htmlFor="collection">Set / colección</label>
             <SearchSelect
               id="collection"
               value={form.collection}
               onChange={(c) => cambiar('collection', c)}
-              options={coleccionesPara(form.game).map((c) => ({
+              options={coleccionesPara(form.game, form.language, form.era).map((c) => ({
                 value: c,
                 label: c === LOTE ? 'Lote (cartas de distintos tipos)' : c,
               }))}
-              placeholder="Escribe para buscar la colección…"
+              emptyLabel={
+                form.game === 'Pokémon' && !(form.language && form.era)
+                  ? 'Elige idioma y era para ver los sets'
+                  : 'Sin indicar'
+              }
+              placeholder="Escribe para buscar el set…"
             />
           </div>
 
