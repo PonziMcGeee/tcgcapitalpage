@@ -7,6 +7,7 @@ import CardCarousel from '../components/CardCarousel';
 import FeaturedSellers from '../components/FeaturedSellers';
 import ConfigWarning from '../components/ConfigWarning';
 import Marquee from '../components/Marquee';
+import SearchBar from '../components/SearchBar';
 import SellerCard from '../components/SellerCard';
 import { fetchRatings, fetchSellers } from '../lib/data';
 import { fetchHome } from '../lib/home';
@@ -83,6 +84,8 @@ export default function Inicio() {
   return (
     <>
       <ConfigWarning />
+
+      <SearchBar />
 
       {!cargado ? (
         <div className="banner-slider banner-skeleton" aria-hidden="true" />

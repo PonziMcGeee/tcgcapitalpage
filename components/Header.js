@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { getSupabase } from '../lib/supabase';
 import { isAdmin, isSeller } from '../lib/roles';
@@ -10,6 +10,8 @@ import { useProfile } from '../lib/useProfile';
 export default function Header() {
   const { user, profile, loading } = useProfile();
   const router = useRouter();
+  const pathname = usePathname() || '/';
+  const activo = (href) => (pathname === href || pathname.startsWith(href + '/') ? 'active' : '');
   const [abierto, setAbierto] = useState(false);
 
   async function salir() {
@@ -35,26 +37,26 @@ export default function Header() {
         >
           {abierto ? '✕' : '☰'}
         </button>
-        <nav className={`nav ${abierto ? 'open' : ''}`} onClick={() => setAbierto(false)}>
-          <Link href="/catalogo">Catálogo</Link>
-          <Link href="/vendedores">Vendedores</Link>
+        <nav aria-label="Principal" className={`nav ${abierto ? 'open' : ''}`} onClick={() => setAbierto(false)}>
+          <Link href="/catalogo" className={`nav-link ${activo('/catalogo')}`}>Cartas</Link>
+          <Link href="/vendedores" className={`nav-link ${activo('/vendedores') || activo('/tienda')}`}>Vendedores</Link>
           <a href="https://t.me/tcgcapital_esp" target="_blank" rel="noreferrer" className="nav-seller">
             Conviértete en vendedor
           </a>
-          {!loading && user && <Link href="/favoritos">♥ Favoritos</Link>}
-          {!loading && user && <Link href="/mis-compras">Mis compras</Link>}
-          {!loading && isSeller(profile) && <Link href="/vendedor">Mi panel</Link>}
-          {!loading && isAdmin(profile) && <Link href="/admin">Admin</Link>}
+          {!loading && user && <Link href="/favoritos" className={`nav-link ${activo('/favoritos')}`}>♥ Favoritos</Link>}
+          {!loading && user && <Link href="/mis-compras" className={`nav-link ${activo('/mis-compras')}`}>Mis compras</Link>}
+          {!loading && isSeller(profile) && <Link href="/vendedor" className={`nav-link ${activo('/vendedor')}`}>Mi panel</Link>}
+          {!loading && isAdmin(profile) && <Link href="/admin" className={`nav-link ${activo('/admin')}`}>Admin</Link>}
           {!loading && !user && (
             <>
-              <Link href="/login">Entrar</Link>
-              <Link href="/registro" className="btn btn-small">
+              <Link href="/login" className={`nav-link ${activo('/login')}`}>Entrar</Link>
+              <Link href="/registro" className="btn btn-small nav-cta">
                 Crear cuenta
               </Link>
             </>
           )}
           {!loading && user && (
-            <button type="button" className="link-button" onClick={salir}>
+            <button type="button" className="link-button nav-link nav-exit" onClick={salir}>
               Salir
             </button>
           )}
