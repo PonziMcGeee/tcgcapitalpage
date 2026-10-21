@@ -6,7 +6,7 @@ import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerSection from '../../components/SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
-import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, inferirIdiomaEra, setsDe } from '../../lib/collections';
+import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, inferirIdiomaEra, setsDe } from '../../lib/collections';
 import { GAMES } from '../../lib/format';
 import { getSupabase } from '../../lib/supabase';
 import { useFavorites } from '../../lib/useFavorites';
@@ -158,11 +158,11 @@ export default function Catalogo() {
             value={coleccion}
             onChange={(v) => {
               setColeccion(v);
-              if (v && !ESPECIALES.includes(v)) setGame('Pokémon');
+              if (v && !ESPECIALES.includes(v) && v !== OTRA) setGame('Pokémon');
             }}
             emptyLabel="Todas las colecciones"
             placeholder="Escribe para buscar la colección…"
-            options={[...ESPECIALES, ...setsDe(idioma, era)].map((x) => ({ value: x, label: ESPECIAL_LABEL[x] || x }))}
+            options={[...ESPECIALES, ...setsDe(idioma, era), OTRA].map((x) => ({ value: x, label: ESPECIAL_LABEL[x] || x }))}
           />
         </div>
       </div>

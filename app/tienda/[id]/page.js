@@ -9,7 +9,7 @@ import FavoriteButton from '../../../components/FavoriteButton';
 import Stars from '../../../components/Stars';
 import ShareButton from '../../../components/ShareButton';
 import SellerContact from '../../../components/SellerContact';
-import { ESPECIALES } from '../../../lib/collections';
+import { ESPECIALES, OTRA } from '../../../lib/collections';
 import { sellerColor } from '../../../lib/format';
 import { getSupabase } from '../../../lib/supabase';
 import { useProfile } from '../../../lib/useProfile';
@@ -66,9 +66,8 @@ export default function TiendaVendedor() {
   const colecciones = useMemo(
     () => [...new Set(listings.filter((l) => l.status === 'available' && l.collection).map((l) => l.collection))].sort(
         (x, y) => {
-          const ix = ESPECIALES.indexOf(x);
-          const iy = ESPECIALES.indexOf(y);
-          if (ix !== -1 || iy !== -1) return (ix === -1 ? 99 : ix) - (iy === -1 ? 99 : iy);
+          const orden = (n) => (n === OTRA ? 100 : ESPECIALES.indexOf(n) === -1 ? 50 : ESPECIALES.indexOf(n));
+          if (orden(x) !== orden(y)) return orden(x) - orden(y);
           return x.localeCompare(y);
         }
       ),
