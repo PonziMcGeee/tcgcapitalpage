@@ -2011,3 +2011,15 @@ h2 {
     display: none;
   }
 }
+.nav .nav-link:has(.nav-heart) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-heart {
+  color: var(--accent);
+  flex: none;
+}
+.nav .nav-link.active .nav-heart {
+  fill: var(--accent);
+}
