@@ -42,7 +42,12 @@ export default function Login() {
             <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
           <div className="field">
-            <label htmlFor="password">Contraseña</label>
+            <div className="label-row">
+              <label htmlFor="password">Contraseña</label>
+              <Link href="/recuperar" className="forgot-link">
+                ¿Has olvidado tu contraseña?
+              </Link>
+            </div>
             <input
               id="password"
               type="password"
@@ -51,9 +56,6 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <p className="small" style={{ margin: 0 }}>
-            <Link href="/recuperar">He olvidado mi contraseña</Link>
-          </p>
           {error && <div className="notice notice-error">{error}</div>}
           <button className="btn btn-block" disabled={busy}>
             {busy ? 'Entrando…' : 'Entrar'}

@@ -2077,3 +2077,18 @@ h2 {
   font-size: 0.8rem;
   color: #7d766e;
 }
+
+.label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.forgot-link {
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+.forgot-link:hover {
+  text-decoration: underline;
+}
