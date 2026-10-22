@@ -2041,3 +2041,39 @@ h2 {
     min-width: 0;
   }
 }
+
+/* Pie de página */
+.footer {
+  padding: 32px 0 28px;
+  text-align: center;
+}
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 24px;
+}
+.footer-links a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.footer-contact {
+  min-width: 140px;
+  text-align: center;
+}
+.footer-copy {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: #a39b92;
+}
+.footer-sub {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #7d766e;
+}
