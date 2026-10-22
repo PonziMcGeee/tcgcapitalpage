@@ -126,3 +126,14 @@ lib/collections.js                                 Lista de colecciones de Poké
 - Stripe Connect para cobrar con tarjeta y repartir el dinero a cada vendedor
 - Aviso por email o Telegram al vendedor cuando alguien contacta
 - Varias fotos por carta, favoritos y carrito con varias cartas del mismo vendedor
+
+## Formulario "Conviértete en vendedor" (correo)
+
+La página `/conviertete-en-vendedor` envía un correo a `contacto@akibatrade.com` desde `app/api/contacto/route.js`
+usando SMTP de Google Workspace. En Vercel → Settings → Environment Variables añade:
+
+- `SMTP_USER` = `contacto@akibatrade.com`
+- `SMTP_PASS` = contraseña de aplicación de esa cuenta (Cuenta de Google → Seguridad → Verificación en 2 pasos → Contraseñas de aplicaciones)
+- (opcional) `CONTACT_TO` para cambiar el destinatario, `SMTP_HOST`/`SMTP_PORT` para otro proveedor
+
+Después haz un Redeploy.
