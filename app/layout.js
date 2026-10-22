@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
         <main className="container main">{children}</main>
         <footer className="footer">
           <div className="container footer-inner">
-            <Link href="/conviertete-en-vendedor" className="btn btn-small footer-contact">
+            <Link href="/contacto" className="btn btn-small footer-contact">
               Contacto
             </Link>
             <p className="footer-copy">© 2026 AkibaTrade. Todos los derechos reservados.</p>

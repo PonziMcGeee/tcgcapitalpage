@@ -23,6 +23,8 @@ export async function POST(req) {
   const contacto = String(body.contacto || '').trim().slice(0, 200);
   const juegos = Array.isArray(body.juegos) ? body.juegos.map((j) => String(j).slice(0, 40)).slice(0, 5) : [];
   const experiencia = String(body.experiencia || '').trim().slice(0, 300);
+  const tipo = body.tipo === 'general' ? 'general' : 'vendedor';
+  const motivo = String(body.motivo || '').trim().slice(0, 80);
   const mensaje = String(body.mensaje || '').trim().slice(0, 3000);
 
   if (!nombre || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || mensaje.length < 10) {
@@ -50,13 +52,20 @@ export async function POST(req) {
     auth: { user, pass },
   });
 
-  const lineas = [
-    ['Nombre', nombre],
-    ['Email', email],
-    ['Telegram / WhatsApp / Instagram', contacto || '—'],
-    ['Juegos que vende', juegos.join(', ') || '—'],
-    ['Experiencia', experiencia || '—'],
-  ];
+  const lineas =
+    tipo === 'general'
+      ? [
+          ['Nombre', nombre],
+          ['Email', email],
+          ['Motivo', motivo || '—'],
+        ]
+      : [
+          ['Nombre', nombre],
+          ['Email', email],
+          ['Telegram / WhatsApp / Instagram', contacto || '—'],
+          ['Juegos que vende', juegos.join(', ') || '—'],
+          ['Experiencia', experiencia || '—'],
+        ];
   const texto = lineas.map(([k, v]) => `${k}: ${v}`).join('\n') + `\n\nMensaje:\n${mensaje}`;
   const html =
     lineas.map(([k, v]) => `<p><b>${esc(k)}:</b> ${esc(v)}</p>`).join('') +
@@ -67,7 +76,7 @@ export async function POST(req) {
       from: `"AkibaTrade web" <${user}>`,
       to: DESTINO,
       replyTo: `"${nombre.replace(/"/g, '')}" <${email}>`,
-      subject: `Nuevo vendedor interesado: ${nombre}`,
+      subject: tipo === 'general' ? `[Contacto web] ${motivo || 'Mensaje'} — ${nombre}` : `Nuevo vendedor interesado: ${nombre}`,
       text: texto,
       html,
     });
