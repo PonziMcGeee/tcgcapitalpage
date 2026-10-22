@@ -8,6 +8,7 @@ import SellerSection from '../../components/SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
 import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, inferirIdiomaEra, setsDe } from '../../lib/collections';
 import { GAMES } from '../../lib/format';
+import { ORDENES, ordenar } from '../../lib/orden';
 import { getSupabase } from '../../lib/supabase';
 import { useFavorites } from '../../lib/useFavorites';
 
@@ -28,6 +29,7 @@ export default function Catalogo() {
   const [soloFav, setSoloFav] = useState(false);
   const [idioma, setIdioma] = useState('');
   const [era, setEra] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const favs = useFavorites();
 
   // Enlaces desde el buscador: /catalogo?coleccion=… o ?q=…
@@ -56,13 +58,13 @@ export default function Catalogo() {
 
   useEffect(() => {
     setMostradas(STEP);
-  }, [search, game, coleccion, seller, vista, soloFav, idioma, era]);
+  }, [search, game, coleccion, seller, vista, soloFav, idioma, era, orden]);
 
   const sellerMap = useMemo(() => new Map(sellers.map((s) => [s.id, s])), [sellers]);
 
   const visibles = useMemo(
     () =>
-      listings.filter((l) => {
+      ordenar(listings.filter((l) => {
         if (game && l.game !== game) return false;
         if (coleccion && l.collection !== coleccion) return false;
         if (idioma || era) {
@@ -74,8 +76,8 @@ export default function Catalogo() {
         if (soloFav && !favs.cards.has(l.id)) return false;
         if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
         return true;
-      }),
-    [listings, game, coleccion, seller, search, soloFav, favs.cards, idioma, era]
+      }), orden),
+    [listings, game, coleccion, seller, search, soloFav, favs.cards, idioma, era, orden]
   );
 
   // Vista por vendedor: un bloque por vendedor con solo unas pocas cartas de muestra
@@ -195,6 +197,13 @@ export default function Catalogo() {
         >
           ♥ Solo favoritos
         </button>
+        <select className="sort-select" value={orden} onChange={(e) => setOrden(e.target.value)} aria-label="Ordenar cartas">
+          {ORDENES.map((o) => (
+            <option key={o.value} value={o.value}>
+              {o.label}
+            </option>
+          ))}
+        </select>
         {!loading && <span className="muted small">{visibles.length} cartas</span>}
       </div>
 

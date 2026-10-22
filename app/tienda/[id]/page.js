@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
+import { ORDENES, ordenar } from '../../../lib/orden';
 import CardTile from '../../../components/CardTile';
 import SellerBadge from '../../../components/SellerBadge';
 import FavoriteButton from '../../../components/FavoriteButton';
@@ -23,6 +24,7 @@ export default function TiendaVendedor() {
   const [contacto, setContacto] = useState(null);
   const [search, setSearch] = useState('');
   const [coleccion, setColeccion] = useState('');
+  const [orden, setOrden] = useState('recientes');
   const [resenas, setResenas] = useState([]);
 
   useEffect(() => {
@@ -56,11 +58,14 @@ export default function TiendaVendedor() {
 
   const enVenta = useMemo(
     () =>
-      listings
-        .filter((l) => l.status === 'available')
-        .filter((l) => !search || l.name.toLowerCase().includes(search.toLowerCase()))
-        .filter((l) => !coleccion || l.collection === coleccion),
-    [listings, search, coleccion]
+      ordenar(
+        listings
+          .filter((l) => l.status === 'available')
+          .filter((l) => !search || l.name.toLowerCase().includes(search.toLowerCase()))
+          .filter((l) => !coleccion || l.collection === coleccion),
+        orden
+      ),
+    [listings, search, coleccion, orden]
   );
   // Solo las colecciones que este vendedor tiene realmente
   const colecciones = useMemo(
@@ -129,8 +134,8 @@ export default function TiendaVendedor() {
         </div>
       </div>
 
-      {(totalEnVenta > 8 || colecciones.length > 0) && (
-        <div className={`filters ${colecciones.length > 0 ? 'filters-2' : 'filters-1'}`}>
+      {totalEnVenta > 1 && (
+        <div className={`filters ${colecciones.length > 0 ? 'filters-3' : 'filters-2'}`}>
           <input
             type="text"
             placeholder={`Buscar en la tienda de ${name}…`}
@@ -147,6 +152,13 @@ export default function TiendaVendedor() {
               ))}
             </select>
           )}
+          <select value={orden} onChange={(e) => setOrden(e.target.value)} aria-label="Ordenar cartas">
+            {ORDENES.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
         </div>
       )}
 

@@ -2023,3 +2023,21 @@ h2 {
 .nav .nav-link.active .nav-heart {
   fill: var(--accent);
 }
+
+/* Ordenar por precio */
+.filters-3 {
+  grid-template-columns: 2fr 1fr 1fr !important;
+}
+.sort-select {
+  width: auto;
+  min-width: 200px;
+}
+@media (max-width: 760px) {
+  .filters-3 {
+    grid-template-columns: 1fr !important;
+  }
+  .sort-select {
+    flex: 1;
+    min-width: 0;
+  }
+}
