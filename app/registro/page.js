@@ -9,6 +9,7 @@ export default function Registro() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [password2, setPassword2] = useState('');
   const [error, setError] = useState('');
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -17,6 +18,10 @@ export default function Registro() {
     e.preventDefault();
     const sb = getSupabase();
     if (!sb) return;
+    if (password !== password2) {
+      setError('Las contraseñas no coinciden.');
+      return;
+    }
     setBusy(true);
     setError('');
     const { data, error: err } = await sb.auth.signUp({
@@ -78,6 +83,18 @@ export default function Registro() {
               onChange={(e) => setPassword(e.target.value)}
             />
             <span className="hint">Mínimo 6 caracteres.</span>
+          </div>
+          <div className="field">
+            <label htmlFor="password2">Repetir contraseña</label>
+            <input
+              id="password2"
+              type="password"
+              minLength={6}
+              required
+              autoComplete="new-password"
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+            />
           </div>
           {error && <div className="notice notice-error">{error}</div>}
           <button className="btn btn-block" disabled={busy}>

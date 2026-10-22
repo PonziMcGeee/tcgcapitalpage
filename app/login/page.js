@@ -51,6 +51,9 @@ export default function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          <p className="small" style={{ margin: 0 }}>
+            <Link href="/recuperar">He olvidado mi contraseña</Link>
+          </p>
           {error && <div className="notice notice-error">{error}</div>}
           <button className="btn btn-block" disabled={busy}>
             {busy ? 'Entrando…' : 'Entrar'}
