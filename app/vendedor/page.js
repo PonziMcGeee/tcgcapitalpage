@@ -557,10 +557,14 @@ export default function PanelVendedor() {
         <div className="my-list">
           {mine.map((l) => (
             <div className="my-item" key={l.id}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={l.thumb_url || l.front_url} alt={l.name} />
+              <Link href={`/carta/${l.id}`} className="my-item-link" aria-label={`Ver ${l.name}`}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={l.thumb_url || l.front_url} alt={l.name} />
+              </Link>
               <div>
-                <strong>{l.name}</strong>
+                <Link href={`/carta/${l.id}`} className="my-item-name">
+                  <strong>{l.name}</strong>
+                </Link>
                 <p className="muted small">
                   {gameLabel(l)} · {conditionLabel(l.condition)} · {euros(l.price)}{l.accepts_trade ? ' · Trade' : ''}
                 </p>
