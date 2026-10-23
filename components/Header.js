@@ -1,11 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import SearchBar from './SearchBar';
 import { getSupabase } from '../lib/supabase';
 import { isAdmin, isSeller } from '../lib/roles';
 import { useProfile } from '../lib/useProfile';
+
+// El buscador va fijo en la cabecera. Si estás en /buscar, enseña lo que has buscado.
+function HeaderSearch() {
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const q = pathname === '/buscar' ? params.get('q') || '' : '';
+  return <SearchBar key={`${pathname}|${q}`} initial={q} />;
+}
 
 export default function Header() {
   const { user, profile, loading } = useProfile();
@@ -64,6 +73,11 @@ export default function Header() {
             </button>
           )}
         </nav>
+      </div>
+      <div className="container header-search">
+        <Suspense fallback={<div className="searchbar searchbar-ph" aria-hidden="true" />}>
+          <HeaderSearch />
+        </Suspense>
       </div>
     </header>
   );

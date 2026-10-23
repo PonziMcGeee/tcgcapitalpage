@@ -2147,15 +2147,33 @@ h2 {
   cursor: default;
 }
 
-/* Portada: buscador y banner con un ancho cómodo (el banner no ocupa toda la pantalla) */
-.banner-slider,
-.banner-skeleton {
-  max-width: 880px;
-  margin-left: auto;
-  margin-right: auto;
+/* Portada: banner apaisado, del ancho del contenido y más bajo (como un carrusel) */
+@media (min-width: 761px) {
+  .banner-slider,
+  .banner-skeleton {
+    aspect-ratio: 4 / 1;
+  }
 }
-.main > .searchbar {
-  max-width: 880px;
-  margin-left: auto;
-  margin-right: auto;
+
+/* Buscador anclado en la cabecera (la cabecera ya es fija al hacer scroll) */
+.header-search {
+  padding-top: 0;
+  padding-bottom: 12px;
+}
+.header-search .searchbar {
+  margin: 0 auto;
+  max-width: 900px;
+  box-shadow: none;
+}
+.searchbar-ph {
+  height: 52px;
+}
+@media (max-width: 480px) {
+  .searchbar input {
+    font-size: 0.8rem;
+  }
+  .searchbar-btn {
+    padding: 9px 12px;
+    font-size: 0.85rem;
+  }
 }

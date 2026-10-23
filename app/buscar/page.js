@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import CardTile from '../../components/CardTile';
 import ConfigWarning from '../../components/ConfigWarning';
-import SearchBar from '../../components/SearchBar';
 import SellerCard from '../../components/SellerCard';
 import { deriveSellers, fetchAllAvailable, fetchRatings, fetchSellers } from '../../lib/data';
 import { getSupabase } from '../../lib/supabase';
@@ -16,8 +16,8 @@ const norm = (s) =>
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '');
 
-export default function Buscar() {
-  const [q, setQ] = useState('');
+function Resultados() {
+  const q = useSearchParams().get('q') || '';
   const [listings, setListings] = useState([]);
   const [sellers, setSellers] = useState([]);
   const [ratings, setRatings] = useState(new Map());
@@ -25,7 +25,6 @@ export default function Buscar() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    setQ(new URLSearchParams(window.location.search).get('q') || '');
     const sb = getSupabase();
     if (!sb) {
       setLoading(false);
@@ -68,7 +67,6 @@ export default function Buscar() {
     <>
       <ConfigWarning />
       <h1>Buscar</h1>
-      <SearchBar key={q} initial={q} autoFocus={!q} />
       {error && <div className="notice notice-error">{error}</div>}
       {loading && <p className="muted">Cargando…</p>}
       {!hayBusqueda && !loading && (
@@ -118,5 +116,13 @@ export default function Buscar() {
         </section>
       )}
     </>
+  );
+}
+
+export default function Buscar() {
+  return (
+    <Suspense fallback={<p className="muted">Cargando…</p>}>
+      <Resultados />
+    </Suspense>
   );
 }
