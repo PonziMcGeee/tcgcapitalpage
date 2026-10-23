@@ -74,10 +74,12 @@ export default function Header() {
           )}
         </nav>
       </div>
-      <div className="container header-search">
-        <Suspense fallback={<div className="searchbar searchbar-ph" aria-hidden="true" />}>
-          <HeaderSearch />
-        </Suspense>
+      <div className="header-searchband">
+        <div className="container header-search">
+          <Suspense fallback={<div className="searchbar searchbar-ph" aria-hidden="true" />}>
+            <HeaderSearch />
+          </Suspense>
+        </div>
       </div>
     </header>
   );

@@ -2177,3 +2177,44 @@ h2 {
     font-size: 0.85rem;
   }
 }
+
+/* Franja del buscador: fondo oscuro y línea roja para separarla del menú */
+.header-searchband {
+  background: #141414;
+  border-top: 1px solid #2a2a2a;
+  border-bottom: 3px solid var(--accent);
+}
+.header-search {
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+.header-search .searchbar {
+  max-width: 640px;
+  border: 1px solid #fff;
+  border-radius: 8px;
+  padding: 2px 2px 2px 12px;
+  background: #fff;
+}
+.header-search .searchbar input {
+  padding: 7px 4px;
+  font-size: 0.95rem;
+}
+.header-search .searchbar-btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+}
+.searchbar-ph {
+  height: 40px;
+  max-width: 640px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+}
+@media (max-width: 480px) {
+  .header-search .searchbar-btn {
+    padding: 7px 12px;
+  }
+  .header-search .searchbar input {
+    font-size: 0.8rem;
+  }
+}
