@@ -901,7 +901,7 @@ a.marquee-card:hover {
 /* ===== Banners y carruseles de la portada ===== */
 .banner-slider {
   position: relative;
-  aspect-ratio: 1389 / 363; /* proporción de los banners: se ven enteros, también en móvil */
+  aspect-ratio: 1328 / 450; /* banner: 1328×450 px en pantallas grandes */
   border-radius: 20px;
   overflow: hidden;
   margin-bottom: 36px;
@@ -2151,7 +2151,7 @@ h2 {
 @media (min-width: 761px) {
   .banner-slider,
   .banner-skeleton {
-    aspect-ratio: 1389 / 363; /* proporción de los banners actuales (≈3,83:1) */
+    aspect-ratio: 1328 / 450; /* banner: 1328×450 px en pantallas grandes */
   }
 }
 
@@ -2230,4 +2230,17 @@ h2 {
     padding: 6px 12px;
     font-size: 0.8rem;
   }
+}
+
+/* Botón del banner: rojo, como los demás botones principales */
+.banner-btn {
+  background: var(--accent);
+  color: #fff;
+  border: 2px solid #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+.banner-btn:hover {
+  background: var(--accent-dark);
+  color: #fff;
 }

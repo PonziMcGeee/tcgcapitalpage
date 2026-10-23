@@ -8,11 +8,11 @@ function BannerButton({ banner }) {
   const text = banner.button_text || 'Ver más';
   const interno = banner.link_url.startsWith('/');
   return interno ? (
-    <Link href={banner.link_url} className="btn btn-light">
+    <Link href={banner.link_url} className="btn banner-btn">
       {text}
     </Link>
   ) : (
-    <a href={banner.link_url} target="_blank" rel="noreferrer" className="btn btn-light">
+    <a href={banner.link_url} target="_blank" rel="noreferrer" className="btn banner-btn">
       {text}
     </a>
   );
