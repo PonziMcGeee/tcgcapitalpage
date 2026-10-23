@@ -2151,7 +2151,7 @@ h2 {
 @media (min-width: 761px) {
   .banner-slider,
   .banner-skeleton {
-    aspect-ratio: 4 / 1;
+    aspect-ratio: 1389 / 363; /* proporción de los banners actuales (≈3,83:1) */
   }
 }
 
