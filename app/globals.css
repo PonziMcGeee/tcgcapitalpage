@@ -260,6 +260,19 @@ textarea:focus {
   padding: 10px;
   text-align: center;
   background: #faf6f1;
+  transition: border-color 0.15s, background 0.15s;
+}
+.photo-drop.is-dragging {
+  border-color: var(--accent);
+  background: #fdecee;
+}
+.photo-drop.is-dragging img,
+.photo-drop.is-dragging .photo-empty {
+  opacity: 0.6;
+}
+.photo-empty small {
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 .photo-drop img {
   width: 100%;

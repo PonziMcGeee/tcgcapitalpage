@@ -731,6 +731,23 @@ export default function PanelVendedor() {
 
 function FotoCampo({ titulo, file, onChange, actual }) {
   const [preview, setPreview] = useState(null);
+  const [arrastrando, setArrastrando] = useState(false);
+
+  // Arrastrar y soltar: acepta el primer archivo de imagen que se suelte
+  const onDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    if (!arrastrando) setArrastrando(true);
+  };
+  const onDragLeave = (e) => {
+    if (!e.currentTarget.contains(e.relatedTarget)) setArrastrando(false);
+  };
+  const onDrop = (e) => {
+    e.preventDefault();
+    setArrastrando(false);
+    const img = Array.from(e.dataTransfer.files || []).find((f) => f.type.startsWith('image/'));
+    if (img) onChange(img);
+  };
 
   useEffect(() => {
     if (!file) {
@@ -743,7 +760,12 @@ function FotoCampo({ titulo, file, onChange, actual }) {
   }, [file]);
 
   return (
-    <div className="photo-drop">
+    <div
+      className={`photo-drop${arrastrando ? ' is-dragging' : ''}`}
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={onDrop}
+    >
       {preview ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={preview} alt={titulo} />
@@ -751,7 +773,13 @@ function FotoCampo({ titulo, file, onChange, actual }) {
         // eslint-disable-next-line @next/next/no-img-element
         <img src={actual} alt={titulo} />
       ) : (
-        <div className="photo-empty">{titulo}</div>
+        <div className="photo-empty">
+          <span>
+            {titulo}
+            <br />
+            <small>Arrastra la foto aquí</small>
+          </span>
+        </div>
       )}
       <label className="btn btn-small btn-outline" style={{ cursor: 'pointer' }}>
         {file || actual ? 'Cambiar foto' : 'Elegir foto'}
