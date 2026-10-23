@@ -36,7 +36,7 @@ a {
 
 .container {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 0 16px;
 }
@@ -2189,7 +2189,7 @@ h2 {
   padding-bottom: 9px;
 }
 .header-search .searchbar {
-  max-width: 760px;
+  max-width: none;
   border: 1px solid #fff;
   border-radius: 8px;
   padding: 2px 2px 2px 12px;
@@ -2205,7 +2205,7 @@ h2 {
 }
 .searchbar-ph {
   height: 40px;
-  max-width: 760px;
+  max-width: none;
   margin: 0 auto;
   background: #fff;
   border-radius: 8px;
