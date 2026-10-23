@@ -2146,3 +2146,16 @@ h2 {
   opacity: 0.3;
   cursor: default;
 }
+
+/* Portada: buscador y banner con un ancho cómodo (el banner no ocupa toda la pantalla) */
+.banner-slider,
+.banner-skeleton {
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.main > .searchbar {
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
