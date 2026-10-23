@@ -2104,3 +2104,32 @@ h2 {
   color: var(--accent);
   text-decoration: underline;
 }
+
+/* Orden de las cartas del vendedor */
+.order-btns {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+.order-btns button {
+  border: none;
+  background: transparent;
+  padding: 7px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--ink, #141414);
+}
+.order-btns button + button {
+  border-left: 1px solid var(--border);
+}
+.order-btns button:hover:not(:disabled) {
+  background: #fbeceb;
+  color: var(--accent);
+}
+.order-btns button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}

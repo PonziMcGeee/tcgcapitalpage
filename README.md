@@ -118,6 +118,7 @@ supabase/migracion-favoritos.sql                    Favoritos de cada usuario (c
 supabase/migracion-trade.sql                        Columna accepts_trade (admite trade)
 supabase/migracion-resenas.sql                      Ventas con comprador y reseñas
 supabase/migracion-idioma-era.sql                   Idioma y era de las cartas de Pokémon
+supabase/migracion-orden-vendedor.sql               Orden de las cartas elegido por el vendedor (columna sort_order)
 lib/collections.js                                 Lista de colecciones de Pokémon hasta 2006
 ```
 

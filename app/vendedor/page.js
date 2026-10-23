@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import SellerBadge from '../../components/SellerBadge';
 import { useCallback, useEffect, useState } from 'react';
+import { porOrdenVendedor } from '../../lib/orden';
 import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
 import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, coleccionesPara, inferirIdiomaEra } from '../../lib/collections';
@@ -26,6 +27,12 @@ const EMPTY_FORM = {
   shipping_europe: '',
 };
 
+// Número para que una carta nueva salga la primera (uno menos que el menor que haya)
+function primerNumero(lista) {
+  const nums = lista.map((l) => l.sort_order).filter((n) => typeof n === 'number');
+  return nums.length ? Math.min(...nums) - 1 : null;
+}
+
 export default function PanelVendedor() {
   const { user, profile, loading, reload } = useProfile();
 
@@ -39,6 +46,8 @@ export default function PanelVendedor() {
   const [busy, setBusy] = useState(false);
 
   const [mine, setMine] = useState([]);
+  const [moviendo, setMoviendo] = useState(false);
+  const [ordenMsg, setOrdenMsg] = useState('');
   const [editando, setEditando] = useState(null); // carta que se está editando, o null
   const [ventas, setVentas] = useState({}); // listing_id -> nombre del comprador
   const [vendiendo, setVendiendo] = useState(null); // carta que se está marcando como vendida
@@ -67,7 +76,7 @@ export default function PanelVendedor() {
       .select('*')
       .eq('seller_id', user.id)
       .order('created_at', { ascending: false });
-    setMine(data || []);
+    setMine([...(data || [])].sort(porOrdenVendedor));
     const { data: ventasData } = await sb.from('sales').select('listing_id, buyer_name').eq('seller_id', user.id);
     setVentas(Object.fromEntries((ventasData || []).map((s) => [s.listing_id, s.buyer_name])));
   }, [user]);
@@ -193,6 +202,7 @@ export default function PanelVendedor() {
         const thumb_url = await subirFoto(front, 'thumb');
         const { error } = await sb.from('listings').insert({
           seller_id: user.id,
+          sort_order: primerNumero(mine),
           seller_name: profile.display_name || user.email.split('@')[0],
           ...datos,
           front_url,
@@ -270,6 +280,30 @@ export default function PanelVendedor() {
     await sb.from('profiles').update({ avatar_url: null }).eq('id', user.id);
     if (vieja) await sb.storage.from('cards').remove([vieja]);
     reload();
+  }
+
+  // Mover una carta en el orden de la tienda: 'arriba' del todo, o un puesto 'sube' / 'baja'
+  async function mover(l, accion) {
+    const sb = getSupabase();
+    if (!sb || moviendo) return;
+    const lista = [...mine];
+    const i = lista.findIndex((x) => x.id === l.id);
+    const j = accion === 'arriba' ? 0 : accion === 'sube' ? i - 1 : i + 1;
+    if (i < 0 || j < 0 || j >= lista.length || i === j) return;
+    lista.splice(j, 0, lista.splice(i, 1)[0]);
+    const nueva = lista.map((x, n) => ({ ...x, sort_order: n }));
+    const cambiadas = nueva.filter((x, n) => mine.find((y) => y.id === x.id)?.sort_order !== n);
+    setMine(nueva); // se ve al instante
+    setMoviendo(true);
+    setOrdenMsg('');
+    const resultados = await Promise.all(
+      cambiadas.map((x) => sb.from('listings').update({ sort_order: x.sort_order }).eq('id', x.id))
+    );
+    setMoviendo(false);
+    if (resultados.some((r) => r.error)) {
+      setOrdenMsg('No se ha podido guardar el orden. ¿Has ejecutado la migración de Supabase "orden-vendedor"? (mira el README)');
+      cargarMias();
+    }
   }
 
   async function cambiarEstado(listing) {
@@ -543,6 +577,13 @@ export default function PanelVendedor() {
       <section className="panel">
         <h2>2. Mis cartas ({mine.length})</h2>
         {mine.length === 0 && <p className="muted">Todavía no has subido ninguna carta.</p>}
+        {mine.length > 1 && (
+          <p className="muted small">
+            Con las flechas eliges el orden en que salen tus cartas en tu tienda (el comprador puede cambiarlo con sus
+            filtros).
+          </p>
+        )}
+        {ordenMsg && <div className="notice notice-error">{ordenMsg}</div>}
         {sinMiniatura.length > 0 && (
           <div className="notice" style={{ marginBottom: 12 }}>
             <p style={{ margin: '0 0 8px' }}>
@@ -555,7 +596,7 @@ export default function PanelVendedor() {
           </div>
         )}
         <div className="my-list">
-          {mine.map((l) => (
+          {mine.map((l, idx) => (
             <div className="my-item" key={l.id}>
               <Link href={`/carta/${l.id}`} className="my-item-link" aria-label={`Ver ${l.name}`}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -574,6 +615,19 @@ export default function PanelVendedor() {
                 {l.status === 'sold' && ventas[l.id] && <span className="muted small"> a {ventas[l.id]}</span>}
               </div>
               <div className="my-actions">
+                {mine.length > 1 && (
+                  <span className="order-btns" role="group" aria-label="Orden en tu tienda">
+                    <button type="button" title="Poner la primera" aria-label="Poner la primera" disabled={idx === 0 || moviendo} onClick={() => mover(l, 'arriba')}>
+                      ⤒
+                    </button>
+                    <button type="button" title="Subir" aria-label="Subir" disabled={idx === 0 || moviendo} onClick={() => mover(l, 'sube')}>
+                      ▲
+                    </button>
+                    <button type="button" title="Bajar" aria-label="Bajar" disabled={idx === mine.length - 1 || moviendo} onClick={() => mover(l, 'baja')}>
+                      ▼
+                    </button>
+                  </span>
+                )}
                 <button type="button" className="btn btn-small btn-outline" onClick={() => cambiarEstado(l)}>
                   {l.status === 'sold' ? 'Volver a poner en venta' : 'Marcar como vendida'}
                 </button>

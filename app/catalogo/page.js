@@ -8,7 +8,7 @@ import SellerSection from '../../components/SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../../lib/data';
 import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, inferirIdiomaEra, setsDe } from '../../lib/collections';
 import { GAMES } from '../../lib/format';
-import { ORDENES, ordenar } from '../../lib/orden';
+import { ORDENES, ordenar, porOrdenVendedor } from '../../lib/orden';
 import { getSupabase } from '../../lib/supabase';
 import { useFavorites } from '../../lib/useFavorites';
 
@@ -90,8 +90,12 @@ export default function Catalogo() {
     });
     return sellers
       .filter((s) => porVendedor.has(s.id))
-      .map((s) => ({ seller: s, items: porVendedor.get(s.id) }));
-  }, [vista, visibles, sellers]);
+      .map((s) => ({
+        seller: s,
+        // Con el orden por defecto, cada vendedor enseña primero las cartas que él ha elegido
+        items: orden === 'recientes' ? [...porVendedor.get(s.id)].sort(porOrdenVendedor) : porVendedor.get(s.id),
+      }));
+  }, [vista, visibles, sellers, orden]);
 
   const vendedoresConCartas = sellers.filter((s) => s.cards_available > 0);
 

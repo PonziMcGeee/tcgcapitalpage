@@ -675,3 +675,6 @@ alter table public.listings add column if not exists era text check (era in ('vi
 update public.listings
 set language = 'ja'
 where game = 'Pokémon' and collection is not null and collection <> 'Lote' and language is null;
+-- Orden que elige cada vendedor para sus cartas (menor número = sale antes).
+-- Ejecútalo una sola vez en Supabase > SQL Editor > New query > Run.
+alter table public.listings add column if not exists sort_order integer;

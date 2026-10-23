@@ -24,7 +24,7 @@ export default function TiendaVendedor() {
   const [contacto, setContacto] = useState(null);
   const [search, setSearch] = useState('');
   const [coleccion, setColeccion] = useState('');
-  const [orden, setOrden] = useState('recientes');
+  const [orden, setOrden] = useState('vendedor');
   const [resenas, setResenas] = useState([]);
 
   useEffect(() => {
@@ -153,6 +153,7 @@ export default function TiendaVendedor() {
             </select>
           )}
           <select value={orden} onChange={(e) => setOrden(e.target.value)} aria-label="Ordenar cartas">
+            <option value="vendedor">Orden del vendedor</option>
             {ORDENES.map((o) => (
               <option key={o.value} value={o.value}>
                 {o.label}
