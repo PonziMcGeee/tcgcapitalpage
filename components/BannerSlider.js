@@ -3,18 +3,6 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 
-// Banner que es solo imagen + enlace (sin título ni subtítulo): el botón es una zona clicable
-// colocada sobre el «+ MÁS INFO AQUÍ» dibujado en la propia imagen.
-function BannerHotspot({ banner }) {
-  const text = banner.button_text || 'Más info';
-  const interno = banner.link_url.startsWith('/');
-  return interno ? (
-    <Link href={banner.link_url} className="banner-hotspot" aria-label={text} tabIndex={-1} />
-  ) : (
-    <a href={banner.link_url} target="_blank" rel="noreferrer" className="banner-hotspot" aria-label={text} />
-  );
-}
-
 function BannerButton({ banner }) {
   if (!banner.link_url) return null;
   const text = banner.button_text || 'Ver más';
@@ -56,9 +44,8 @@ export default function BannerSlider({ banners }) {
           style={{ backgroundImage: `url(${b.image_url})` }}
           aria-hidden={i !== actual}
         >
-          {!b.title && !b.subtitle && b.link_url && <BannerHotspot banner={b} />}
-          {(b.title || b.subtitle) && (
-            <div className="banner-text">
+          {(b.title || b.subtitle || b.link_url) && (
+            <div className={`banner-text ${!b.title && !b.subtitle ? 'banner-text-solo' : ''}`}>
               {b.title && <h2>{b.title}</h2>}
               {b.subtitle && <p>{b.subtitle}</p>}
               <BannerButton banner={b} />
