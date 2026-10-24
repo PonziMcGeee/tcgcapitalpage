@@ -29,6 +29,10 @@ export default function RootLayout({ children }) {
               <Link href="/aviso-legal">Aviso legal</Link>
               <span aria-hidden="true">·</span>
               <Link href="/privacidad">Política de privacidad</Link>
+              <span aria-hidden="true">·</span>
+              <Link href="/cookies">Política de cookies</Link>
+              <span aria-hidden="true">·</span>
+              <Link href="/condiciones">Condiciones de uso</Link>
             </nav>
             <p className="footer-copy">© 2026 AkibaTrade. Todos los derechos reservados.</p>
           </div>
