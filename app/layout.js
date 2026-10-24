@@ -25,6 +25,11 @@ export default function RootLayout({ children }) {
             <Link href="/contacto" className="btn btn-small footer-contact">
               Contacto
             </Link>
+            <nav className="footer-legal" aria-label="Información legal">
+              <Link href="/aviso-legal">Aviso legal</Link>
+              <span aria-hidden="true">·</span>
+              <Link href="/privacidad">Política de privacidad</Link>
+            </nav>
             <p className="footer-copy">© 2026 AkibaTrade. Todos los derechos reservados.</p>
           </div>
         </footer>
