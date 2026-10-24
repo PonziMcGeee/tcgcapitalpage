@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 const MOTIVOS = [
   'Duda o consulta',
+  'Quiero hacerme vendedor',
   'Error en la web (bug)',
   'Problema con una compra o un vendedor',
   'Sugerencia',
