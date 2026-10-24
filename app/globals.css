@@ -2220,13 +2220,13 @@ h2 {
   }
 }
 
-/* Banner que es solo imagen + botón: el botón va arriba, en el centro */
+/* Banner que es solo imagen + botón: el botón va abajo, en el centro */
 .banner-text-solo {
-  align-self: flex-start;
+  align-self: flex-end;
   width: 100%;
   max-width: none;
   justify-items: center;
-  padding: clamp(10px, 2vw, 22px) 16px 0;
+  padding: 0 16px clamp(10px, 2vw, 22px);
 }
 @media (max-width: 760px) {
   .banner-text-solo .btn {
