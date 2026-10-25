@@ -24,7 +24,7 @@ export default function Catalogo() {
   const [game, setGame] = useState('');
   const [coleccion, setColeccion] = useState('');
   const [seller, setSeller] = useState('');
-  const [vista, setVista] = useState('vendedores');
+  const [vista, setVista] = useState('todas');
   const [mostradas, setMostradas] = useState(STEP);
   const [soloFav, setSoloFav] = useState(false);
   const [idioma, setIdioma] = useState('');
