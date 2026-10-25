@@ -29,7 +29,7 @@ export default function Catalogo() {
   const [soloFav, setSoloFav] = useState(false);
   const [idioma, setIdioma] = useState('');
   const [era, setEra] = useState('');
-  const [orden, setOrden] = useState('recientes');
+  const [orden, setOrden] = useState('alfabetico');
   const favs = useFavorites();
 
   // Enlaces desde el buscador: /catalogo?coleccion=… o ?q=…
@@ -93,7 +93,7 @@ export default function Catalogo() {
       .map((s) => ({
         seller: s,
         // Con el orden por defecto, cada vendedor enseña primero las cartas que él ha elegido
-        items: orden === 'recientes' ? [...porVendedor.get(s.id)].sort(porOrdenVendedor) : porVendedor.get(s.id),
+        items: orden === 'alfabetico' ? [...porVendedor.get(s.id)].sort(porOrdenVendedor) : porVendedor.get(s.id),
       }));
   }, [vista, visibles, sellers, orden]);
 
