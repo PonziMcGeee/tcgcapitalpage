@@ -102,7 +102,7 @@ export default function Catalogo() {
   return (
     <>
       <ConfigWarning />
-      <h1>Cartas Pokémon y One Piece en venta</h1>
+      <h1>Cartas TCG en venta</h1>
       <p className="muted">Regístrate para ver cómo contactar con los vendedores.</p>
 
       <div className="filters">

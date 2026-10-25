@@ -6,7 +6,7 @@ import Header from '../components/Header';
 
 export const metadata = {
   title: 'AkibaTrade',
-  description: 'Compra cartas Pokémon y One Piece japonesas y vintage directamente a vendedores contrastados. Envíos a España y Europa.',
+  description: 'Compra cartas TCG japonesas y vintage directamente a vendedores contrastados. Envíos a España y Europa.',
 };
 
 export const viewport = {
