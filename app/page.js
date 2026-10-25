@@ -42,7 +42,7 @@ const VENTAJAS = [
   {
     icono: '🗂️',
     titulo: 'Amplio catálogo',
-    texto: 'El catálogo más amplio de TCG vintage de toda España, con cartas japonesas de Pokémon y One Piece.',
+    texto: 'El catálogo más amplio de TCG vintage de toda España, con cartas de múltiples colecciones y vendedores.',
   },
 ];
 
