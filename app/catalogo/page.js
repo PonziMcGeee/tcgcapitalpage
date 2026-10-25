@@ -182,15 +182,15 @@ export default function Catalogo() {
 
       <div className="toolbar">
         <div className="toggle" role="group" aria-label="Forma de ver las cartas">
+          <button type="button" className={vista === 'todas' ? 'active' : ''} onClick={() => setVista('todas')}>
+            Todas juntas
+          </button>
           <button
             type="button"
             className={vista === 'vendedores' ? 'active' : ''}
             onClick={() => setVista('vendedores')}
           >
             Por vendedor
-          </button>
-          <button type="button" className={vista === 'todas' ? 'active' : ''} onClick={() => setVista('todas')}>
-            Todas juntas
           </button>
         </div>
         <button
