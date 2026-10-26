@@ -1,4 +1,4 @@
-import { SITE_URL, serverSupabase } from '../lib/seo';
+import { SITE_URL, getColecciones, serverSupabase } from '../lib/seo';
 
 export const revalidate = 3600;
 
@@ -26,8 +26,10 @@ export default async function sitemap() {
     const { data } = await sb.from('sellers_public').select('id');
     tiendas = data || [];
   } catch {}
+  const colecciones = await getColecciones();
   return [
     ...fijas,
+    ...colecciones.map((c) => ({ url: `${SITE_URL}/coleccion/${c.slug}`, lastModified: ahora, changeFrequency: 'daily', priority: 0.8 })),
     ...tiendas.map((s) => ({ url: `${SITE_URL}/tienda/${s.id}`, lastModified: ahora, changeFrequency: 'daily', priority: 0.7 })),
     ...cartas.map((c) => ({ url: `${SITE_URL}/carta/${c.id}`, lastModified: c.created_at ? new Date(c.created_at) : ahora, changeFrequency: 'weekly', priority: 0.6 })),
   ];
