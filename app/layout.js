@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Header from '../components/Header';
 
 export const metadata = {
-  metadataBase: new URL('https://akibatrade.com'),
+  metadataBase: new URL('https://www.akibatrade.com'),
   title: { default: 'AkibaTrade · Cartas TCG japonesas y vintage', template: '%s · AkibaTrade' },
   description: 'Compra cartas TCG japonesas y vintage directamente a vendedores contrastados. Envíos a España y Europa.',
   applicationName: 'AkibaTrade',
@@ -37,13 +37,13 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@graph': [
-                { '@type': 'Organization', name: 'AkibaTrade', url: 'https://akibatrade.com', logo: 'https://akibatrade.com/logo.png', email: 'contacto@akibatrade.com' },
+                { '@type': 'Organization', name: 'AkibaTrade', url: 'https://www.akibatrade.com', logo: 'https://www.akibatrade.com/logo.png', email: 'contacto@akibatrade.com' },
                 {
                   '@type': 'WebSite',
                   name: 'AkibaTrade',
-                  url: 'https://akibatrade.com',
+                  url: 'https://www.akibatrade.com',
                   inLanguage: 'es',
-                  potentialAction: { '@type': 'SearchAction', target: 'https://akibatrade.com/buscar?q={search_term_string}', 'query-input': 'required name=search_term_string' },
+                  potentialAction: { '@type': 'SearchAction', target: 'https://www.akibatrade.com/buscar?q={search_term_string}', 'query-input': 'required name=search_term_string' },
                 },
               ],
             }),
