@@ -84,6 +84,7 @@ export default function Inicio() {
     <>
       <ConfigWarning />
 
+      <h1 className="sr-only">AkibaTrade · Cartas TCG japonesas y Pokémon vintage</h1>
       {!cargado ? (
         <div className="banner-slider banner-skeleton" aria-hidden="true" />
       ) : banners.length > 0 ? (
@@ -91,9 +92,9 @@ export default function Inicio() {
       ) : (
         <section className="hero">
           <p className="hero-kicker">カード · Compra y venta de cartas TCG</p>
-          <h1 className="hero-title">
+          <h2 className="hero-title">
             Encuentra tus cartas favoritas, <span>directo del vendedor</span>
-          </h1>
+          </h2>
           <p className="hero-text">
             AkibaTrade es un mercado de cartas coleccionables donde cada vendedor tiene su propia tienda, con fotos
             reales y precio claro. Tú eliges, hablas con ellos y te la enviamos a casa.

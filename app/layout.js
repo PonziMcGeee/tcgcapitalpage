@@ -6,18 +6,18 @@ import Header from '../components/Header';
 
 export const metadata = {
   metadataBase: new URL('https://www.akibatrade.com'),
-  title: { default: 'AkibaTrade · Cartas TCG japonesas y vintage', template: '%s · AkibaTrade' },
-  description: 'Compra cartas TCG japonesas y vintage directamente a vendedores contrastados. Envíos a España y Europa.',
+  title: { default: 'AkibaTrade · Cartas TCG japonesas y Pokémon vintage', template: '%s · AkibaTrade' },
+  description: 'Marketplace de cartas TCG, especializado en Pokémon vintage y cartas japonesas. Vendedores contrastados, trato directo y envíos a España y Europa.',
   applicationName: 'AkibaTrade',
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     siteName: 'AkibaTrade',
     locale: 'es_ES',
-    title: 'AkibaTrade · Cartas TCG japonesas y vintage',
-    description: 'Compra cartas TCG japonesas y vintage directamente a vendedores contrastados. Envíos a España y Europa.',
+    title: 'AkibaTrade · Cartas TCG japonesas y Pokémon vintage',
+    description: 'Marketplace de cartas TCG, especializado en Pokémon vintage y cartas japonesas. Vendedores contrastados, trato directo y envíos a España y Europa.',
     url: '/',
-    images: [{ url: '/logo.png', alt: 'AkibaTrade' }],
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'AkibaTrade · Cartas TCG japonesas y Pokémon vintage' }],
   },
   twitter: { card: 'summary_large_image' },
 };
@@ -37,7 +37,7 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify({
               '@context': 'https://schema.org',
               '@graph': [
-                { '@type': 'Organization', name: 'AkibaTrade', url: 'https://www.akibatrade.com', logo: 'https://www.akibatrade.com/logo.png', email: 'contacto@akibatrade.com' },
+                { '@type': 'Organization', name: 'AkibaTrade', description: 'Marketplace de cartas TCG, especializado en Pokémon vintage y cartas japonesas. Vendedores contrastados, trato directo y envíos a España y Europa.', url: 'https://www.akibatrade.com', logo: 'https://www.akibatrade.com/logo.png', email: 'contacto@akibatrade.com' },
                 {
                   '@type': 'WebSite',
                   name: 'AkibaTrade',
