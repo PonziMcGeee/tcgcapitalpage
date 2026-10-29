@@ -101,9 +101,9 @@ export default function BannersAdmin() {
     try {
       let image_url = banner?.image_url;
       if (file) {
-        const blob = await prepararFoto(file, 1800);
+        const blob = await prepararFoto(file, 1600, 0.8);
         const ruta = `banners/${crypto.randomUUID()}.jpg`;
-        const { error } = await sb.storage.from('site').upload(ruta, blob, { contentType: 'image/jpeg' });
+        const { error } = await sb.storage.from('site').upload(ruta, blob, { contentType: 'image/jpeg', cacheControl: '31536000' });
         if (error) throw error;
         image_url = sb.storage.from('site').getPublicUrl(ruta).data.publicUrl;
       }
