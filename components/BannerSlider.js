@@ -22,6 +22,16 @@ function BannerButton({ banner }) {
 export default function BannerSlider({ banners }) {
   const [actual, setActual] = useState(0);
   const total = banners.length;
+  // Solo se descargan el banner visible y el siguiente; el resto, cuando les toca
+  const [cargados, setCargados] = useState(() => new Set([0, 1]));
+  useEffect(() => {
+    setCargados((prev) => {
+      const n = new Set(prev);
+      n.add(actual);
+      n.add((actual + 1) % Math.max(total, 1));
+      return n.size === prev.size ? prev : n;
+    });
+  }, [actual, total]);
 
   const siguiente = useCallback(() => setActual((v) => (v + 1) % total), [total]);
   const anterior = () => setActual((v) => (v - 1 + total) % total);
@@ -41,7 +51,7 @@ export default function BannerSlider({ banners }) {
         <div
           key={b.id}
           className={`banner-slide ${i === actual ? 'active' : ''}`}
-          style={{ backgroundImage: `url(${b.image_url})` }}
+          style={cargados.has(i) ? { backgroundImage: `url(${b.image_url})` } : undefined}
           aria-hidden={i !== actual}
         >
           {(b.title || b.subtitle || b.link_url) && (
