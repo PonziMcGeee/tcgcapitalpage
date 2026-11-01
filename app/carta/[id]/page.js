@@ -1,6 +1,8 @@
 import CartaDetalle from '../../../components/CartaDetalle';
 import { getListing, getSeller } from '../../../lib/seo';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page({ params }) {
   const listing = await getListing(params.id);
   const seller = listing ? await getSeller(listing.seller_id) : null;

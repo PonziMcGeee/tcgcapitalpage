@@ -1,6 +1,8 @@
 import CatalogoClient from '../../components/CatalogoClient';
 import { getCatalogo } from '../../lib/seo';
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page({ searchParams }) {
   const cat = await getCatalogo();
   const pagina = Math.min(Math.max(parseInt(searchParams?.pagina, 10) || 1, 1), 200);

@@ -13,3 +13,5 @@ export default async function CartaLayout({ children, params }) {
     </>
   );
 }
+
+export const dynamic = 'force-dynamic';

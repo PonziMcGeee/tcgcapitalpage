@@ -17,3 +17,5 @@ export async function generateMetadata({ params }) {
 export default function TiendaLayout({ children }) {
   return children;
 }
+
+export const dynamic = 'force-dynamic';

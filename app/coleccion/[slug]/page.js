@@ -25,6 +25,8 @@ function intro(d) {
   return `Cartas${juego} de la colección ${col.nombre} a la venta en AkibaTrade: ${n} ${n === 1 ? 'carta disponible' : 'cartas disponibles'} de ${vendedores} ${vendedores === 1 ? 'vendedor' : 'vendedores'}.${precio}`;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }) {
   const d = await datos(params.slug);
   if (!d) return { title: 'Colección no encontrada', robots: { index: false } };
