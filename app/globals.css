@@ -2310,3 +2310,15 @@ h2 {
   white-space: nowrap;
   border: 0;
 }
+
+.search-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.search-head h2 {
+  margin: 0;
+}

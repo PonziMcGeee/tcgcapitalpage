@@ -7,6 +7,7 @@ import CardTile from '../../components/CardTile';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerCard from '../../components/SellerCard';
 import { deriveSellers, fetchAllAvailable, fetchRatings, fetchSellers } from '../../lib/data';
+import { ORDENES, ordenar } from '../../lib/orden';
 import { getSupabase } from '../../lib/supabase';
 
 const norm = (s) =>
@@ -23,6 +24,7 @@ function Resultados() {
   const [ratings, setRatings] = useState(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [orden, setOrden] = useState('recientes');
 
   useEffect(() => {
     const sb = getSupabase();
@@ -56,9 +58,9 @@ function Resultados() {
       if (l.collection && todas(norm(l.collection))) cuenta.set(l.collection, (cuenta.get(l.collection) || 0) + 1);
     });
     const colecciones = [...cuenta.entries()].sort((a, b) => b[1] - a[1]);
-    return { cartas, vendedores, colecciones };
+    return { cartas: ordenar(cartas, orden), vendedores, colecciones };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, listings, sellers, sellerMap]);
+  }, [q, listings, sellers, sellerMap, orden]);
 
   const hayBusqueda = palabras.length > 0;
   const sinResultados = hayBusqueda && !loading && cartas.length + vendedores.length + colecciones.length === 0;
@@ -100,7 +102,16 @@ function Resultados() {
 
       {cartas.length > 0 && (
         <section className="search-section">
-          <h2>Cartas ({cartas.length})</h2>
+          <div className="search-head">
+            <h2>Cartas ({cartas.length})</h2>
+            <select className="sort-select" value={orden} onChange={(e) => setOrden(e.target.value)} aria-label="Ordenar cartas">
+              {ORDENES.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="grid">
             {cartas.slice(0, 48).map((l) => (
               <CardTile key={l.id} listing={l} color={sellerMap.get(l.seller_id)?.color} />
@@ -108,7 +119,7 @@ function Resultados() {
           </div>
           {cartas.length > 48 && (
             <p className="more-row">
-              <Link href="/catalogo" className="btn btn-outline">
+              <Link href={`/catalogo?q=${encodeURIComponent(q)}`} className="btn btn-outline">
                 Ver todas en el catálogo
               </Link>
             </p>
