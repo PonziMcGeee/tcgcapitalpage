@@ -2322,3 +2322,42 @@ h2 {
 .search-head h2 {
   margin: 0;
 }
+
+.faq {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0 18px;
+}
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 16px 28px 16px 0;
+  list-style: none;
+  position: relative;
+}
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+.faq-item summary::after {
+  content: '+';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--accent);
+}
+.faq-item[open] summary::after {
+  content: '–';
+}
+.faq-item p {
+  margin: 0 0 16px;
+  line-height: 1.6;
+}

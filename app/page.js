@@ -6,6 +6,7 @@ import BannerSlider from '../components/BannerSlider';
 import CardCarousel from '../components/CardCarousel';
 import FeaturedSellers from '../components/FeaturedSellers';
 import ConfigWarning from '../components/ConfigWarning';
+import Faq from '../components/Faq';
 import Marquee from '../components/Marquee';
 import SellerCard from '../components/SellerCard';
 import { fetchRatings, fetchSellers } from '../lib/data';
@@ -214,6 +215,8 @@ export default function Inicio() {
           ))}
         </div>
       </section>
+
+      <Faq />
 
       <section className="cta">
         <h2>¿Buscas una carta?</h2>
