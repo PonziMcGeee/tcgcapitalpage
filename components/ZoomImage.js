@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 // Foto con zoom para ordenador: al pasar el ratón se amplía siguiendo el cursor,
 // y al hacer clic se abre a pantalla completa (Esc o clic para cerrar).
-export default function ZoomImage({ src, alt }) {
+export default function ZoomImage({ src, alt, lazy = false }) {
   const [origen, setOrigen] = useState('50% 50%');
   const [abierta, setAbierta] = useState(false);
 
@@ -31,7 +31,7 @@ export default function ZoomImage({ src, alt }) {
     <>
       <div className="zoom-box" onMouseMove={mover} onClick={() => setAbierta(true)}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={src} alt={alt} style={{ transformOrigin: origen }} />
+        <img src={src} alt={alt} loading={lazy ? 'lazy' : undefined} decoding="async" style={{ transformOrigin: origen }} />
       </div>
       {abierta && (
         <div className="lightbox" onClick={() => setAbierta(false)} role="dialog" aria-label={alt}>

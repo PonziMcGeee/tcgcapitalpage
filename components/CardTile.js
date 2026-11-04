@@ -11,7 +11,7 @@ export default function CardTile({ listing, showSeller = true, color }) {
     >
       <div className="tile-img">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={listing.thumb_url || listing.front_url} alt={listing.name} loading="lazy" />
+        <img src={listing.thumb_url || listing.front_url} alt={listing.name} loading="lazy" decoding="async" />
         {listing.condition && <span className="cond-tag" title={conditionLabel(listing.condition)}>{listing.condition}</span>}
         <FavoriteButton kind="card" id={listing.id} label={listing.name} className="fav-corner" />
         {listing.accepts_trade && (

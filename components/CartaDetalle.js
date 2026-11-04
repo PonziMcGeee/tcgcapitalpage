@@ -89,7 +89,7 @@ export default function CartaDetalle({ id, initialListing = null, initialSeller 
           </figure>
           <figure>
             {listing.back_url ? (
-              <ZoomImage src={listing.back_url} alt={`${listing.name} (detrás)`} />
+              <ZoomImage src={listing.back_url} alt={`${listing.name} (detrás)`} lazy />
             ) : (
               <div className="empty small">Sin foto trasera</div>
             )}
