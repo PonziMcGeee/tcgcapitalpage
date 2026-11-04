@@ -173,8 +173,8 @@ export default function PanelVendedor() {
           form.collection && coleccionesPara(form.game, form.language, form.era).includes(form.collection)
             ? form.collection
             : null,
-        // Solo se envía si es slab o sellado, así las cartas sueltas funcionan aunque falte la migración
-        ...(form.product_type ? { product_type: form.product_type } : editando && editando.product_type ? { product_type: null } : {}),
+        // Las cartas nuevas son «suelta» por defecto en la base de datos; solo se envía si es slab/sellado (o si se vuelve a suelta)
+        ...(form.product_type ? { product_type: form.product_type } : editando && tipoDe(editando) ? { product_type: 'suelta' } : {}),
         condition: form.condition,
         accepts_trade: !!form.accepts_trade,
         description: form.description.trim() || null,

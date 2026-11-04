@@ -680,4 +680,4 @@ where game = 'Pokémon' and collection is not null and collection <> 'Lote' and 
 alter table public.listings add column if not exists sort_order integer;
 
 -- Tipo de producto (slab / sellado): ver supabase/migracion-tipo-producto.sql
-alter table public.listings add column if not exists product_type text;
+alter table public.listings add column if not exists product_type text not null default 'suelta';
