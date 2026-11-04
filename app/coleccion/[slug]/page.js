@@ -4,13 +4,14 @@ import CardTile from '../../../components/CardTile';
 import { euros } from '../../../lib/format';
 import { getCatalogo, getColecciones } from '../../../lib/seo';
 import { ordenar } from '../../../lib/orden';
+import { coleccionDe } from '../../../lib/collections';
 
 async function datos(slug) {
   const colecciones = await getColecciones();
   const col = colecciones.find((c) => c.slug === slug);
   if (!col) return null;
   const cat = await getCatalogo();
-  const cartas = ordenar(cat.listings.filter((l) => l.collection === col.nombre), 'alfabetico');
+  const cartas = ordenar(cat.listings.filter((l) => coleccionDe(l) === col.nombre), 'alfabetico');
   const precios = cartas.map((l) => Number(l.price)).filter((n) => !Number.isNaN(n) && n > 0);
   const juegos = [...new Set(cartas.map((l) => l.game).filter(Boolean))];
   const vendedores = new Set(cartas.map((l) => l.seller_id)).size;

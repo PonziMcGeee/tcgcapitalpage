@@ -8,6 +8,7 @@ import SellerBadge from './SellerBadge';
 import SellerContact from './SellerContact';
 import { conditionLabel, euros } from '../lib/format';
 import { slugify } from '../lib/slug';
+import { coleccionDe, tipoDe } from '../lib/collections';
 import { getSupabase } from '../lib/supabase';
 import { useProfile } from '../lib/useProfile';
 
@@ -100,9 +101,14 @@ export default function CartaDetalle({ id, initialListing = null, initialSeller 
           <span className={`badge ${vendida ? 'badge-sold' : ''}`}>{vendida ? 'Vendida' : listing.game}</span>
           <span className="badge" style={{ marginLeft: 6 }}>{conditionLabel(listing.condition)}</span>
           {listing.accepts_trade && <span className="badge badge-trade" style={{ marginLeft: 6 }}>⇄ Admite trade</span>}
-          {listing.collection && (
-            <Link href={`/coleccion/${slugify(listing.collection)}`} className="badge" style={{ marginLeft: 6 }}>
-              {listing.collection}
+          {tipoDe(listing) && (
+            <span className="badge" style={{ marginLeft: 6 }}>
+              {tipoDe(listing) === 'slab' ? 'Slab' : 'Sellado'}
+            </span>
+          )}
+          {coleccionDe(listing) && (
+            <Link href={`/coleccion/${slugify(coleccionDe(listing))}`} className="badge" style={{ marginLeft: 6 }}>
+              {coleccionDe(listing)}
             </Link>
           )}
           <div className="title-row">

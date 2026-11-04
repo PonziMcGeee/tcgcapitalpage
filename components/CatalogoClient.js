@@ -6,7 +6,7 @@ import SearchSelect from './SearchSelect';
 import ConfigWarning from './ConfigWarning';
 import SellerSection from './SellerSection';
 import { deriveSellers, fetchAllAvailable, fetchSellers } from '../lib/data';
-import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, inferirIdiomaEra, setsDe } from '../lib/collections';
+import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, TIPOS, coleccionDe, inferirIdiomaEra, setsDe, tipoDe } from '../lib/collections';
 import { GAMES } from '../lib/format';
 import { ORDENES, ordenar, porOrdenVendedor } from '../lib/orden';
 import { getSupabase } from '../lib/supabase';
@@ -29,6 +29,7 @@ export default function CatalogoClient({ initialListings = null, initialSellers 
   const [soloFav, setSoloFav] = useState(false);
   const [idioma, setIdioma] = useState('');
   const [era, setEra] = useState('');
+  const [tipo, setTipo] = useState('');
   const [orden, setOrden] = useState('alfabetico');
   const favs = useFavorites();
 
@@ -64,7 +65,7 @@ export default function CatalogoClient({ initialListings = null, initialSellers 
       return;
     }
     setMostradas(STEP);
-  }, [search, game, coleccion, seller, vista, soloFav, idioma, era, orden]);
+  }, [search, game, coleccion, seller, vista, soloFav, idioma, era, tipo, orden]);
 
   const sellerMap = useMemo(() => new Map(sellers.map((s) => [s.id, s])), [sellers]);
 
@@ -72,9 +73,10 @@ export default function CatalogoClient({ initialListings = null, initialSellers 
     () =>
       ordenar(listings.filter((l) => {
         if (game && l.game !== game) return false;
-        if (coleccion && l.collection !== coleccion) return false;
+        if (coleccion && coleccionDe(l) !== coleccion) return false;
+        if (tipo === 'suelta' ? tipoDe(l) !== '' : tipo && tipoDe(l) !== tipo) return false;
         if (idioma || era) {
-          const deducido = inferirIdiomaEra(l.collection);
+          const deducido = inferirIdiomaEra(coleccionDe(l));
           if (idioma && (l.language || deducido.idioma) !== idioma) return false;
           if (era && (l.era || deducido.era) !== era) return false;
         }
@@ -83,7 +85,7 @@ export default function CatalogoClient({ initialListings = null, initialSellers 
         if (search && !l.name.toLowerCase().includes(search.toLowerCase())) return false;
         return true;
       }), orden),
-    [listings, game, coleccion, seller, search, soloFav, favs.cards, idioma, era, orden]
+    [listings, game, coleccion, seller, search, soloFav, favs.cards, idioma, era, tipo, orden]
   );
 
   // Vista por vendedor: un bloque por vendedor con solo unas pocas cartas de muestra
@@ -207,6 +209,15 @@ export default function CatalogoClient({ initialListings = null, initialSellers 
         >
           ♥ Solo favoritos
         </button>
+        <select className="sort-select" value={tipo} onChange={(e) => setTipo(e.target.value)} aria-label="Tipo de producto">
+          <option value="">Todos los productos</option>
+          <option value="suelta">Cartas sueltas</option>
+          {TIPOS.filter((t) => t.value).map((t) => (
+            <option key={t.value} value={t.value}>
+              {t.corto === 'Slab' ? 'Slabs' : t.corto}
+            </option>
+          ))}
+        </select>
         <select className="sort-select" value={orden} onChange={(e) => setOrden(e.target.value)} aria-label="Ordenar cartas">
           {ORDENES.map((o) => (
             <option key={o.value} value={o.value}>

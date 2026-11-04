@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { porOrdenVendedor } from '../../lib/orden';
 import SearchSelect from '../../components/SearchSelect';
 import ConfigWarning from '../../components/ConfigWarning';
-import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, coleccionesPara, inferirIdiomaEra } from '../../lib/collections';
+import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, TIPOS, coleccionDe, coleccionesPara, inferirIdiomaEra, tipoDe } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
 import { prepararAvatar, prepararFoto, prepararMiniatura } from '../../lib/image';
 import { isSeller } from '../../lib/roles';
@@ -18,6 +18,7 @@ const EMPTY_FORM = {
   game: GAMES[0],
   language: '',
   era: '',
+  product_type: '',
   collection: '',
   condition: 'NM',
   accepts_trade: false,
@@ -128,9 +129,10 @@ export default function PanelVendedor() {
     setForm({
       name: l.name,
       game: l.game,
-      language: l.language || inferirIdiomaEra(l.collection).idioma,
-      era: l.era || inferirIdiomaEra(l.collection).era,
-      collection: l.collection || '',
+      language: l.language || inferirIdiomaEra(coleccionDe(l)).idioma,
+      era: l.era || inferirIdiomaEra(coleccionDe(l)).era,
+      product_type: tipoDe(l),
+      collection: coleccionDe(l),
       condition: l.condition || 'NM',
       accepts_trade: !!l.accepts_trade,
       description: l.description || '',
@@ -171,6 +173,8 @@ export default function PanelVendedor() {
           form.collection && coleccionesPara(form.game, form.language, form.era).includes(form.collection)
             ? form.collection
             : null,
+        // Solo se envía si es slab o sellado, así las cartas sueltas funcionan aunque falte la migración
+        ...(form.product_type ? { product_type: form.product_type } : editando && editando.product_type ? { product_type: null } : {}),
         condition: form.condition,
         accepts_trade: !!form.accepts_trade,
         description: form.description.trim() || null,
@@ -468,6 +472,17 @@ export default function PanelVendedor() {
               </div>
             </div>
           )}
+
+          <div className="field">
+            <label htmlFor="product_type">Tipo de producto</label>
+            <select id="product_type" value={form.product_type} onChange={(e) => cambiar('product_type', e.target.value)}>
+              {TIPOS.map((t) => (
+                <option key={t.value} value={t.value}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="field">
             <label htmlFor="collection">Set / colección</label>

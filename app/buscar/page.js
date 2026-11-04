@@ -7,6 +7,7 @@ import CardTile from '../../components/CardTile';
 import ConfigWarning from '../../components/ConfigWarning';
 import SellerCard from '../../components/SellerCard';
 import { deriveSellers, fetchAllAvailable, fetchRatings, fetchSellers } from '../../lib/data';
+import { coleccionDe } from '../../lib/collections';
 import { ORDENES, ordenar } from '../../lib/orden';
 import { getSupabase } from '../../lib/supabase';
 
@@ -50,12 +51,13 @@ function Resultados() {
     if (palabras.length === 0) return { cartas: [], vendedores: [], colecciones: [] };
     const todas = (texto) => palabras.every((p) => texto.includes(p));
     const cartas = listings.filter((l) =>
-      todas(norm(`${l.name} ${l.collection || ''} ${sellerMap.get(l.seller_id)?.display_name || ''}`))
+      todas(norm(`${l.name} ${coleccionDe(l)} ${sellerMap.get(l.seller_id)?.display_name || ''}`))
     );
     const vendedores = sellers.filter((s) => todas(norm(s.display_name)));
     const cuenta = new Map();
     listings.forEach((l) => {
-      if (l.collection && todas(norm(l.collection))) cuenta.set(l.collection, (cuenta.get(l.collection) || 0) + 1);
+      const c = coleccionDe(l);
+      if (c && todas(norm(c))) cuenta.set(c, (cuenta.get(c) || 0) + 1);
     });
     const colecciones = [...cuenta.entries()].sort((a, b) => b[1] - a[1]);
     return { cartas: ordenar(cartas, orden), vendedores, colecciones };

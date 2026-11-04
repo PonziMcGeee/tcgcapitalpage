@@ -9,7 +9,7 @@ import FavoriteButton from './FavoriteButton';
 import Stars from './Stars';
 import ShareButton from './ShareButton';
 import SellerContact from './SellerContact';
-import { ESPECIALES, OTRA } from '../lib/collections';
+import { ESPECIALES, OTRA, coleccionDe } from '../lib/collections';
 import { sellerColor } from '../lib/format';
 import { getSupabase } from '../lib/supabase';
 import { useProfile } from '../lib/useProfile';
@@ -61,14 +61,14 @@ export default function TiendaDetalle({ id, initial = null }) {
         listings
           .filter((l) => l.status === 'available')
           .filter((l) => !search || l.name.toLowerCase().includes(search.toLowerCase()))
-          .filter((l) => !coleccion || l.collection === coleccion),
+          .filter((l) => !coleccion || coleccionDe(l) === coleccion),
         orden
       ),
     [listings, search, coleccion, orden]
   );
   // Solo las colecciones que este vendedor tiene realmente
   const colecciones = useMemo(
-    () => [...new Set(listings.filter((l) => l.status === 'available' && l.collection).map((l) => l.collection))].sort(
+    () => [...new Set(listings.filter((l) => l.status === 'available' && coleccionDe(l)).map((l) => coleccionDe(l)))].sort(
         (x, y) => {
           const orden = (n) => (n === OTRA ? 100 : ESPECIALES.indexOf(n) === -1 ? 50 : ESPECIALES.indexOf(n));
           if (orden(x) !== orden(y)) return orden(x) - orden(y);
