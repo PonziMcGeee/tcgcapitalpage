@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const JUEGOS = ['Pokémon', 'One Piece', 'Otro'];
+const JUEGOS = ['Pokémon', 'One Piece', 'Magic: The Gathering', 'Yu-Gi-Oh!', 'Riftbound', 'Otro'];
 
 export default function ConvierteteEnVendedor() {
   const [f, setF] = useState({ nombre: '', email: '', contacto: '', experiencia: '', mensaje: '', web: '' });
