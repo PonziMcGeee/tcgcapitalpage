@@ -115,10 +115,26 @@ export default function SubidaExcel({ user, profile, mine, subirFoto, onTerminad
           <strong>Subir varias cartas con Excel (hasta {MAX_FILAS} de golpe)</strong>
         </summary>
         <div className="form" style={{ marginTop: 12 }}>
-          <ol className="muted" style={{ paddingLeft: 18, lineHeight: 1.6 }}>
-            <li>
-              Descarga la plantilla: <a href="/plantilla-cartas.xlsx" download><strong>plantilla-cartas.xlsx</strong></a>
-            </li>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              flexWrap: 'wrap',
+              padding: 14,
+              borderRadius: 10,
+              border: '2px dashed currentColor',
+            }}
+          >
+            <span>
+              <strong>Paso 1:</strong> descarga la plantilla y rellénala
+            </span>
+            <a className="btn" href="/plantilla-cartas.xlsx" download>
+              ⬇ Descargar plantilla Excel
+            </a>
+          </div>
+          <ol className="muted" style={{ paddingLeft: 18, lineHeight: 1.6 }} start={2}>
             <li>Rellena una fila por carta. En «Foto delante» y «Foto detrás» escribe el nombre del archivo, con su extensión (por ejemplo <em>charizard-delante.jpg</em>).</li>
             <li>Elige aquí abajo el Excel y, a la vez, todas las fotos.</li>
             <li>Pulsa «Revisar». Si hay algún error no se sube nada; corrígelo en el Excel y vuelve a revisar.</li>
