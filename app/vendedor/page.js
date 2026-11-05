@@ -5,6 +5,7 @@ import SellerBadge from '../../components/SellerBadge';
 import { useCallback, useEffect, useState } from 'react';
 import { porOrdenVendedor } from '../../lib/orden';
 import SearchSelect from '../../components/SearchSelect';
+import SubidaExcel from '../../components/SubidaExcel';
 import ConfigWarning from '../../components/ConfigWarning';
 import { ERAS, ESPECIALES, ESPECIAL_LABEL, IDIOMAS, OTRA, TIPOS, coleccionDe, coleccionesPara, inferirIdiomaEra, tipoDe } from '../../lib/collections';
 import { CONDITIONS, GAMES, SELLER_COLORS, conditionLabel, euros, gameLabel, sellerColor } from '../../lib/format';
@@ -588,6 +589,10 @@ export default function PanelVendedor() {
           </div>
         </form>
       </section>
+
+      {!editando && (
+        <SubidaExcel user={user} profile={profile} mine={mine} subirFoto={subirFoto} onTerminado={cargarMias} />
+      )}
 
       <section className="panel">
         <h2>2. Mis cartas ({mine.length})</h2>
