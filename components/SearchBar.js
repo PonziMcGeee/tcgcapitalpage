@@ -24,7 +24,7 @@ export default function SearchBar({ initial = '', autoFocus = false }) {
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Busca por carta, juego, vendedor o colección…"
+        placeholder="Busca por Pokémon, vendedor o colección…"
         aria-label="Buscar cartas, vendedores o colecciones"
         autoFocus={autoFocus}
       />
