@@ -81,11 +81,37 @@ export default function Inicio() {
     .filter((s) => s.cards_available > 0)
     .sort((a, b) => b.cards_available - a.cards_available || a.display_name.localeCompare(b.display_name));
 
+  const totalCartas = conCartas.reduce((n, s) => n + s.cards_available, 0);
+
   return (
     <>
       <ConfigWarning />
 
-      <h1 className="sr-only">AkibaTrade · Cartas TCG japonesas y Pokémon vintage</h1>
+      <section className="home-intro">
+        <div>
+          <h1>Compra y vende cartas TCG a vendedores de toda España</h1>
+          <p className="muted">
+            Cartas sueltas, slabs y sellado de Pokémon, One Piece, Magic, Yu-Gi-Oh! y Riftbound, con fotos reales y trato
+            directo con el vendedor.
+            {totalCartas > 0 && (
+              <>
+                {' '}
+                <strong>
+                  {totalCartas} cartas en venta · {conCartas.length} vendedores
+                </strong>
+              </>
+            )}
+          </p>
+        </div>
+        <div className="home-intro-actions">
+          <Link href="/catalogo" className="btn">
+            Ver catálogo
+          </Link>
+          <Link href="/conviertete-en-vendedor" className="btn btn-outline">
+            Quiero vender
+          </Link>
+        </div>
+      </section>
       {!cargado ? (
         <div className="banner-slider banner-skeleton" aria-hidden="true" />
       ) : banners.length > 0 ? (
@@ -145,7 +171,7 @@ export default function Inicio() {
                 )}
               />
             ) : (
-              <CardCarousel listings={c.cards} label={c.title} />
+              <CardCarousel listings={c.cards.filter((l) => l.status !== 'sold')} label={c.title} />
             )}
           </section>
         ))
@@ -203,7 +229,7 @@ export default function Inicio() {
         <h2>Por qué comprar aquí</h2>
         <div className="steps">
           {VENTAJAS.map((v) => (
-            <div className="step" key={v.titulo}>
+            <div className="step step-soft" key={v.titulo}>
               <h3 className="step-title">
                 <span className="step-icon" aria-hidden="true">
                   {v.icono}
@@ -218,7 +244,7 @@ export default function Inicio() {
 
       <Faq />
 
-      <section className="cta">
+      <section className="cta cta-red">
         <h2>¿Buscas una carta?</h2>
         <p>Échale un vistazo al catálogo o crea tu cuenta para contactar con los vendedores.</p>
         <div className="hero-actions" style={{ justifyContent: 'center' }}>
